@@ -1,0 +1,150 @@
+.row {
+  display: grid;
+  grid-template-columns: 32px 1fr 80px 140px 100px 30px;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--rule);
+  font-size: 15px;
+}
+
+.row:last-of-type {
+  border-bottom: 0;
+}
+
+/* file type badge */
+.ftype {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--ink);
+  display: grid;
+  place-items: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  color: var(--ink);
+  background: var(--paper-dark);
+  letter-spacing: 0.5px;
+}
+
+.ftypeImage {
+  background: var(--image-hue);
+  color: var(--paper);
+  border-color: var(--image-hue);
+}
+
+.ftypeVideo {
+  background: var(--video-hue);
+  color: var(--paper);
+  border-color: var(--video-hue);
+}
+
+.ftypeErr {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+
+/* filename */
+.fname {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* file size */
+.fsize {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+}
+
+/* progress bar */
+.prog {
+  position: relative;
+  height: 12px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+
+.pfill {
+  position: absolute;
+  inset: 0;
+  background: var(--ok);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 5px,
+    rgba(33, 32, 28, 0.18) 5px 6px
+  );
+}
+
+.pfillFailed {
+  background: var(--accent);
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 5px,
+    rgba(33, 32, 28, 0.18) 5px 6px
+  );
+}
+
+.ptext {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  color: var(--ink);
+  text-shadow: 0 0 2px var(--paper);
+}
+
+/* status */
+.pstate {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink-soft);
+}
+
+.pstateDone {
+  color: var(--ok);
+}
+
+.pstateErr {
+  color: var(--accent);
+}
+
+.pstateRetry {
+  color: var(--warn);
+}
+
+/* remove button */
+.xBtn {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 16px;
+  padding: 0;
+}
+
+.xBtn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* error message row */
+.errMsg {
+  grid-column: 2 / -1;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 13px;
+  color: var(--accent);
+  margin-top: 2px;
+}

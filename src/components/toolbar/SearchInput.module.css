@@ -1,0 +1,63 @@
+.wrap {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+}
+
+.glass {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--ink-soft);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.glass::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  bottom: -3px;
+  width: 8px;
+  height: 2px;
+  background: var(--ink-soft);
+  transform: rotate(45deg);
+}
+
+.input {
+  width: 100%;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 10px 14px 10px 38px;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 17px;
+  color: var(--ink);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--ink-faint);
+}
+
+.input:focus {
+  background: white;
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: translate(-1px, -1px);
+}
+
+.kbd {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  border: 1px solid var(--ink-faint);
+  padding: 2px 5px;
+  border-radius: 3px;
+  pointer-events: none;
+}

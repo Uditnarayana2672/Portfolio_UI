@@ -1,0 +1,123 @@
+.dropzone {
+  border: 2.5px dashed var(--ink);
+  background: var(--paper);
+  padding: 22px 24px;
+  margin-bottom: 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+  position: relative;
+  transition: background .15s, border-color .15s;
+}
+
+.dragging {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.dzLeft h2 {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 28px;
+  margin: 0 0 4px;
+}
+
+.hint {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+
+.dzRules {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.dzRules b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.dzRight {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.folderPick {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.folderPick select {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 15px;
+  border: 1.5px solid var(--ink);
+  padding: 4px 10px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+}
+
+.cornerTag {
+  position: absolute;
+  top: -10px;
+  left: 12px;
+  background: var(--paper);
+  padding: 0 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+}
+
+.btn {
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 8px 16px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform .12s, box-shadow .12s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.btnPrimary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btnPrimary:hover {
+  box-shadow: 3px 3px 0 var(--accent);
+}
+
+.plus {
+  font-size: 24px;
+  line-height: 0.9;
+  margin-right: 2px;
+}

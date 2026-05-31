@@ -1,0 +1,213 @@
+/* === Sidebar (mirrors .v2-nav from HTML reference) === */
+
+.nav {
+  border: 2px dashed var(--ink);
+  padding: 16px;
+  background: var(--paper);
+  min-height: 820px;
+  display: flex;
+  flex-direction: column;
+}
+
+.navMain {
+  flex: 1;
+}
+
+/* ── Section headers (ADMIN / FOLDERS / CLOUDINARY) ── */
+.navhead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--rule);
+}
+
+/* ── Nav list ── */
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Main nav items */
+.navItem {
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+  color: var(--ink-soft);
+}
+
+.navItem.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.navItem.active::before {
+  content: "→ ";
+}
+
+.navItem:hover:not(.active) {
+  background: var(--paper-dark);
+  color: var(--ink);
+}
+
+/* ── Folder items ── */
+.folderSection {
+  margin-top: 24px;
+}
+
+.folderItem {
+  font-family: "Caveat", cursive;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+  color: var(--ink-soft);
+}
+
+.folderItem:hover {
+  background: var(--paper-dark);
+  color: var(--ink);
+}
+
+.folderDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.folderName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folderCount {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ── Cloudinary section ── */
+.cloudSection {
+  margin-top: 24px;
+}
+
+.cloudRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cloudUsed {
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.cloudPlan {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+/* ── Warning dot ── */
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 1.5px solid var(--ink);
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.dotWarn {
+  background: var(--warn);
+}
+
+/* ── Footer ── */
+.navFoot {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1.5px dashed var(--rule);
+}
+
+.whoChip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 6px 12px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--paper);
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  font-weight: 700;
+  border: 1.5px solid var(--ink);
+  flex-shrink: 0;
+}
+
+.whoName {
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.whoRole {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  margin-top: 3px;
+}
+
+.footItem {
+  font-family: "Caveat", cursive;
+  font-size: 19px;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footItem:hover {
+  background: var(--paper-dark);
+  color: var(--ink);
+}
+
+.signout {
+  color: var(--accent);
+}
+
+.signout:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}

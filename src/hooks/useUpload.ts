@@ -80,5 +80,13 @@ export function useUpload() {
     [assets, total, folderStats, typeStats]
   )
 
-  return { uploadFile, importFromUrl }
+  const enqueue = useCallback(
+    (files: FileList) => {
+      const folder = useUploadsStore.getState().targetFolder
+      Array.from(files).forEach((file) => uploadFile(file, folder))
+    },
+    [uploadFile]
+  )
+
+  return { uploadFile, importFromUrl, enqueue }
 }

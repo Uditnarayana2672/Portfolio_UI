@@ -146,7 +146,7 @@ export interface BulkUpdateResponse {
 
 // ── Upload queue item (client-side only) ───────────────────────────────────
 
-export type UploadStatus = 'pending' | 'uploading' | 'done' | 'error'
+export type UploadStatus = 'pending' | 'uploading' | 'done' | 'error' | 'failed'
 
 export interface UploadItem {
   id: string            // client-side uuid

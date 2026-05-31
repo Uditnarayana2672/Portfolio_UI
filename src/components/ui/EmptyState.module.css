@@ -1,0 +1,45 @@
+.emptyState {
+  border: 2px dashed var(--ink-faint);
+  background: var(--paper);
+  padding: 40px 30px;
+  text-align: center;
+  margin-top: 8px;
+}
+.glyph {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 10px;
+  border: 2px dashed var(--ink-faint);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 36px;
+  color: var(--ink-faint);
+}
+.heading {
+  font-family: "Caveat", cursive;
+  font-size: 26px;
+  margin: 4px 0;
+}
+.body {
+  font-family: "Patrick Hand", cursive;
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 0 12px;
+}
+.btn {
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: transform .12s, box-shadow .12s;
+  display: inline-block;
+}
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--accent);
+}

@@ -1,0 +1,43 @@
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Sticky header ───────────────────────────────────── */
+.header {
+  display: grid;
+  grid-template-columns: 22px 52px 1fr 64px 110px 72px 90px 58px;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 4px;
+  background: var(--paper-dark);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-bottom: 1.5px dashed var(--rule);
+}
+.header span {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Skeleton rows ───────────────────────────────────── */
+.skeletonRow {
+  display: grid;
+  grid-template-columns: 22px 52px 1fr 64px 110px 72px 90px 58px;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 4px;
+  border-bottom: 1px dashed var(--rule);
+}
+.skeletonCell {
+  background: var(--paper-dark);
+  border-radius: 2px;
+  height: 12px;
+}

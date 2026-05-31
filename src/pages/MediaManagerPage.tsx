@@ -2,6 +2,16 @@ import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useUiStore } from '../store/uiStore'
 import PageHead from '../components/header/PageHead'
+import Sidebar from '../components/layout/Sidebar'
+import StatsStrip from '../components/stats/StatsStrip'
+import WarnBanner from '../components/ui/WarnBanner'
+import Dropzone from '../components/upload/Dropzone'
+import UploadQueue from '../components/upload/UploadQueue'
+import Toolbar from '../components/toolbar/Toolbar'
+import FolderPills from '../components/toolbar/FolderPills'
+import BulkBar from '../components/bulk/BulkBar'
+import MediaGrid from '../components/media/MediaGrid'
+import MediaList from '../components/media/MediaList'
 import styles from './MediaManagerPage.module.css'
 
 export default function MediaManagerPage() {
@@ -11,6 +21,7 @@ export default function MediaManagerPage() {
   const accentColor   = useUiStore((s) => s.accentColor)
   const paperColor    = useUiStore((s) => s.paperColor)
   const wobbleEnabled = useUiStore((s) => s.wobbleEnabled)
+  const viewMode      = useUiStore((s) => s.viewMode)
 
   // Sync theme knobs → CSS custom properties
   useEffect(() => {
@@ -27,19 +38,22 @@ export default function MediaManagerPage() {
       <div className={`${styles.layout} ${hasDrawer ? '' : styles.noDrawer}`}>
 
         {/* ── Sidebar ─────────────────────────── */}
-        <aside className={`${styles.zone} ${styles.sidebar}`}>
-          <span className={styles.zoneLabel}>component</span>
-          <span className={styles.zoneName}>Sidebar</span>
-          <span className={styles.zoneLabel}>NavList · FolderList · CloudinaryUsage · UserChip</span>
-        </aside>
+        <Sidebar />
 
         {/* ── Main ────────────────────────────── */}
-        <main className={`${styles.zone} ${styles.main}`}>
-          <span className={styles.zoneLabel}>component</span>
-          <span className={styles.zoneName}>Main</span>
-          <span className={styles.zoneLabel}>
-            StatsStrip · Dropzone · Toolbar · FolderPills · MediaGrid
-          </span>
+        <main className={styles.main}>
+          <StatsStrip />
+          <WarnBanner />
+          <div id="dropzone-anchor">
+            <Dropzone />
+          </div>
+          <UploadQueue />
+
+          <BulkBar />
+          <Toolbar />
+          <FolderPills />
+
+          {viewMode === 'list' ? <MediaList /> : <MediaGrid />}
         </main>
 
         {/* ── Detail Drawer (only when ?asset= is present) ── */}

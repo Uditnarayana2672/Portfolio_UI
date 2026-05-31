@@ -1,0 +1,76 @@
+.vtoggle {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+}
+
+.vt {
+  padding: 6px 12px;
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border: none;
+  border-right: 2px solid var(--ink);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vt:last-child {
+  border-right: 0;
+}
+
+.active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ── CSS glyph: grid icon ─────────────────────── */
+.vtGlyph {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  border: 1.5px solid currentColor;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.grid::before,
+.grid::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+
+.grid::before {
+  left: 5px;
+  top: -1.5px;
+  bottom: -1.5px;
+  width: 1.5px;
+}
+
+.grid::after {
+  top: 5px;
+  left: -1.5px;
+  right: -1.5px;
+  height: 1.5px;
+}
+
+/* ── CSS glyph: list icon ─────────────────────── */
+.list {
+  border: none;
+}
+
+.list::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(currentColor, currentColor) 0 0/100% 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) 0 6px/100% 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) 0 12px/100% 1.5px no-repeat;
+}

@@ -52,7 +52,11 @@
 
 /* Main zone fills remaining space */
 .main {
-  min-height: 600px;
+  min-width: 0;
+}
+
+.mainPlaceholder {
+  min-height: 500px;
 }
 
 /* Drawer zone matches reference width */

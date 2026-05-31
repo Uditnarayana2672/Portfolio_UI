@@ -1,0 +1,247 @@
+/* ── Card shell ─────────────────────────────────────── */
+.card {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  position: relative;
+  cursor: pointer;
+  transition: transform .12s, box-shadow .12s;
+}
+.card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.card.selected {
+  box-shadow: 4px 4px 0 var(--accent);
+  transform: translate(-2px, -2px);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.card.opened {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.card.failed {
+  border-style: dashed;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.card.failed .thumb {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.card.failed .meta .fname {
+  color: var(--accent);
+}
+
+/* ── Thumbnail ───────────────────────────────────────── */
+.thumb {
+  aspect-ratio: 4 / 3;
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper-dark);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.thumb.image {
+  background:
+    linear-gradient(180deg, transparent 40%, rgba(33,32,28,.06)),
+    repeating-linear-gradient(45deg, transparent 0 8px, rgba(33,32,28,.08) 8px 9px),
+    var(--paper-dark);
+}
+.thumb.video {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(33,32,28,.15), transparent 60%),
+    repeating-linear-gradient(0deg, transparent 0 10px, rgba(33,32,28,.06) 10px 11px),
+    #ddd5c1;
+}
+.thumb.raw {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 14px, rgba(33,32,28,.05) 14px 15px),
+    var(--paper-dark);
+}
+
+/* ── Label glyph (centered in thumb) ───────────────── */
+.labelGlyph {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 36px;
+  color: var(--ink-soft);
+  opacity: 0.55;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Play button (video only) ───────────────────────── */
+.playTri {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border: 2.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  display: grid;
+  place-items: center;
+}
+.playTri::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 14px solid var(--ink);
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  margin-left: 4px;
+}
+
+/* ── Duration badge (video only) ────────────────────── */
+.videoDuration {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 1px 6px 2px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Overlay tags ────────────────────────────────────── */
+.resTag {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  padding: 1px 6px 2px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.typeTag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 6px 3px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--paper);
+  background: var(--image-hue);
+}
+.typeTag.video { background: var(--video-hue); }
+.typeTag.raw   { background: var(--raw-hue); }
+.placeholderTag {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Checkbox ─────────────────────────────────────────── */
+.check {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity .12s;
+  z-index: 3;
+  cursor: pointer;
+}
+.card:hover .check,
+.card.selected .check {
+  opacity: 1;
+}
+.card.selected .check {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+}
+.card.selected .check::after {
+  content: "✓";
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 0.9;
+}
+
+/* ── Quick row ───────────────────────────────────────── */
+.quickRow {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity .12s;
+  z-index: 3;
+}
+.card:hover .quickRow {
+  opacity: 1;
+}
+.qb {
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 15px;
+  cursor: pointer;
+  line-height: 1;
+}
+.qb:hover {
+  background: var(--highlight);
+}
+.qb.danger {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── Bottom meta ─────────────────────────────────────── */
+.meta {
+  padding: 10px 12px 12px;
+}
+.fname {
+  font-family: "Patrick Hand", cursive;
+  font-size: 15px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+.subMeta {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  justify-content: space-between;
+}
+.folderLine {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

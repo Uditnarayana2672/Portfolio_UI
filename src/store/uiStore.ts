@@ -1,8 +1,11 @@
 import { create } from 'zustand'
 import type { ViewMode } from '../types/media'
 
+export type GridDensity = 'dense' | 'comfy' | 'roomy'
+
 interface UiState {
   viewMode: ViewMode
+  gridDensity: GridDensity
   drawerAssetId: string | null
   deleteConfirmIds: string[]
   selectedAssets: string[]
@@ -13,6 +16,7 @@ interface UiState {
   wobbleEnabled: boolean
 
   setViewMode: (mode: ViewMode) => void
+  setGridDensity: (density: GridDensity) => void
   openDrawer: (assetId: string) => void
   closeDrawer: () => void
   openDeleteConfirm: (ids: string[]) => void
@@ -27,6 +31,7 @@ interface UiState {
 
 export const useUiStore = create<UiState>((set) => ({
   viewMode: 'grid',
+  gridDensity: 'comfy',
   drawerAssetId: null,
   deleteConfirmIds: [],
   selectedAssets: [],
@@ -36,6 +41,8 @@ export const useUiStore = create<UiState>((set) => ({
   wobbleEnabled: false,
 
   setViewMode: (viewMode) => set({ viewMode }),
+
+  setGridDensity: (gridDensity) => set({ gridDensity }),
 
   openDrawer: (assetId) => set({ drawerAssetId: assetId }),
 

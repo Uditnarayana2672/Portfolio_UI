@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 
@@ -30,9 +30,16 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [magicSent, setMagicSent] = useState(false)
 
+  // Redirect already-authenticated users away from the login page
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) navigate('/admin/media', { replace: true })
+    })
+  }, [navigate])
+
   function clearError() { if (error) setError(null) }
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
     setLoading(true)
@@ -41,7 +48,7 @@ export default function LoginPage() {
       if (method === 'password') {
         const { error: authErr } = await supabase.auth.signInWithPassword({ email, password })
         if (authErr) throw authErr
-        navigate('/media')
+        navigate('/media', { replace: true })
       } else {
         const { error: authErr } = await supabase.auth.signInWithOtp({ email })
         if (authErr) throw authErr

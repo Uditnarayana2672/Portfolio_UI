@@ -1,0 +1,48 @@
+.bulkBar {
+  background: var(--ink);
+  color: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+}
+
+.countBadge {
+  background: var(--accent);
+  padding: 2px 10px 3px;
+  border-radius: 999px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.bulkBtns {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bulkBtn {
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  padding: 4px 12px;
+  border: 1.5px dashed var(--paper);
+  color: var(--paper);
+  background: transparent;
+  cursor: pointer;
+}
+
+.bulkBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.danger {
+  color: var(--warn);
+  border-color: var(--warn);
+}

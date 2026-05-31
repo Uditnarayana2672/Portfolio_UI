@@ -1,0 +1,206 @@
+/* ── Grid template (shared by header + rows) ─────────── */
+.row {
+  display: grid;
+  grid-template-columns: 22px 52px 1fr 64px 110px 72px 90px 58px;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 4px;
+  border-bottom: 1px dashed var(--rule);
+  cursor: pointer;
+  transition: background 0.1s;
+  position: relative;
+}
+
+/* ── Row states ──────────────────────────────────────── */
+.row:hover {
+  background: var(--paper-dark);
+}
+.row.selected {
+  background: var(--accent-soft);
+}
+.row.active {
+  border-left: 3px solid var(--accent);
+  padding-left: 1px;
+}
+.row.orphan {
+  background: var(--accent-soft);
+}
+.row.orphan .fileName,
+.row.orphan .folderName,
+.row.orphan .meta,
+.row.orphan .typeBadge {
+  color: var(--accent);
+}
+
+/* ── [1] Checkbox ─────────────────────────────────────── */
+.checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.checkbox.checkSelected {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.checkMark {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--paper);
+  line-height: 1;
+}
+
+/* ── [2] Mini thumbnail ──────────────────────────────── */
+.thumb {
+  width: 48px;
+  height: 36px;
+  flex-shrink: 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.thumb_image {
+  background:
+    repeating-linear-gradient(45deg, transparent 0 5px, rgba(33,32,28,.1) 5px 6px),
+    var(--paper-dark);
+}
+.thumb_video {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(33,32,28,.18), transparent 65%),
+    repeating-linear-gradient(0deg, transparent 0 7px, rgba(33,32,28,.07) 7px 8px),
+    #ddd5c1;
+}
+.thumb_raw {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 10px, rgba(33,32,28,.07) 10px 11px),
+    var(--paper-dark);
+}
+.thumb_orphan {
+  background: var(--accent-soft);
+}
+
+/* Orphan glyph */
+.thumbGlyph {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* Tiny video play triangle */
+.miniPlay {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  position: relative;
+}
+.miniPlay::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-30%, -50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid var(--ink);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+/* PDF label */
+.rawLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── [3] Name + folder ────────────────────────────────── */
+.nameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+.fileName {
+  font-family: "Patrick Hand", cursive;
+  font-size: 15px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.folderName {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── [4] Type badge ──────────────────────────────────── */
+.typeBadge {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 1px 5px;
+  color: var(--paper);
+  background: var(--image-hue);
+  white-space: nowrap;
+}
+.badgeVideo { background: var(--video-hue); }
+.badgeRaw   { background: var(--raw-hue); }
+
+/* ── [5][6][7] Meta columns ──────────────────────────── */
+.meta {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── [8] Action buttons ──────────────────────────────── */
+.actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.actBtn {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.actBtn:hover {
+  background: var(--highlight);
+}
+.actDanger {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.actDanger:hover {
+  background: var(--accent);
+  color: var(--paper);
+}
