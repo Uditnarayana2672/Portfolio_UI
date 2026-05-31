@@ -1,0 +1,27 @@
+:root {
+  --paper: #f5f1e8;
+  --paper-dark: #ebe4d3;
+  --ink: #21201c;
+  --ink-soft: #5a5852;
+  --ink-faint: #9b9789;
+  --rule: #cbc4b1;
+  --accent: #c1432a;
+  --accent-soft: #c1432a22;
+  --pop: #2a5fa3;
+  --pop-soft: #2a5fa322;
+  --highlight: #f4e07a;
+  --grid-line: rgba(33,32,28,0.06);
+  --ok: #6aa84f;
+  --warn: #f4b03a;
+  --archived: #9b9789;
+  --image-hue: #2a5fa3;
+  --video-hue: #7a3aa6;
+  --raw-hue:   #3d7a3a;
+  --term-bg: #1b1a17;
+  --term-ink: #ece6d3;
+  --term-dim: #8a8676;
+  --term-green: #8fb070;
+  --term-cyan: #7aa3b8;
+  --term-yellow: #e0c269;
+  --term-red: #d97a5a;
+}

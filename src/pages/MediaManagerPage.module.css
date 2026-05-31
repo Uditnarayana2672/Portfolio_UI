@@ -1,0 +1,61 @@
+/* Outer page wrapper — matches body padding from HTML reference */
+.page {
+  padding: 28px 32px 80px;
+  min-height: 100vh;
+}
+
+/* ── 3-column grid: sidebar | main | drawer ─────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 200px 1fr 340px;
+  gap: 22px;
+  align-items: start;
+}
+
+/* Without drawer: drop the 3rd column */
+.noDrawer {
+  grid-template-columns: 200px 1fr;
+}
+
+/* ── Placeholder zones (temporary) ─────────────────────────────── */
+.zone {
+  border: 2px dashed var(--rule);
+  background: var(--paper);
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+.zoneLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-faint);
+}
+
+.zoneName {
+  font-family: "Caveat", cursive;
+  font-size: 26px;
+  color: var(--ink-soft);
+}
+
+/* Sidebar zone gets a tall min-height like the reference */
+.sidebar {
+  min-height: 820px;
+}
+
+/* Main zone fills remaining space */
+.main {
+  min-height: 600px;
+}
+
+/* Drawer zone matches reference width */
+.drawer {
+  min-height: 600px;
+}

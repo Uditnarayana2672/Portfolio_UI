@@ -1,0 +1,19 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: var(--ink);
+  font-family: "Patrick Hand", "Kalam", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.35;
+  min-height: 100vh;
+}
+
+.wobble { filter: url(#ink-wobble); }
+.no-wobble .wobble { filter: none; }
+
+a { color: inherit; }
