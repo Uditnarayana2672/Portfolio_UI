@@ -41,6 +41,7 @@ export default function MediaManagerPage() {
   const deleteConflictCount = useUiStore((s) => s.deleteConflictCount)
   const closeDeleteConfirm = useUiStore((s) => s.closeDeleteConfirm)
   const clearSelection     = useUiStore((s) => s.clearSelection)
+  const setMobileNavOpen   = useUiStore((s) => s.setMobileNavOpen)
 
   // Sync theme knobs → CSS custom properties
   useEffect(() => {
@@ -79,11 +80,12 @@ export default function MediaManagerPage() {
         }, { replace: true })
         closeDeleteConfirm()
         clearSelection()
+        setMobileNavOpen(false)
       }
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [closeDrawer, closeDeleteConfirm, clearSelection, setSearchParams])
+  }, [closeDrawer, closeDeleteConfirm, clearSelection, setSearchParams, setMobileNavOpen])
 
   return (
     <div className={styles.page}>
@@ -113,8 +115,22 @@ export default function MediaManagerPage() {
           </div>
         </main>
 
-        {/* ── Detail Drawer ────────────────────────────────────── */}
-        {hasDrawer && <DetailDrawer />}
+        {/* ── Detail Drawer (bottom sheet on mobile) ───────────── */}
+        {hasDrawer && (
+          <>
+            <div
+              className={styles.drawerScrim}
+              onClick={() =>
+                setSearchParams((prev) => {
+                  const next = new URLSearchParams(prev)
+                  next.delete('asset')
+                  return next
+                }, { replace: true })
+              }
+            />
+            <DetailDrawer />
+          </>
+        )}
       </div>
 
       {/* ── Delete confirmation modal ─────────────────────────── */}

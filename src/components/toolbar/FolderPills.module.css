@@ -67,3 +67,23 @@
   display: inline-block;
   flex-shrink: 0;
 }
+
+/* Mobile: keep pills on one swipeable row rather than wrapping tall. */
+@media (max-width: 768px) {
+  .pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-left: -14px;
+    margin-right: -14px;
+    padding: 2px 14px 8px;
+  }
+  .pills::-webkit-scrollbar {
+    display: none;
+  }
+  .pill,
+  .pillLabel,
+  .pillDivider {
+    flex-shrink: 0;
+  }
+}

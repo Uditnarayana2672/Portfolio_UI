@@ -10,6 +10,7 @@ interface UiState {
   deleteConfirmIds: string[]
   deleteConflictCount: number
   selectedAssets: string[]
+  mobileNavOpen: boolean
 
   // Theme knobs — written to CSS vars in MediaManagerPage
   accentColor: string
@@ -28,6 +29,7 @@ interface UiState {
   setAccentColor: (c: string) => void
   setPaperColor: (c: string) => void
   setWobbleEnabled: (v: boolean) => void
+  setMobileNavOpen: (v: boolean) => void
 }
 
 export const useUiStore = create<UiState>((set) => ({
@@ -37,6 +39,7 @@ export const useUiStore = create<UiState>((set) => ({
   deleteConfirmIds: [],
   deleteConflictCount: 0,
   selectedAssets: [],
+  mobileNavOpen: false,
 
   accentColor: '#c1432a',
   paperColor: '#f5f1e8',
@@ -69,4 +72,5 @@ export const useUiStore = create<UiState>((set) => ({
   setAccentColor: (accentColor) => set({ accentColor }),
   setPaperColor:  (paperColor)  => set({ paperColor }),
   setWobbleEnabled: (wobbleEnabled) => set({ wobbleEnabled }),
+  setMobileNavOpen: (mobileNavOpen) => set({ mobileNavOpen }),
 }))

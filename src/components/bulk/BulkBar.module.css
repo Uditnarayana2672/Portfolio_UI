@@ -46,3 +46,24 @@
   color: var(--warn);
   border-color: var(--warn);
 }
+
+/* Mobile: stack the label above a horizontally swipeable action row. */
+@media (max-width: 768px) {
+  .bulkBar {
+    flex-wrap: wrap;
+    font-size: 18px;
+  }
+  .bulkBtns {
+    margin-left: 0;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .bulkBtns::-webkit-scrollbar {
+    display: none;
+  }
+  .bulkBtn {
+    flex-shrink: 0;
+  }
+}

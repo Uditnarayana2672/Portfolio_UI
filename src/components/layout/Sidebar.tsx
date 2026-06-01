@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabaseClient'
 import { useAssetsStore } from '../../store/assetsStore'
 import { useFiltersStore } from '../../store/filtersStore'
+import { useUiStore } from '../../store/uiStore'
 import { folderColor } from '../../lib/folderColors'
 import styles from './Sidebar.module.css'
 
@@ -19,6 +20,13 @@ export default function Sidebar() {
   const stats         = useAssetsStore((s) => s.stats)
   const activeFolder  = useFiltersStore((s) => s.folder)
   const setFolder     = useFiltersStore((s) => s.setFolder)
+  const mobileNavOpen   = useUiStore((s) => s.mobileNavOpen)
+  const setMobileNavOpen = useUiStore((s) => s.setMobileNavOpen)
+
+  function handleFolderClick(name: string) {
+    setFolder(activeFolder === name ? null : name)
+    setMobileNavOpen(false)   // dismiss the off-canvas drawer after picking
+  }
 
   const folders = Object.entries(folderStats).sort(([a], [b]) => a.localeCompare(b))
   const storage = stats?.storage
@@ -29,7 +37,13 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className={`${styles.nav} wobble`}>
+    <>
+      {/* Backdrop — only visible on mobile while the drawer is open */}
+      <div
+        className={`${styles.scrim}${mobileNavOpen ? ` ${styles.scrimShow}` : ''}`}
+        onClick={() => setMobileNavOpen(false)}
+      />
+      <aside className={`${styles.nav} wobble${mobileNavOpen ? ` ${styles.open}` : ''}`}>
       <div className={styles.navMain}>
 
         {/* ── Admin nav ── */}
@@ -58,7 +72,7 @@ export default function Sidebar() {
               <li
                 key={name}
                 className={`${styles.folderItem}${activeFolder === name ? ` ${styles.active}` : ''}`}
-                onClick={() => setFolder(activeFolder === name ? null : name)}
+                onClick={() => handleFolderClick(name)}
               >
                 <span
                   className={styles.folderDot}
@@ -105,6 +119,7 @@ export default function Sidebar() {
           <span>⏏</span> Sign out
         </div>
       </div>
-    </aside>
+      </aside>
+    </>
   )
 }

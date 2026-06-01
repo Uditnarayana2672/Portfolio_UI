@@ -9,6 +9,11 @@
   flex-direction: column;
 }
 
+/* Backdrop behind the off-canvas drawer — desktop hides it entirely. */
+.scrim {
+  display: none;
+}
+
 .navMain {
   flex: 1;
 }
@@ -210,4 +215,43 @@
 .signout:hover {
   background: var(--accent-soft);
   color: var(--accent);
+}
+
+/* ── Mobile: slide-in off-canvas drawer ─────────────────────────── */
+@media (max-width: 768px) {
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 82%;
+    max-width: 320px;
+    min-height: 0;
+    z-index: 50;
+    overflow-y: auto;
+    border: 0;
+    border-right: 2px solid var(--ink);
+    transform: translateX(-104%);
+    transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav.open {
+    transform: translateX(0);
+  }
+
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 49;
+    background: rgba(33, 32, 28, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s;
+  }
+
+  .scrim.scrimShow {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }

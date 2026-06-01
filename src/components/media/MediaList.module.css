@@ -41,3 +41,15 @@
   border-radius: 2px;
   height: 12px;
 }
+
+/* Mobile: the 8-column table can't shrink to phone width — let it scroll
+   horizontally as a unit rather than crushing the columns. */
+@media (max-width: 768px) {
+  .list {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .list > * {
+    min-width: 600px;
+  }
+}

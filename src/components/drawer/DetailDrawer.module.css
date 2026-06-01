@@ -57,3 +57,37 @@
   font-size: 22px;
   color: var(--ink-soft);
 }
+
+/* ── Mobile: dock as a bottom sheet ─────────────────────────────── */
+@media (max-width: 768px) {
+  .drawer {
+    position: fixed;
+    inset: auto 0 0 0;
+    top: auto;
+    min-height: 0;
+    height: 88vh;
+    z-index: 56;
+    border: 2px solid var(--ink);
+    border-bottom: 0;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    box-shadow: 0 -6px 24px rgba(33, 32, 28, 0.18);
+    display: flex;
+    flex-direction: column;
+    animation: sheet-up 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .drawerHead {
+    flex-shrink: 0;
+  }
+
+  .drawerBody {
+    flex: 1;
+    max-height: none;
+  }
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(102%); }
+  to   { transform: translateY(0); }
+}

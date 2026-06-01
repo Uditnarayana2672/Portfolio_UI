@@ -4,3 +4,24 @@
   gap: 12px;
   margin-bottom: 16px;
 }
+
+/* Mobile: a horizontally swipeable strip instead of 5 cramped columns. */
+@media (max-width: 768px) {
+  .statsRow {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    margin-left: -14px;
+    margin-right: -14px;
+    padding: 2px 14px 6px;
+  }
+  .statsRow::-webkit-scrollbar {
+    display: none;
+  }
+  .statsRow > * {
+    flex: 0 0 auto;
+    width: 150px;
+    scroll-snap-align: start;
+  }
+}

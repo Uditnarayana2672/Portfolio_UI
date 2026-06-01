@@ -63,3 +63,31 @@
 .drawer {
   min-height: 600px;
 }
+
+/* Backdrop behind the detail bottom-sheet — desktop hides it. */
+.drawerScrim {
+  display: none;
+}
+
+/* ── Tablet / mobile ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 14px 96px;
+  }
+
+  /* Sidebar and drawer are taken out of flow (off-canvas / bottom sheet),
+     so the layout is a single full-width column. */
+  .layout,
+  .noDrawer {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .drawerScrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(33, 32, 28, 0.45);
+  }
+}

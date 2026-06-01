@@ -4,6 +4,17 @@
   min-width: 260px;
 }
 
+/* Mobile: search owns a full row above the sort/upload controls. */
+@media (max-width: 768px) {
+  .wrap {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+  .kbd {
+    display: none;
+  }
+}
+
 .glass {
   position: absolute;
   left: 12px;

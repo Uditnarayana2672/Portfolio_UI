@@ -1,9 +1,20 @@
+import { useUiStore } from '../../store/uiStore'
 import styles from './PageHead.module.css'
 
 export default function PageHead() {
+  const setMobileNavOpen = useUiStore((s) => s.setMobileNavOpen)
+
   return (
     <header className={styles.pagehead}>
-      <div>
+      <button
+        className={styles.menuBtn}
+        onClick={() => setMobileNavOpen(true)}
+        aria-label="Open menu"
+      >
+        <span className={styles.burger} />
+      </button>
+
+      <div className={styles.titleWrap}>
         <h1>
           Media Manager <span className={styles.scribble}>/ Library</span>
         </h1>

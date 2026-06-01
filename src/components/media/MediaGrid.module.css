@@ -4,6 +4,20 @@
   gap: 14px;
 }
 
+/* Mobile: a stable 2-up grid like the mobile mockup. */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Skeleton card */
 .skeleton {
   border: 2px solid var(--ink);
