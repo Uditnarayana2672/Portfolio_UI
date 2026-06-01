@@ -4,7 +4,7 @@ import styles from './SearchInput.module.css'
 
 const SearchInput = forwardRef<HTMLInputElement>((_, ref) => {
   const setSearch = useFiltersStore((s) => s.setSearch)
-  const timerRef = useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value

@@ -13,6 +13,8 @@ export interface MediaAsset {
   folder: string
   alt_text: string | null
   source_type: string          // 'cloudinary' | 'youtube' | 'url'
+  external_id?: string | null
+  video_title?: string | null
   thumbnail_url: string | null
   video_duration_seconds: number | null
   is_orphan: boolean
@@ -146,7 +148,7 @@ export interface BulkUpdateResponse {
 
 // ── Upload queue item (client-side only) ───────────────────────────────────
 
-export type UploadStatus = 'pending' | 'uploading' | 'done' | 'error' | 'failed'
+export type UploadStatus = 'pending' | 'uploading' | 'done' | 'error' | 'failed' | 'duplicate'
 
 export interface UploadItem {
   id: string            // client-side uuid

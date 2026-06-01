@@ -104,8 +104,12 @@ export default function MediaCard({ asset }: Props) {
 
   function handleCopy(e: React.MouseEvent) {
     e.stopPropagation()
-    if (asset.cloudinary_url) {
-      navigator.clipboard.writeText(asset.cloudinary_url)
+    const url =
+      asset.source_type === 'youtube' && asset.external_id
+        ? `https://youtu.be/${asset.external_id}`
+        : asset.cloudinary_url
+    if (url) {
+      navigator.clipboard.writeText(url)
     }
   }
 
@@ -136,10 +140,10 @@ export default function MediaCard({ asset }: Props) {
           <span className={styles.labelGlyph}>[ missing ]</span>
         )}
 
-        {/* Real image — covers label glyph once loaded */}
-        {asset.resource_type === 'image' && asset.cloudinary_url && !isOrphan && (
+        {/* Real image / YouTube thumbnail — covers label glyph once loaded */}
+        {((asset.resource_type === 'image' && asset.cloudinary_url) || asset.thumbnail_url) && !isOrphan && (
           <img
-            src={asset.cloudinary_url}
+            src={(asset.thumbnail_url || asset.cloudinary_url) ?? undefined}
             loading="lazy"
             alt={asset.alt_text || ''}
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}

@@ -1,11 +1,32 @@
+import { useState } from 'react'
 import { useUiStore } from '../../store/uiStore'
+import { getMediaUsage } from '../../api/mediaApi'
 import styles from './BulkBar.module.css'
 
 export default function BulkBar() {
   const selectedAssets     = useUiStore((s) => s.selectedAssets)
   const openDeleteConfirm  = useUiStore((s) => s.openDeleteConfirm)
+  const [fetching, setFetching] = useState(false)
 
   if (selectedAssets.length === 0) return null
+
+  async function handleDeleteClick() {
+    setFetching(true)
+    let conflictCount = 0
+    try {
+      // Fetch usage for each selected asset to determine conflict count
+      const usageResults = await Promise.allSettled(
+        selectedAssets.map((id) => getMediaUsage(id))
+      )
+      conflictCount = usageResults.filter(
+        (r) => r.status === 'fulfilled' && r.value.references.length > 0
+      ).length
+    } catch {
+      // If usage check fails, proceed without conflict info
+    }
+    setFetching(false)
+    openDeleteConfirm([...selectedAssets], conflictCount)
+  }
 
   return (
     <div className={`${styles.bulkBar} wobble`}>
@@ -18,9 +39,10 @@ export default function BulkBar() {
         <button className={styles.bulkBtn}>Download</button>
         <button
           className={`${styles.bulkBtn} ${styles.danger}`}
-          onClick={() => openDeleteConfirm([...selectedAssets])}
+          onClick={handleDeleteClick}
+          disabled={fetching}
         >
-          Delete
+          {fetching ? 'Checking…' : 'Delete'}
         </button>
       </div>
     </div>

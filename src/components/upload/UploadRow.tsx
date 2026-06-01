@@ -29,14 +29,16 @@ export default memo(function UploadRow({ item }: Props) {
   const removeItem = useUploadsStore((s) => s.removeItem)
 
   const isError = item.status === 'error' || item.status === 'failed'
+  const isDup   = item.status === 'duplicate'
   const ext = getExt(item.file.name)
-  const badgeType = isError ? 'err' : getBadgeType(item.file.name)
+  const badgeType = isError ? 'err' : isDup ? 'dup' : getBadgeType(item.file.name)
 
   const ftypeClass = [
     styles.ftype,
     badgeType === 'image' ? styles.ftypeImage : '',
     badgeType === 'video' ? styles.ftypeVideo : '',
     badgeType === 'err'   ? styles.ftypeErr   : '',
+    badgeType === 'dup'   ? styles.ftypeDup   : '',
   ].filter(Boolean).join(' ')
 
   const pfillClass = isError
@@ -45,13 +47,15 @@ export default memo(function UploadRow({ item }: Props) {
 
   const pstateClass = [
     styles.pstate,
-    item.status === 'done' ? styles.pstateDone : '',
-    isError                ? styles.pstateErr  : '',
+    item.status === 'done'      ? styles.pstateDone : '',
+    isError                     ? styles.pstateErr  : '',
+    isDup                       ? styles.pstateDup  : '',
   ].filter(Boolean).join(' ')
 
-  const progressText = isError ? 'blocked' : `${item.progress}%`
+  const progressText = isError ? 'blocked' : isDup ? 'exists' : `${item.progress}%`
 
   const statusLabel = (() => {
+    if (isDup)                       return '⚠ duplicate'
     if (item.status === 'done')      return '✓ uploaded'
     if (isError)                     return '✕ rejected'
     if (item.status === 'uploading') return 'uploading…'
@@ -60,7 +64,7 @@ export default memo(function UploadRow({ item }: Props) {
 
   return (
     <div className={styles.row}>
-      <div className={ftypeClass}>{isError ? '!!' : ext}</div>
+      <div className={ftypeClass}>{isError ? '!!' : isDup ? '≡' : ext}</div>
       <div className={styles.fname}>{item.file.name || '(unknown)'}</div>
       <div className={styles.fsize}>{formatSize(item.file.size)}</div>
       <div className={styles.prog}>
@@ -72,8 +76,8 @@ export default memo(function UploadRow({ item }: Props) {
       </div>
       <div className={pstateClass}>{statusLabel}</div>
       <button className={styles.xBtn} onClick={() => removeItem(item.id)}>×</button>
-      {isError && item.error && (
-        <div className={styles.errMsg}>{item.error}</div>
+      {(isError || isDup) && item.error && (
+        <div className={isDup ? styles.dupMsg : styles.errMsg}>{item.error}</div>
       )}
     </div>
   )

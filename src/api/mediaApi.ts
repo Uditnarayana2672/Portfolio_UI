@@ -69,10 +69,16 @@ export async function uploadMedia(
     `${BASE}/api/v1/admin/media/upload`,
     form,
     {
-      headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+      headers,
       onUploadProgress: (e) => {
-        if (onProgress && e.total) {
+        if (!onProgress) return
+        if (e.total && e.total > 0) {
           onProgress(Math.round((e.loaded * 100) / e.total))
+        } else {
+          // Content-Length unavailable (proxy, chunked, etc.) — show
+          // indeterminate progress that never quite reaches 100%.
+          const estimated = Math.min(95, Math.round((e.loaded / (e.loaded + 50_000)) * 100))
+          onProgress(estimated)
         }
       },
     }

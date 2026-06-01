@@ -21,10 +21,13 @@ export default function AssetFields({ asset }: Props) {
   const { altText, setAltText, folder, setFolder, isDirty, isSaving, save } = useDrawerForm()
   const [copied, setCopied] = useState(false)
 
-  const url = asset.cloudinary_url ?? `(no URL — ${asset.public_id ?? 'no public_id'})`
+  const url =
+    asset.source_type === 'youtube' && asset.external_id
+      ? `https://youtu.be/${asset.external_id}`
+      : asset.cloudinary_url ?? `(no URL — ${asset.public_id ?? 'no public_id'})`
 
   function handleCopy() {
-    navigator.clipboard.writeText(asset.cloudinary_url ?? '').catch(() => {})
+    navigator.clipboard.writeText(url).catch(() => {})
     setCopied(true)
     setTimeout(() => setCopied(false), 1200)
   }

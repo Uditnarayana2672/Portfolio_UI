@@ -21,7 +21,7 @@ import DeleteModal from '../components/modals/DeleteModal'
 import styles from './MediaManagerPage.module.css'
 
 export default function MediaManagerPage() {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const hasDrawer = searchParams.has('asset')
 
   // Fetch real media + stats from the backend and keep them in sync with the
@@ -70,13 +70,20 @@ export default function MediaManagerPage() {
       }
       if (e.key === 'Escape') {
         closeDrawer()
+        // The drawer is rendered off the ?asset= URL param, so closing the
+        // store alone leaves it mounted — strip the param too.
+        setSearchParams((prev) => {
+          const next = new URLSearchParams(prev)
+          next.delete('asset')
+          return next
+        }, { replace: true })
         closeDeleteConfirm()
         clearSelection()
       }
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [closeDrawer, closeDeleteConfirm, clearSelection])
+  }, [closeDrawer, closeDeleteConfirm, clearSelection, setSearchParams])
 
   return (
     <div className={styles.page}>

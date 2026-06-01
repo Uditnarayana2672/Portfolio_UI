@@ -39,7 +39,7 @@ export default function DetailDrawer() {
   }
 
   return (
-    <div className={styles.drawer}>
+    <div className={`${styles.drawer} wobble`}>
       <div className={styles.drawerHead}>
         <h3>Asset detail</h3>
         <button className={styles.close} onClick={handleClose} aria-label="Close drawer">

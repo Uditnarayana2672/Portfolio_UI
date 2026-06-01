@@ -25,10 +25,10 @@ export const useUploadsStore = create<UploadsState>((set) => ({
       queue: s.queue.map((item) => (item.id === id ? { ...item, progress } : item)),
     })),
 
-  setStatus: (id, status, error = null) =>
+  setStatus: (id, status, error) =>
     set((s) => ({
       queue: s.queue.map((item) =>
-        item.id === id ? { ...item, status, error: error ?? item.error } : item
+        item.id === id ? { ...item, status, error: error !== undefined ? error : item.error } : item
       ),
     })),
 

@@ -87,7 +87,13 @@ export default function MediaListRow({ asset }: Props) {
 
   function handleCopy(e: React.MouseEvent) {
     e.stopPropagation()
-    if (asset.cloudinary_url) navigator.clipboard.writeText(asset.cloudinary_url)
+    const url =
+      asset.source_type === 'youtube' && asset.external_id
+        ? `https://youtu.be/${asset.external_id}`
+        : asset.cloudinary_url
+    if (url) {
+      navigator.clipboard.writeText(url)
+    }
   }
 
   function handleDelete(e: React.MouseEvent) {
@@ -107,7 +113,10 @@ export default function MediaListRow({ asset }: Props) {
       </div>
 
       {/* [2] Mini thumbnail */}
-      <div className={thumbCls}>
+      <div 
+        className={thumbCls}
+        style={asset.thumbnail_url ? { backgroundImage: `url(${asset.thumbnail_url})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+      >
         {isOrphan && <span className={styles.thumbGlyph}>!</span>}
         {!isOrphan && asset.resource_type === 'video' && (
           <span className={styles.miniPlay} />

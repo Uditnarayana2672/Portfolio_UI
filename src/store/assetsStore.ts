@@ -15,6 +15,7 @@ interface AssetsState {
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
   removeAsset: (id: string) => void
+  addAsset: (asset: MediaAsset) => void
   updateAsset: (asset: MediaAsset) => void
 }
 
@@ -38,6 +39,9 @@ export const useAssetsStore = create<AssetsState>((set) => ({
 
   removeAsset: (id) =>
     set((s) => ({ assets: s.assets.filter((a) => a.id !== id), total: s.total - 1 })),
+
+  addAsset: (asset) =>
+    set((s) => ({ assets: [asset, ...s.assets], total: s.total + 1 })),
 
   updateAsset: (updated) =>
     set((s) => ({

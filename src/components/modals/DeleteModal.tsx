@@ -33,24 +33,29 @@ export default function DeleteModal({
   const previewAssets = selectedAssets.slice(0, 3)
   const extraCount = selectedAssets.length - 3
 
-  const canDelete = confirmText === 'delete'
+  const canDelete = confirmText.trim().toLowerCase() === 'delete'
   const n = assetIds.length
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   async function handleDelete() {
     if (!canDelete || busy) return
     setBusy(true)
+    setDeleteError(null)
     try {
-      await bulkDeleteMedia(assetIds, true)
-    } catch {
-      // API may be unavailable in demo; proceed with local store removal
+      const res = await bulkDeleteMedia(assetIds, true)
+      // Only remove assets the backend actually deleted
+      res.deleted.forEach((id) => removeAsset(id))
+      clearSelection()
+      if (drawerAssetId && assetIds.includes(drawerAssetId)) {
+        closeDrawer()
+      }
+      onConfirmed()
+      onClose()
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Delete failed — check console'
+      setDeleteError(msg)
+      setBusy(false)
     }
-    assetIds.forEach((id) => removeAsset(id))
-    clearSelection()
-    if (drawerAssetId && assetIds.includes(drawerAssetId)) {
-      closeDrawer()
-    }
-    onConfirmed()
-    onClose()
   }
 
   function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -109,6 +114,12 @@ export default function DeleteModal({
             autoComplete="off"
             spellCheck={false}
           />
+
+          {deleteError && (
+            <div className={styles.conflict} style={{ marginTop: 8 }}>
+              ✕ {deleteError}
+            </div>
+          )}
         </div>
 
         <div className={styles.mFoot}>
