@@ -1,0 +1,113 @@
+.field {
+  margin-bottom: 12px;
+}
+
+.fieldLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  padding: 6px 10px;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  box-shadow: 2px 2px 0 var(--ink);
+  transform: translate(-1px, -1px);
+}
+
+.input[readonly] {
+  background: var(--paper-dark);
+  color: var(--ink-soft);
+  cursor: default;
+}
+.input[readonly]:focus {
+  box-shadow: none;
+  transform: none;
+}
+
+.textarea {
+  min-height: 56px;
+  resize: vertical;
+}
+
+.urlRow {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+
+.urlText {
+  flex: 1;
+  padding: 6px 10px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copyBtn {
+  border: none;
+  border-left: 1.5px solid var(--ink);
+  padding: 6px 12px;
+  font-family: "Caveat", cursive;
+  font-size: 17px;
+  background: var(--paper-dark);
+  cursor: pointer;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.copyBtn:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.copyBtn.copied {
+  background: var(--ok);
+  color: var(--paper);
+}
+
+.saveBtn {
+  width: 100%;
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: transform .12s, box-shadow .12s;
+}
+
+.saveBtn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--accent);
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

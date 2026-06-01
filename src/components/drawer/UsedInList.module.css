@@ -1,0 +1,61 @@
+.section {
+  border-top: 1.5px dashed var(--rule);
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.heading {
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+
+.usedIn {
+  border: 1.5px dashed var(--rule);
+  padding: 8px 10px;
+  background: var(--paper);
+}
+
+.uir {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--rule);
+  font-size: 14px;
+}
+
+.uir:last-child {
+  border-bottom: 0;
+}
+
+.kindTag {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 1px 5px;
+  background: var(--ink);
+  color: var(--paper);
+  flex-shrink: 0;
+}
+
+.kindTag.proj { background: var(--accent); }
+.kindTag.blog { background: var(--image-hue); }
+.kindTag.og   { background: var(--video-hue); }
+
+.where {
+  font-family: "Patrick Hand", sans-serif;
+  color: var(--ink);
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.empty {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0;
+}

@@ -1,0 +1,33 @@
+.dangerZone {
+  border-top: 2px dashed var(--accent);
+  margin-top: 14px;
+  padding-top: 14px;
+}
+
+.dangerBtn {
+  width: 100%;
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.dangerBtn:hover {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+.dangerNote {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 13px;
+  color: var(--accent);
+  margin-top: 6px;
+  line-height: 1.3;
+}

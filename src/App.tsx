@@ -6,6 +6,9 @@ import PlaceholderPage from './pages/PlaceholderPage'
 import { supabase } from './lib/supabaseClient'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  // TEST_BYPASS: skip auth in test/preview builds — remove before real prod
+  if (import.meta.env.VITE_SKIP_AUTH === 'true') return <>{children}</>
+
   const [checked, setChecked] = useState(false)
   const [authed, setAuthed] = useState(false)
 

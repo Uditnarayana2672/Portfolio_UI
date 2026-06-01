@@ -2,7 +2,8 @@ import { useUiStore } from '../../store/uiStore'
 import styles from './BulkBar.module.css'
 
 export default function BulkBar() {
-  const selectedAssets = useUiStore((s) => s.selectedAssets)
+  const selectedAssets     = useUiStore((s) => s.selectedAssets)
+  const openDeleteConfirm  = useUiStore((s) => s.openDeleteConfirm)
 
   if (selectedAssets.length === 0) return null
 
@@ -15,7 +16,12 @@ export default function BulkBar() {
         <button className={styles.bulkBtn}>Edit alt text</button>
         <button className={styles.bulkBtn}>Copy URLs</button>
         <button className={styles.bulkBtn}>Download</button>
-        <button className={`${styles.bulkBtn} ${styles.danger}`}>Delete</button>
+        <button
+          className={`${styles.bulkBtn} ${styles.danger}`}
+          onClick={() => openDeleteConfirm([...selectedAssets])}
+        >
+          Delete
+        </button>
       </div>
     </div>
   )

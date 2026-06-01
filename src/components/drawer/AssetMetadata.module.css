@@ -1,0 +1,33 @@
+.section {
+  border-top: 1.5px dashed var(--rule);
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.heading {
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+
+.kvGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+}
+
+.kvGrid dt {
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.kvGrid dd {
+  margin: 0;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

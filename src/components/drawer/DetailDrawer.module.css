@@ -1,0 +1,59 @@
+.drawer {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 0;
+  min-height: 600px;
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+.drawerHead {
+  padding: 14px 16px 12px;
+  border-bottom: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawerHead h3 {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 24px;
+  margin: 0;
+}
+
+.close {
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 17px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.close:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.drawerBody {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
+}
+
+.loadingState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  font-family: "Caveat", cursive;
+  font-size: 22px;
+  color: var(--ink-soft);
+}

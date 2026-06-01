@@ -1,0 +1,217 @@
+.section {
+  border-top: 1.5px dashed var(--rule);
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.heading {
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headingTag {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  color: var(--paper);
+  background: var(--ink);
+  padding: 1px 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Crop area ── */
+.cropWrap {
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  margin-bottom: 6px;
+  overflow: hidden;
+  max-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cropImg {
+  max-width: 100%;
+  max-height: 200px;
+  display: block;
+}
+
+.cropPlaceholder {
+  height: 100px;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 8px, rgba(33,32,28,.07) 8px 9px),
+    var(--paper-dark);
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 22px;
+  color: var(--ink-soft);
+}
+
+/* ── Aspect preset pills ── */
+.presetRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.pst {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 13px;
+  padding: 3px 9px 4px;
+  border: 1.5px solid var(--ink-faint);
+  color: var(--ink-soft);
+  cursor: pointer;
+  background: var(--paper);
+  border-radius: 999px;
+}
+
+.pst:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.pstActive {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* ── Sliders ── */
+.sliderLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  margin-bottom: 2px;
+  margin-top: 8px;
+}
+
+.xformRow {
+  display: grid;
+  grid-template-columns: 60px 1fr 60px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.xformLabel {
+  font-size: 10px;
+}
+
+.sliderTrack {
+  height: 18px;
+  position: relative;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  cursor: pointer;
+  user-select: none;
+}
+
+.sliderFill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--accent-soft);
+  pointer-events: none;
+}
+
+.sliderKnob {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 12px;
+  background: var(--ink);
+  border: 1.5px solid var(--ink);
+  pointer-events: none;
+}
+
+.sliderVal {
+  color: var(--ink);
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 14px;
+  text-align: right;
+  text-transform: none;
+}
+
+/* ── Format presets ── */
+.formatRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+/* ── Transformed URL ── */
+.transformedUrl {
+  border-top: 1px dashed var(--rule);
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.transformLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.urlRow {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid var(--ink);
+}
+
+.urlText {
+  flex: 1;
+  padding: 6px 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: var(--paper);
+}
+
+.urlText strong {
+  color: var(--accent);
+}
+
+.copyBtn {
+  border: none;
+  border-left: 1.5px solid var(--ink);
+  padding: 5px 10px;
+  font-family: "Caveat", cursive;
+  font-size: 16px;
+  background: var(--paper-dark);
+  cursor: pointer;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.copyBtn:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.copyBtn.copied {
+  background: var(--ok);
+  color: var(--paper);
+}

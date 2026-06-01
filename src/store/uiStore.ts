@@ -8,6 +8,7 @@ interface UiState {
   gridDensity: GridDensity
   drawerAssetId: string | null
   deleteConfirmIds: string[]
+  deleteConflictCount: number
   selectedAssets: string[]
 
   // Theme knobs — written to CSS vars in MediaManagerPage
@@ -19,7 +20,7 @@ interface UiState {
   setGridDensity: (density: GridDensity) => void
   openDrawer: (assetId: string) => void
   closeDrawer: () => void
-  openDeleteConfirm: (ids: string[]) => void
+  openDeleteConfirm: (ids: string[], conflictCount?: number) => void
   closeDeleteConfirm: () => void
   toggleSelect: (id: string) => void
   selectAll: (ids: string[]) => void
@@ -34,6 +35,7 @@ export const useUiStore = create<UiState>((set) => ({
   gridDensity: 'comfy',
   drawerAssetId: null,
   deleteConfirmIds: [],
+  deleteConflictCount: 0,
   selectedAssets: [],
 
   accentColor: '#c1432a',
@@ -48,9 +50,10 @@ export const useUiStore = create<UiState>((set) => ({
 
   closeDrawer: () => set({ drawerAssetId: null }),
 
-  openDeleteConfirm: (ids) => set({ deleteConfirmIds: ids }),
+  openDeleteConfirm: (ids, conflictCount = 0) =>
+    set({ deleteConfirmIds: ids, deleteConflictCount: conflictCount }),
 
-  closeDeleteConfirm: () => set({ deleteConfirmIds: [] }),
+  closeDeleteConfirm: () => set({ deleteConfirmIds: [], deleteConflictCount: 0 }),
 
   toggleSelect: (id) =>
     set((s) => ({

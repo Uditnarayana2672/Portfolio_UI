@@ -81,7 +81,7 @@ export default function LoginPage() {
         </div>
       </header>
 
-      {/* Notebook two-column stage */}
+      {/* Notebook two-column stage */}asasa
       <div style={{
         display: 'grid', gridTemplateColumns: '1.05fr 1fr',
         border: '1.5px solid var(--ink)', background: 'var(--paper)',
