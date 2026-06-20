@@ -11,9 +11,18 @@ const NAV_ITEMS = [
   'Polls & forms', 'Users', 'Jerry', 'Notebook', 'Analytics',
 ]
 
-const ACTIVE_ITEM = 'Media'
+const NAV_ROUTES: Record<string, string> = {
+  'Overview':     '/dashboard',
+  'Projects':     '/admin/projects',
+  'Blogs':        '/blog',
+  'Media':        '/admin/media',
+}
 
-export default function Sidebar() {
+interface Props {
+  activeItem?: string
+}
+
+export default function Sidebar({ activeItem = 'Media' }: Props) {
   const navigate = useNavigate()
 
   const folderStats   = useAssetsStore((s) => s.folderStats)
@@ -52,7 +61,11 @@ export default function Sidebar() {
           {NAV_ITEMS.map((item) => (
             <li
               key={item}
-              className={`${styles.navItem}${item === ACTIVE_ITEM ? ` ${styles.active}` : ''}`}
+              className={`${styles.navItem}${item === activeItem ? ` ${styles.active}` : ''}`}
+              onClick={() => {
+                const route = NAV_ROUTES[item]
+                if (route) navigate(route)
+              }}
             >
               {item}
             </li>

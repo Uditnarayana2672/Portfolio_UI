@@ -1,0 +1,208 @@
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(33, 32, 28, 0.45);
+  z-index: 999;
+  animation: fadeIn 0.15s ease;
+}
+
+/* Drawer */
+.drawer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 68vh;
+  background: var(--paper);
+  border-top: 2px solid var(--ink);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -6px 0 rgba(33, 32, 28, 0.06);
+  animation: slideUp 0.22s ease;
+}
+
+/* Head */
+.head {
+  padding: 14px 22px;
+  border-bottom: 2px dashed var(--ink);
+  background: var(--paper-dark);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.headIcon {
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  color: var(--ink);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.headInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.headName {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.headSub {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 5px;
+}
+
+.headClose {
+  width: 36px;
+  height: 36px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  cursor: pointer;
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  flex-shrink: 0;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.headClose:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Body */
+.body {
+  flex: 1;
+  padding: 22px 32px 28px;
+  overflow-y: auto;
+}
+
+/* Empty body placeholder */
+.bodyEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  text-align: center;
+  gap: 12px;
+}
+
+.emptyGlyph {
+  font-family: "Caveat", cursive;
+  font-size: 52px;
+  color: var(--ink-faint);
+  line-height: 1;
+}
+
+.emptyTitle {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--ink);
+}
+
+.emptyBadge {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 4px 14px;
+}
+
+/* Footer */
+.foot {
+  padding: 12px 22px;
+  border-top: 2px dashed var(--ink);
+  background: var(--paper-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.footHint {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.footBtns {
+  display: flex;
+  gap: 10px;
+}
+
+/* Buttons */
+.btn {
+  font-family: "Caveat", cursive;
+  font-size: 19px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 6px 18px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.btnPrimary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btnPrimary:hover {
+  box-shadow: 3px 3px 0 var(--accent);
+}
+
+.btnGhost {
+  background: transparent;
+  border-color: var(--ink-soft);
+  color: var(--ink-soft);
+}
+
+.btnGhost:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--paper-dark);
+  transform: none;
+  box-shadow: none;
+}

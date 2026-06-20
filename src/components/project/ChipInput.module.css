@@ -1,0 +1,77 @@
+.fg {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fl {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.hint {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 12px;
+  color: var(--ink-faint);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.tagField {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  border: 1.5px solid var(--ink);
+  padding: 7px 8px;
+  min-height: 42px;
+  background: var(--paper);
+  align-items: center;
+  cursor: text;
+}
+
+.chip {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  padding: 3px 8px 4px;
+  border: 1px solid var(--ink-faint);
+  background: var(--paper-dark);
+  color: var(--ink-soft);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.rm {
+  cursor: pointer;
+  color: var(--ink-faint);
+  font-size: 14px;
+  line-height: 1;
+  user-select: none;
+}
+
+.rm:hover {
+  color: var(--accent);
+}
+
+.addTag {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 15px;
+  color: var(--ink-soft);
+  flex: 1;
+  min-width: 80px;
+  padding: 0;
+}
+
+.addTag::placeholder {
+  color: var(--ink-faint);
+}

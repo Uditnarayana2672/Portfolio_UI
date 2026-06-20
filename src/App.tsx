@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import MediaManagerPage from './pages/MediaManagerPage'
+import ProjectManagerPage from './pages/ProjectManagerPage'
+import NewProjectPage from './pages/NewProjectPage'
 import PlaceholderPage from './pages/PlaceholderPage'
 import { supabase } from './lib/supabaseClient'
 
@@ -37,7 +39,9 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/admin/media" element={<ProtectedRoute><MediaManagerPage /></ProtectedRoute>} />
         <Route path="/media" element={<Navigate to="/admin/media" replace />} />
-        <Route path="/projects" element={<ProtectedRoute><PlaceholderPage title="Project Manager" /></ProtectedRoute>} />
+        <Route path="/admin/projects" element={<ProtectedRoute><ProjectManagerPage /></ProtectedRoute>} />
+        <Route path="/admin/projects/new" element={<ProtectedRoute><NewProjectPage /></ProtectedRoute>} />
+        <Route path="/projects" element={<Navigate to="/admin/projects" replace />} />
         <Route path="/blog" element={<ProtectedRoute><PlaceholderPage title="Blog Manager" /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><PlaceholderPage title="Dashboard" /></ProtectedRoute>} />
         <Route path="/" element={<Navigate to="/login" replace />} />

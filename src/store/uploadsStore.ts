@@ -15,7 +15,7 @@ interface UploadsState {
 
 export const useUploadsStore = create<UploadsState>((set) => ({
   queue: [],
-  targetFolder: 'blog/inline',
+  targetFolder: 'projects/thumbnails',
 
   addItem: (item) =>
     set((s) => ({ queue: [...s.queue, item] })),

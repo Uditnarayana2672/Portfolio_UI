@@ -1,0 +1,353 @@
+/* ── Intro ───────────────────────────────────────────────────────── */
+.intro {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin: 0 0 18px;
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+.intro b {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 19px;
+}
+
+/* ── Card ────────────────────────────────────────────────────────── */
+.card {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 16px 18px 18px;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.cardTag {
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  background: var(--paper);
+  padding: 0 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+}
+
+.cardTitle {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 24px;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+
+/* ── 2-column form grid ──────────────────────────────────────────── */
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.fFull {
+  grid-column: 1 / -1;
+}
+
+/* ── Shared field primitives (slug, select) ──────────────────────── */
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fl {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.hint {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 12px;
+  color: var(--ink-faint);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.fi {
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  padding: 8px 12px;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--paper);
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1.4;
+}
+
+.fi:focus {
+  background: white;
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: translate(-1px, -1px);
+}
+
+.fiError {
+  border-color: var(--accent);
+}
+
+.fieldError {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+/* ── Slug field ──────────────────────────────────────────────────── */
+.slugWrap {
+  position: relative;
+}
+
+.slugPre {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  color: var(--ink-faint);
+  pointer-events: none;
+  user-select: none;
+}
+
+.slugInput {
+  padding-left: 82px !important;
+  font-family: "JetBrains Mono", monospace !important;
+  font-size: 13px !important;
+}
+
+/* ── Status select ───────────────────────────────────────────────── */
+.selectFi {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 28px;
+}
+
+/* ── SEO explainer ───────────────────────────────────────────────── */
+.seoExplainer {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  background: var(--paper-dark);
+  border-left: 3px solid var(--accent);
+}
+
+.seoExplainer b {
+  font-family: "Caveat", cursive;
+  font-size: 17px;
+  color: var(--ink);
+}
+
+/* ── SERP preview ────────────────────────────────────────────────── */
+.seoLiveSection {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1.5px dashed var(--rule);
+}
+
+.seoLiveHead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.seoBadge {
+  background: #4285f4;
+  color: white;
+  font-size: 9px;
+  padding: 2px 8px 3px;
+  letter-spacing: 1.5px;
+}
+
+.serpCard {
+  border: 1px solid #e0e0e0;
+  background: white;
+  padding: 14px 16px 12px;
+  max-width: 600px;
+  font-family: Arial, Helvetica, sans-serif;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.serpBreadcrumb {
+  font-size: 12px;
+  color: #202124;
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.serpDomain {
+  font-weight: bold;
+}
+
+.serpTitle {
+  font-size: 20px;
+  color: #1a0dab;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: Arial, sans-serif;
+  font-weight: normal;
+}
+
+.serpDesc {
+  font-size: 14px;
+  color: #4d5156;
+  line-height: 1.5;
+}
+
+.charCounter {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  margin-top: 6px;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.counterOk   { color: var(--ok); }
+.counterWarn { color: var(--warn); }
+
+/* ── OG / Social card preview ────────────────────────────────────── */
+.ogPreviewWrap {
+  margin-top: 20px;
+}
+
+.ogPreviewHead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ogBadge {
+  background: #0866ff;
+  color: white;
+  font-size: 9px;
+  padding: 2px 8px 3px;
+  letter-spacing: 1.5px;
+}
+
+.ogCard {
+  border: 1px solid #ddd;
+  background: white;
+  max-width: 440px;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.ogCardImage {
+  width: 100%;
+  height: 120px;
+  background: var(--paper-dark);
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ogCardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ogImgPlaceholder {
+  font-family: "Caveat", cursive;
+  font-size: 15px;
+  color: var(--ink-faint);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+}
+
+.ogImgPlaceholder span:first-child {
+  font-size: 28px;
+}
+
+.ogCardBody {
+  padding: 10px 12px 12px;
+}
+
+.ogCardDomain {
+  font-size: 11px;
+  color: #65676b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.ogCardTitle {
+  font-size: 15px;
+  color: #1c1e21;
+  font-weight: 600;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.ogCardDesc {
+  font-size: 13px;
+  color: #65676b;
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .fFull {
+    grid-column: 1;
+  }
+}

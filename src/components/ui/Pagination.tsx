@@ -3,6 +3,10 @@ import styles from './Pagination.module.css'
 
 interface Props {
   total: number
+  page?: number
+  limit?: number
+  setPage?: (page: number) => void
+  scrollTargetId?: string
 }
 
 function getPageRange(current: number, total: number): (number | '…')[] {
@@ -21,10 +25,20 @@ function getPageRange(current: number, total: number): (number | '…')[] {
   return pages
 }
 
-export default function Pagination({ total }: Props) {
-  const page    = useFiltersStore((s) => s.page)
-  const limit   = useFiltersStore((s) => s.limit)
-  const setPage = useFiltersStore((s) => s.setPage)
+export default function Pagination({
+  total,
+  page: pageProp,
+  limit: limitProp,
+  setPage: setPageProp,
+  scrollTargetId = 'media-content',
+}: Props) {
+  const storePage    = useFiltersStore((s) => s.page)
+  const storeLimit   = useFiltersStore((s) => s.limit)
+  const storeSetPage = useFiltersStore((s) => s.setPage)
+
+  const page    = pageProp    ?? storePage
+  const limit   = limitProp   ?? storeLimit
+  const setPage = setPageProp ?? storeSetPage
 
   const totalPages = Math.ceil(total / limit)
 
@@ -35,7 +49,7 @@ export default function Pagination({ total }: Props) {
 
   const goTo = (n: number) => {
     setPage(n)
-    document.getElementById('media-content')?.scrollIntoView({ behavior: 'smooth' })
+    document.getElementById(scrollTargetId)?.scrollIntoView({ behavior: 'smooth' })
   }
 
   const pageRange = getPageRange(page, totalPages)

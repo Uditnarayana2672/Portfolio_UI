@@ -1,0 +1,669 @@
+/* ── Page shell ─────────────────────────────────────────────────── */
+.page {
+  padding: 28px 32px 80px;
+  min-height: 100vh;
+}
+
+.pagehead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 2px dashed var(--ink);
+  padding-bottom: 14px;
+  margin-bottom: 22px;
+}
+
+.pagehead h1 {
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+  font-size: 44px;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.scribble {
+  color: var(--accent);
+}
+
+.crumbs {
+  font-family: "Patrick Hand", sans-serif;
+  color: var(--ink-soft);
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.crumbs a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--ink-faint);
+}
+
+.crumbs a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.meta {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  line-height: 1.6;
+}
+
+/* ── 2-column layout: sidebar | main ────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────── */
+.emptyWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 48px 32px;
+  border: 2px dashed var(--ink);
+  background: var(--paper);
+}
+
+.emptyHint {
+  font-family: "Caveat", cursive;
+  font-size: 22px;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.searchWrap {
+  flex: 1;
+  min-width: 260px;
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 10px 14px 10px 38px;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 17px;
+  color: var(--ink);
+  outline: none;
+  /* reset browser search styling */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.searchInput::placeholder {
+  color: var(--ink-faint);
+}
+
+.searchInput:focus {
+  background: white;
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: translate(-1px, -1px);
+}
+
+/* magnifying glass icon — drawn with border + pseudo */
+.glass {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--ink-soft);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.glass::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  bottom: -3px;
+  width: 8px;
+  height: 2px;
+  background: var(--ink-soft);
+  transform: rotate(45deg);
+}
+
+.kbd {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+  border: 1px solid var(--ink-faint);
+  padding: 2px 5px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.toolbarRight {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn {
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 8px 16px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: transform 0.12s, box-shadow 0.12s;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.btnPrimary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btnPrimary:hover {
+  box-shadow: 3px 3px 0 var(--accent);
+}
+
+.plus {
+  font-size: 24px;
+  line-height: 0.9;
+  margin-right: 4px;
+}
+
+/* ── Filter pills ────────────────────────────────────────────────── */
+.pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.pillLabel {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  margin-right: 4px;
+}
+
+.pill {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 14.5px;
+  padding: 4px 12px 5px;
+  border: 1.5px solid var(--ink-faint);
+  border-radius: 999px;
+  background: var(--paper);
+  cursor: pointer;
+  color: var(--ink-soft);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.12s;
+}
+
+.pill:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.pillActive {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.pillActive .pillCount {
+  color: var(--paper);
+  opacity: 0.7;
+}
+
+.pillCount {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--ink-faint);
+}
+
+.pillDivider {
+  width: 1px;
+  height: 18px;
+  background: var(--rule);
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+
+/* Status dots inside pills */
+.pillDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  flex-shrink: 0;
+}
+
+.dotOk      { background: var(--ok);       border-color: var(--ok); }
+.dotWarn    { background: var(--warn);     border-color: var(--warn); }
+.dotArchived { background: var(--archived); border-color: var(--archived); }
+.dotDraft   { background: var(--paper);    border-color: var(--ink-faint); }
+
+/* Active pill overrides the dot border to keep it visible */
+.pillActive .dotOk      { border-color: var(--ok); }
+.pillActive .dotWarn    { border-color: var(--warn); }
+.pillActive .dotArchived { border-color: var(--archived); }
+.pillActive .dotDraft   { border-color: var(--ink-faint); }
+
+/* ── Bulk action bar ─────────────────────────────────────────────── */
+.bulkBar {
+  background: var(--ink);
+  color: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+}
+
+.bulkCountBadge {
+  background: var(--accent);
+  padding: 2px 10px 3px;
+  border-radius: 999px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.bulkBtns {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bulkBtn {
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  padding: 4px 12px;
+  border: 1.5px dashed var(--paper);
+  color: var(--paper);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.bulkBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.bulkBtnDanger {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+
+/* ── Table ───────────────────────────────────────────────────────── */
+.tableWrap {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Patrick Hand", sans-serif;
+}
+
+.table thead th {
+  background: var(--paper-dark);
+  text-align: left;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--ink);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: 14px 14px;
+  border-bottom: 1px dashed var(--rule);
+  vertical-align: middle;
+  font-size: 16px;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table tbody tr {
+  transition: background 0.12s;
+}
+
+.table tbody tr:hover {
+  background: rgba(244, 224, 122, 0.18);
+}
+
+.rowSelected {
+  background: var(--accent-soft) !important;
+}
+
+.rowSelected:hover {
+  background: rgba(193, 67, 42, 0.18) !important;
+}
+
+/* Sortable column header */
+.thSortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.thSortable:hover {
+  color: var(--ink);
+}
+
+.thCheck {
+  width: 38px;
+}
+
+.thCover {
+  width: 78px;
+}
+
+.thActions {
+  text-align: right !important;
+}
+
+.sortArr {
+  color: var(--ink);
+  margin-left: 4px;
+}
+
+/* ── Custom checkbox ─────────────────────────────────────────────── */
+.check {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.checkOn::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 22px;
+  color: var(--accent);
+  font-weight: 700;
+  line-height: 0.9;
+}
+
+/* ── Cover thumbnail ─────────────────────────────────────────────── */
+.thumb {
+  width: 56px;
+  height: 40px;
+  border: 1.5px solid var(--ink);
+  background:
+    repeating-linear-gradient(45deg, transparent 0 6px, rgba(33, 32, 28, 0.08) 6px 7px),
+    var(--paper-dark);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.thumbFeatured::after {
+  content: "★";
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  background: var(--highlight);
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  color: var(--ink);
+}
+
+/* ── Title cell ──────────────────────────────────────────────────── */
+.titleCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.titleName {
+  font-family: "Caveat", cursive;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+  display: block;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.titleName:hover {
+  color: var(--accent);
+}
+
+.titleSlug {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  display: block;
+  margin-top: 2px;
+}
+
+/* ── Status badge ────────────────────────────────────────────────── */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 3px 9px 4px;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.statusActive   { color: var(--ok); }
+.statusMaint    { color: var(--warn); }
+.statusArchived { color: var(--archived); }
+.statusDraft    { color: var(--ink-faint); border-style: dashed; }
+
+/* ── Template badge ──────────────────────────────────────────────── */
+.tplBadge {
+  display: inline-block;
+  font-family: "Caveat", cursive;
+  font-size: 16px;
+  color: var(--ink-soft);
+  background: var(--paper-dark);
+  padding: 2px 10px 3px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* ── Tech chips ──────────────────────────────────────────────────── */
+.techRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 200px;
+}
+
+.techChip {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  padding: 2px 7px 3px;
+  border: 1px solid var(--ink-faint);
+  border-radius: 3px;
+  color: var(--ink-soft);
+  background: var(--paper);
+  white-space: nowrap;
+}
+
+.techChipMore {
+  color: var(--ink-faint);
+  border-style: dashed;
+}
+
+/* ── Stats cell ──────────────────────────────────────────────────── */
+.statMini {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.statMini b {
+  color: var(--ink);
+  font-weight: 500;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 14px;
+  margin-right: 2px;
+}
+
+.statNotPublished {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+/* ── Modified cell ───────────────────────────────────────────────── */
+.modified {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.modifiedRel {
+  display: block;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+/* ── Row actions ─────────────────────────────────────────────────── */
+.rowActions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  opacity: 0.6;
+  transition: opacity 0.12s;
+}
+
+.table tbody tr:hover .rowActions {
+  opacity: 1;
+}
+
+.iconBtn {
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-family: "Caveat", cursive;
+  font-size: 16px;
+  color: var(--ink);
+  transition: transform 0.1s, background 0.1s;
+}
+
+.iconBtn:hover {
+  background: var(--highlight);
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.iconBtnDanger {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.iconBtnDanger:hover {
+  background: var(--accent-soft);
+  box-shadow: 2px 2px 0 var(--accent);
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page {
+    padding: 16px 14px 96px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .pagehead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .meta {
+    text-align: left;
+  }
+
+  .table thead th:nth-child(n+6) {
+    display: none;
+  }
+
+  .table tbody td:nth-child(n+6) {
+    display: none;
+  }
+}

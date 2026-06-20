@@ -1,0 +1,678 @@
+/* Shared layout primitives for all block editors */
+
+/* ─── Row / grid ─────────────────────────────────────────────────── */
+.edRow {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.cols2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ─── Field group ────────────────────────────────────────────────── */
+.fg {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fl {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.hint {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 12px;
+  color: var(--ink-faint);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ─── Field input ────────────────────────────────────────────────── */
+.fi {
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  padding: 8px 12px;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--paper);
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1.4;
+}
+
+.fi:focus {
+  background: white;
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: translate(-1px, -1px);
+}
+
+textarea.fi {
+  resize: none;
+  font-family: "Patrick Hand", sans-serif;
+  min-height: 64px;
+}
+
+.fiSelect {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 28px;
+}
+
+/* ─── Caption field spacing (hero editor) ────────────────────────── */
+.captionField {
+  margin-top: 10px;
+}
+
+/* ─── Text editor ────────────────────────────────────────────────── */
+.edToolbar {
+  display: flex;
+  gap: 4px;
+  border: 1.5px solid var(--ink);
+  border-bottom: none;
+  padding: 6px 8px;
+  background: var(--paper-dark);
+}
+
+.edTb {
+  width: 32px;
+  height: 28px;
+  background: transparent;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  font-family: "Caveat", cursive;
+  font-size: 16px;
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+.edTb:hover {
+  border-color: var(--ink);
+  background: var(--paper);
+}
+
+.edTbWide {
+  width: auto;
+  padding: 0 10px;
+}
+
+.edContenteditable {
+  border: 1.5px solid var(--ink);
+  background: white;
+  padding: 16px 18px;
+  min-height: 240px;
+  max-height: 360px;
+  overflow-y: auto;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  outline: none;
+  color: var(--ink);
+}
+
+.edContenteditable:focus {
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: translate(-1px, -1px);
+}
+
+/* h2/h3 inside contenteditable */
+.edContenteditable h2 {
+  font-family: "Caveat", cursive;
+  font-size: 26px;
+  margin: 12px 0 6px;
+}
+
+.edContenteditable h3 {
+  font-family: "Caveat", cursive;
+  font-size: 22px;
+  margin: 10px 0 4px;
+}
+
+.edContenteditable a {
+  color: var(--accent);
+  border-bottom: 1px dashed var(--accent);
+}
+
+.edWordcount {
+  margin-top: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-align: right;
+}
+
+/* ─── Code editor — dark ─────────────────────────────────────────── */
+.edCodeWrap {
+  position: relative;
+  border: 1.5px solid var(--ink);
+  background: #1e1e1e;
+  display: flex;
+  min-height: 280px;
+  max-height: 360px;
+  overflow: hidden;
+}
+
+.edCodeLines {
+  padding: 14px 10px 14px 14px;
+  text-align: right;
+  color: #6a6a6a;
+  background: #181818;
+  border-right: 1px solid #2d2d2d;
+  user-select: none;
+  white-space: pre;
+  flex-shrink: 0;
+  min-width: 44px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  overflow: hidden;
+}
+
+.edCodeArea {
+  flex: 1;
+  padding: 14px 16px;
+  background: #1e1e1e;
+  color: #e6e6e6;
+  border: none;
+  outline: none;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  resize: none;
+  white-space: pre;
+  overflow: auto;
+  tab-size: 2;
+}
+
+.edCodeArea::placeholder {
+  color: #6a6a6a;
+}
+
+.edCodeCopy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #2d2d2d;
+  color: #d4d4d4;
+  border: 1px solid #3d3d3d;
+  padding: 4px 10px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.12s, color 0.12s;
+}
+
+.edCodeCopy:hover {
+  background: #3d3d3d;
+  color: white;
+}
+
+.edCodeCopied {
+  background: var(--ok);
+  color: white;
+  border-color: var(--ok);
+}
+
+/* ─── CTA editor — live preview ──────────────────────────────────── */
+.ctaPreviewWrap {
+  margin-top: 14px;
+  border-top: 1.5px dashed var(--rule);
+  padding-top: 14px;
+}
+
+.ctaPreviewHead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+}
+
+.ctaPreviewStage {
+  padding: 20px;
+  background: var(--paper-dark);
+  border: 1.5px dashed var(--ink-faint);
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.alignLeft   { align-items: flex-start; }
+.alignCenter { align-items: center; }
+.alignRight  { align-items: flex-end; }
+
+.cpb {
+  font-family: "Caveat", cursive;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 8px 22px;
+  cursor: default;
+  display: inline-block;
+}
+
+.cpbPrimary { background: var(--ink);    color: var(--paper);  border: 2px solid var(--ink); }
+.cpbGhost   { background: transparent;   color: var(--ink);    border: 2px solid var(--ink); }
+.cpbAccent  { background: var(--accent); color: var(--paper);  border: 2px solid var(--accent); }
+
+.ctaPreviewSub {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* ─── Shared dynamic-row primitives (poll / stats / timeline / gallery) ── */
+.flTiny {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+}
+
+.spanFull { grid-column: 1 / -1; }
+
+.addRowBtn {
+  margin-top: 8px;
+  padding: 6px 14px;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 15px;
+  background: transparent;
+  border: 1.5px dashed var(--ink);
+  color: var(--ink);
+  cursor: pointer;
+  width: 100%;
+}
+
+.addRowBtn:hover:not(:disabled) { background: var(--paper-dark); }
+.addRowBtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.rmRowBtn {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1.5px solid var(--rule);
+  color: var(--ink-faint);
+  cursor: pointer;
+  font-size: 12px;
+  display: grid;
+  place-items: center;
+  align-self: center;
+}
+
+.rmRowBtn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.rmRowBtn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* ─── Video editor ───────────────────────────────────────────────── */
+.videoPrev169 {
+  margin-top: 10px;
+  aspect-ratio: 16 / 9;
+  background: var(--paper-dark);
+  border: 1.5px dashed var(--ink-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vpInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.vpIcon {
+  font-size: 28px;
+  color: var(--ink-faint);
+}
+
+.vpHint {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-faint);
+}
+
+/* ─── Comparison editor ──────────────────────────────────────────── */
+.vsLayout {
+  display: grid;
+  grid-template-columns: 1fr 36px 1fr;
+  gap: 8px;
+  align-items: stretch;
+  margin-bottom: 18px;
+}
+
+.vsCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vsCol textarea.fi { flex: 1; min-height: 140px; }
+
+.vsDivider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vsDivider span {
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  writing-mode: vertical-rl;
+  letter-spacing: 3px;
+}
+
+/* ─── Poll editor ────────────────────────────────────────────────── */
+.pollOptions { display: flex; flex-direction: column; gap: 6px; }
+
+.pollOptRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pollOptNum {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+  flex-shrink: 0;
+  width: 18px;
+}
+
+.pollSettings {
+  border: 1.5px dashed var(--rule);
+  padding: 14px 16px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pollSettingsHead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.pollExpiryWrap { max-width: 240px; margin-top: 10px; }
+
+/* ─── Stats editor ───────────────────────────────────────────────── */
+.statsMetricRows { display: flex; flex-direction: column; gap: 8px; }
+
+.statsMetricRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 32px;
+  gap: 8px;
+  align-items: end;
+}
+
+.statsPreviewHead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+  margin-top: 18px;
+  border-top: 1.5px dashed var(--rule);
+  padding-top: 14px;
+}
+
+.statsPreviewStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.statCard {
+  flex: 1;
+  min-width: 80px;
+  border: 1.5px solid var(--ink);
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.emptyMetric { opacity: 0.4; }
+
+.sv {
+  font-family: "Caveat", cursive;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+.sl {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+.statsEmpty {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 14px;
+  color: var(--ink-faint);
+}
+
+/* ─── Quote editor ───────────────────────────────────────────────── */
+.quoteTextarea {
+  font-family: "Caveat", cursive !important;
+  font-size: 20px !important;
+  min-height: 100px;
+}
+
+.quotePreview {
+  margin-top: 18px;
+  border-top: 1.5px dashed var(--rule);
+  padding-top: 14px;
+}
+
+.quotePreviewHead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.qpBlockquote {
+  border-left: 4px solid var(--accent);
+  padding: 10px 16px;
+  background: var(--paper-dark);
+}
+
+.qpPullquote {
+  text-align: center;
+  padding: 16px;
+  background: var(--paper-dark);
+}
+
+.qpText {
+  font-family: "Caveat", cursive;
+  font-size: 22px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.qpAttr {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+/* ─── Gallery editor ─────────────────────────────────────────────── */
+.galleryThumbGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.galleryThumb {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1.5px solid var(--rule);
+  background: var(--paper-dark);
+}
+
+.galleryThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.galleryThumbRm {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.galleryThumb:hover .galleryThumbRm { opacity: 1; }
+
+/* ─── Timeline editor ────────────────────────────────────────────── */
+.tlEntries { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+
+.tlEntry {
+  display: grid;
+  grid-template-columns: 120px 1fr 32px;
+  gap: 8px;
+  align-items: start;
+  padding: 10px 12px;
+  border: 1.5px dashed var(--rule);
+  background: var(--paper-dark);
+}
+
+.tlEntryMain { display: flex; flex-direction: column; gap: 8px; }
+
+/* ─── Form editor ────────────────────────────────────────────────── */
+.formLinkNotice {
+  display: flex;
+  gap: 12px;
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent);
+  padding: 12px 16px;
+  margin-bottom: 18px;
+}
+
+.noticeIcon {
+  font-size: 20px;
+  color: var(--accent);
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.noticeBody {
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.linkedFormCard {
+  border: 1.5px dashed var(--ink-faint);
+  background: var(--paper-dark);
+  padding: 16px 18px;
+}
+
+.linkedFormCardHead {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.linkedFormName {
+  font-family: "Caveat", cursive;
+  font-size: 22px;
+  color: var(--ink);
+}
+
+.linkedFormId {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-top: 4px;
+}
+
+.formCreateBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 8px 16px;
+  font-family: "Patrick Hand", sans-serif;
+  font-size: 15px;
+  background: transparent;
+  border: 1.5px dashed var(--ink-faint);
+  color: var(--ink-soft);
+  cursor: pointer;
+  width: 100%;
+  justify-content: center;
+}
+
+.formCreateBtn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .cols2 {
+    grid-template-columns: 1fr;
+  }
+  .vsLayout { grid-template-columns: 1fr; }
+  .vsLayout .vsDivider { writing-mode: horizontal-tb; }
+  .statsMetricRow { grid-template-columns: 1fr 1fr 32px; }
+  .tlEntry { grid-template-columns: 1fr; }
+}

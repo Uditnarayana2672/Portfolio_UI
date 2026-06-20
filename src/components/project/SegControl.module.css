@@ -1,0 +1,33 @@
+.seg {
+  display: flex;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+}
+
+.btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 9px 10px;
+  font-family: "Caveat", cursive;
+  font-size: 18px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-right: 1.5px solid var(--ink);
+  line-height: 1;
+  transition: background 0.1s, color 0.1s;
+}
+
+.btn:last-child {
+  border-right: none;
+}
+
+.btnOn {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn:hover:not(.btnOn) {
+  background: var(--paper-dark);
+  color: var(--ink);
+}

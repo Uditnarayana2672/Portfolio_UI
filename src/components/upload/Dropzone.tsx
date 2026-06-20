@@ -4,10 +4,12 @@ import { useUploadsStore } from '../../store/uploadsStore'
 import { useUpload } from '../../hooks/useUpload'
 
 const FOLDERS = [
-  'blog/covers',
-  'blog/inline',
   'projects/thumbnails',
   'projects/diagrams',
+  'projects/gallery',
+  'projects/videos',
+  'blog/covers',
+  'blog/inline',
   'system/og-images',
   'system/avatars',
   'uncategorized',
