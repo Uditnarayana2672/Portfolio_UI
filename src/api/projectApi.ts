@@ -274,3 +274,118 @@ export async function publishProject(projectId: string): Promise<PublishResult> 
     method: 'POST',
   })
 }
+
+// ── Project Manager API ───────────────────────────────────────────────────────
+
+export interface ProjectSummary {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  thumbnail_url: string | null
+  template_id: string
+  status: 'draft' | 'published' | 'archived'
+  is_featured: boolean
+  views: number
+  reactions_count: number
+  tech_stack: string[]
+  github_url: string | null
+  demo_url: string | null
+  published_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ListProjectsParams {
+  status_filter?: string
+  search?: string
+  page?: number
+  page_size?: number
+  template_id?: string
+  sort_by?: string
+  sort_dir?: 'asc' | 'desc'
+}
+
+export interface ListProjectsResult {
+  items: ProjectSummary[]
+  total: number
+  page: number
+  page_size: number
+}
+
+export async function listProjects(params: ListProjectsParams = {}): Promise<ListProjectsResult> {
+  const qs = new URLSearchParams()
+  if (params.status_filter) qs.set('status_filter', params.status_filter)
+  if (params.search) qs.set('search', params.search)
+  if (params.page) qs.set('page', String(params.page))
+  if (params.page_size) qs.set('page_size', String(params.page_size))
+  if (params.template_id) qs.set('template_id', params.template_id)
+  if (params.sort_by) qs.set('sort_by', params.sort_by)
+  if (params.sort_dir) qs.set('sort_dir', params.sort_dir)
+  const query = qs.toString()
+  return apiFetch<ListProjectsResult>(`/api/v1/admin/projects${query ? `?${query}` : ''}`)
+}
+
+export interface StatusCounts {
+  total: number
+  draft: number
+  published: number
+  archived: number
+}
+
+export async function getStatusCounts(): Promise<StatusCounts> {
+  return apiFetch<StatusCounts>('/api/v1/admin/projects/status-counts')
+}
+
+export type BulkAction = 'publish' | 'archive' | 'feature' | 'unfeature' | 'delete'
+
+export interface BulkActionResult {
+  action: string
+  requested: number
+  succeeded: number
+  failed: number
+  skipped: number
+  project_ids: string[]
+}
+
+export async function bulkAction(action: BulkAction, projectIds: string[]): Promise<BulkActionResult> {
+  return apiFetch<BulkActionResult>('/api/v1/admin/projects/bulk', {
+    method: 'POST',
+    body: JSON.stringify({ action, project_ids: projectIds }),
+  })
+}
+
+export async function archiveProject(projectId: string): Promise<void> {
+  await apiFetch(`/api/v1/admin/projects/${projectId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ status: 'archived' }),
+  })
+}
+
+export async function deleteProject(projectId: string): Promise<void> {
+  const auth = await authHeader()
+  const res = await fetch(`${API_BASE}/api/v1/admin/projects/${projectId}`, {
+    method: 'DELETE',
+    headers: auth,
+  })
+  if (!res.ok && res.status !== 204) {
+    const body = await res.json().catch(() => ({}))
+    const raw = body?.detail?.message ?? body?.message ?? body?.detail ?? `HTTP ${res.status}`
+    throw new Error(typeof raw === 'string' ? raw : JSON.stringify(raw))
+  }
+}
+
+export async function duplicateProject(projectId: string): Promise<{ id: string; slug: string }> {
+  const result = await apiFetch<{ original_id: string; new_project: { id: string; slug: string } }>(
+    `/api/v1/admin/projects/${projectId}/duplicate`,
+    { method: 'POST', body: JSON.stringify({}) },
+  )
+  return result.new_project
+}
+
+export async function toggleFeature(projectId: string, isFeatured: boolean): Promise<void> {
+  await apiFetch(`/api/v1/admin/projects/${projectId}/feature`, {
+    method: 'PATCH',
+    body: JSON.stringify({ is_featured: isFeatured }),
+  })
+}
