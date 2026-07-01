@@ -16,7 +16,15 @@ import QuoteEditor      from '../project/blocks/editors/QuoteEditor'
 import GalleryEditor    from '../project/blocks/editors/GalleryEditor'
 import TimelineEditor   from '../project/blocks/editors/TimelineEditor'
 import FormEditor       from '../project/blocks/editors/FormEditor'
+import EmbedEditor      from '../project/blocks/editors/EmbedEditor'
+import SectionHeaderFields from '../project/blocks/editors/SectionHeaderFields'
 import styles from './BlockEditorDrawer.module.css'
+
+// Block types that carry an editorial section header on the public page.
+const SECTION_HEADER_TYPES = new Set<BlockId>([
+  'text', 'image', 'gallery', 'video', 'code',
+  'timeline', 'stats', 'poll', 'quote', 'comparison', 'embed',
+])
 
 export interface DrawerState {
   mode: 'add' | 'edit'
@@ -46,6 +54,7 @@ const BLOCK_EDITORS: Partial<Record<BlockId, EditorComponent>> = {
   gallery:    GalleryEditor,
   timeline:   TimelineEditor,
   form:       FormEditor,
+  embed:      EmbedEditor,
 }
 
 interface BlockEditorDrawerProps {
@@ -102,6 +111,9 @@ export default function BlockEditorDrawer({ state, onClose, onSave }: BlockEdito
 
         {/* Body */}
         <div className={styles.body}>
+          {SECTION_HEADER_TYPES.has(state.typeId) && (
+            <SectionHeaderFields data={localData} onChange={setLocalData} />
+          )}
           {Editor ? (
             <Editor key={editorKey} data={localData} onChange={setLocalData} />
           ) : (

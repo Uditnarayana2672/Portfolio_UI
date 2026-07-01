@@ -676,3 +676,22 @@ textarea.fi {
   .statsMetricRow { grid-template-columns: 1fr 1fr 32px; }
   .tlEntry { grid-template-columns: 1fr; }
 }
+
+/* ── Section header (eyebrow/heading) collapsible — shared by section blocks ── */
+.sectionHeader {
+  border: 1px dashed var(--rule, #cbc4b1);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  background: var(--paper-dark, #ebe4d3);
+}
+.sectionHeaderSummary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  list-style: none;
+  user-select: none;
+}
+.sectionHeaderSummary::-webkit-details-marker { display: none; }
+.sectionHeaderSummary::before { content: '▸ '; color: var(--accent, #c1432a); }
+details[open] > .sectionHeaderSummary::before { content: '▾ '; }

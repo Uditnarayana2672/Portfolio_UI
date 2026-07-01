@@ -53,6 +53,12 @@ export interface CreateProjectPayload {
     meta_description: string | null
     og_image_url: string | null
   }
+  // Editorial header fields for the public detail page (optional, flat columns).
+  category?: string | null
+  role?: string | null
+  project_timeline?: string | null
+  display_status?: string | null
+  recognition?: string | null
 }
 
 export interface CreateProjectResult {
@@ -96,8 +102,28 @@ export async function createDraftProject(
         og_image_url:     payload.seo.og_image_url,
         canonical_url:    null,
       },
+      category:         payload.category ?? null,
+      role:             payload.role ?? null,
+      project_timeline: payload.project_timeline ?? null,
+      display_status:   payload.display_status ?? null,
+      recognition:      payload.recognition ?? null,
     }),
   })
+}
+
+// Block types that carry an editorial section header (eyebrow/heading/subheading)
+// on the public page. Mirrors the SectionHeaderMixin on the backend.
+const SECTION_HEADER_TYPES = new Set([
+  'text', 'image', 'gallery', 'video', 'code',
+  'timeline', 'stats', 'poll', 'quote', 'comparison', 'embed',
+])
+
+function pickHeader(d: Record<string, unknown>): Record<string, unknown> {
+  return {
+    eyebrow:    (d.eyebrow as string)    || null,
+    heading:    (d.heading as string)    || null,
+    subheading: (d.subheading as string) || null,
+  }
 }
 
 // ── Wizard data → backend config ─────────────────────────────────────────────
@@ -105,7 +131,13 @@ export async function createDraftProject(
 // Returns null for blocks that can't be sent (missing a truly required URL/id).
 function toBackendConfig(typeId: string, raw: Record<string, unknown>): Record<string, unknown> | null {
   const d = raw ?? {}
+  const base = baseConfig(typeId, d)
+  if (base === null) return null
+  // Section blocks also carry the optional editorial header fields.
+  return SECTION_HEADER_TYPES.has(typeId) ? { ...base, ...pickHeader(d) } : base
+}
 
+function baseConfig(typeId: string, d: Record<string, unknown>): Record<string, unknown> | null {
   switch (typeId) {
     case 'hero':
       return {
@@ -121,6 +153,7 @@ function toBackendConfig(typeId: string, raw: Record<string, unknown>): Record<s
       return {
         content:   (d.html as string) || '',
         max_width: 'default',
+        style:     (d.style as string) || 'standard',
       }
 
     case 'image': {
@@ -243,6 +276,19 @@ function toBackendConfig(typeId: string, raw: Record<string, unknown>): Record<s
         form_name:  (d.formName as string) || null,
         embed_type: 'typeform',
         height:     480,
+      }
+    }
+
+    case 'embed': {
+      const url = (d.embedUrl as string) || ''
+      if (!url) return null
+      return {
+        embed_url:        url,
+        provider:         (d.provider as string)    || null,
+        source_label:     (d.sourceLabel as string) || null,
+        caption:          (d.caption as string)     || null,
+        height:           typeof d.height === 'number' ? d.height : 480,
+        allow_fullscreen: d.allowFullscreen !== false,
       }
     }
 
@@ -388,4 +434,227 @@ export async function toggleFeature(projectId: string, isFeatured: boolean): Pro
     method: 'PATCH',
     body: JSON.stringify({ is_featured: isFeatured }),
   })
+}
+
+// ── Single project (edit page) ────────────────────────────────────────────────
+
+export interface ProjectSeo {
+  meta_title: string | null
+  meta_description: string | null
+  og_image_url: string | null
+  canonical_url: string | null
+}
+
+export interface ProjectDetail {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  thumbnail_url: string | null
+  tech_stack: string[]
+  template_id: string
+  github_url: string | null
+  demo_url: string | null
+  status: string
+  visibility: string
+  is_featured: boolean
+  views: number
+  seo: ProjectSeo
+  meta: Record<string, unknown>
+  // Editorial project-header fields (backend returns these top-level; may also
+  // arrive via `meta` from the wizard). All optional.
+  category?: string | null
+  role?: string | null
+  project_timeline?: string | null
+  display_status?: string | null
+  recognition?: string | null
+  blocks: Array<{ id: string; block_type: string; position: number; config: Record<string, unknown> }>
+  published_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface UpdateProjectPayload {
+  title?: string
+  slug?: string
+  excerpt?: string | null
+  thumbnail_url?: string | null
+  tech_stack?: string[]
+  template_id?: string
+  github_url?: string | null
+  demo_url?: string | null
+  status?: string
+  visibility?: string
+  is_featured?: boolean
+  seo?: Partial<ProjectSeo>
+  category?: string | null
+  role?: string | null
+  project_timeline?: string | null
+  display_status?: string | null
+  recognition?: string | null
+}
+
+export async function getProject(projectId: string): Promise<ProjectDetail> {
+  return apiFetch<ProjectDetail>(`/api/v1/admin/projects/${projectId}`)
+}
+
+export async function updateProject(
+  projectId: string,
+  payload: UpdateProjectPayload,
+): Promise<ProjectDetail> {
+  return apiFetch<ProjectDetail>(`/api/v1/admin/projects/${projectId}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  })
+}
+
+// ── Block mutations (edit page) ───────────────────────────────────────────────
+
+export async function updateBlock(
+  projectId: string,
+  blockId: string,
+  typeId: string,
+  data: Record<string, unknown>,
+): Promise<void> {
+  const config = toBackendConfig(typeId, data)
+  if (config === null) return
+  await apiFetch(`/api/v1/admin/projects/${projectId}/blocks/${blockId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ config }),
+  })
+}
+
+export async function deleteBlock(projectId: string, blockId: string): Promise<void> {
+  const auth = await authHeader()
+  const res = await fetch(`${API_BASE}/api/v1/admin/projects/${projectId}/blocks/${blockId}`, {
+    method: 'DELETE',
+    headers: auth,
+  })
+  if (!res.ok && res.status !== 204) {
+    const body = await res.json().catch(() => ({}))
+    const raw = body?.detail?.message ?? body?.message ?? body?.detail ?? `HTTP ${res.status}`
+    throw new Error(typeof raw === 'string' ? raw : JSON.stringify(raw))
+  }
+}
+
+export async function reorderProjectBlocks(
+  projectId: string,
+  blockIds: string[],
+): Promise<void> {
+  await apiFetch(`/api/v1/admin/projects/${projectId}/blocks/reorder`, {
+    method: 'PATCH',
+    body: JSON.stringify({ block_ids: blockIds }),
+  })
+}
+
+// Converts a stored backend block config back into the camelCase editor data shape.
+export function fromBackendConfig(typeId: string, config: Record<string, unknown>): Record<string, unknown> {
+  const c = config ?? {}
+  const base = baseFromBackend(typeId, c)
+  if (SECTION_HEADER_TYPES.has(typeId)) {
+    return {
+      ...base,
+      eyebrow:    (c.eyebrow as string)    ?? '',
+      heading:    (c.heading as string)    ?? '',
+      subheading: (c.subheading as string) ?? '',
+    }
+  }
+  return base
+}
+
+function baseFromBackend(typeId: string, c: Record<string, unknown>): Record<string, unknown> {
+  switch (typeId) {
+    case 'hero': {
+      const h = c.min_height as string
+      return {
+        imageUrl:    (c.background_image_url as string) ?? '',
+        altText:     '',
+        height:      h === '100vh' ? 'full' : h === '40vh' ? 'compact' : 'standard',
+        showCaption: false,
+        caption:     '',
+      }
+    }
+    case 'text':
+      return { html: (c.content as string) ?? '', style: (c.style as string) ?? 'standard' }
+    case 'image':
+      return {
+        imageUrl: (c.image_url as string) ?? '',
+        altText:  (c.alt_text as string) ?? '',
+        caption:  (c.caption as string) ?? '',
+        size:     (c.width as string) ?? 'full',
+        align:    (c.align as string) ?? 'center',
+      }
+    case 'gallery':
+      return {
+        images: (c.images as unknown[]) ?? [],
+        layout: (c.layout as string) ?? 'grid',
+      }
+    case 'video':
+      return {
+        tab:      'embed',
+        embedUrl: (c.video_url as string) ?? '',
+        caption:  (c.caption as string) ?? '',
+        autoplay: false,
+      }
+    case 'code':
+      return {
+        code:     (c.code as string) ?? '',
+        language: (c.language as string) ?? 'javascript',
+        filename: (c.filename as string) ?? '',
+      }
+    case 'timeline':
+      return {
+        entries: (c.items as Record<string, unknown>[]) ?? [{ date: '', title: '', description: '' }],
+      }
+    case 'stats':
+      return {
+        metrics: (c.metrics as Record<string, unknown>[]) ?? [{ value: '', label: '' }],
+      }
+    case 'poll':
+      return {
+        question:    (c.question as string) ?? '',
+        options:     (c.options as string[]) ?? ['', ''],
+        anonymous:   (c.anonymous as boolean) ?? false,
+        showResults: (c.show_results as boolean) ?? true,
+        expiry:      (c.expiry_date as string) ?? '',
+      }
+    case 'quote':
+      return {
+        text:  (c.text as string) ?? '',
+        name:  (c.attribution_name as string) ?? '',
+        role:  (c.attribution_role as string) ?? '',
+        style: (c.style as string) ?? 'blockquote',
+      }
+    case 'comparison':
+      return {
+        leftLabel:    (c.left_label as string) ?? 'Before',
+        leftContent:  (c.left_content as string) ?? '',
+        rightLabel:   (c.right_label as string) ?? 'After',
+        rightContent: (c.right_content as string) ?? '',
+      }
+    case 'cta':
+      return {
+        label:   (c.primary_label as string) ?? (c.heading as string) ?? '',
+        url:     (c.primary_url as string) ?? '',
+        style:   (c.style as string) ?? 'primary',
+        align:   (c.align as string) ?? 'center',
+        subtext: (c.description as string) ?? '',
+      }
+    case 'form':
+      return {
+        formId:   (c.form_id as string) ?? '',
+        formName: (c.form_name as string) ?? '',
+      }
+    case 'embed':
+      return {
+        embedUrl:        (c.embed_url as string) ?? '',
+        provider:        (c.provider as string) ?? '',
+        sourceLabel:     (c.source_label as string) ?? '',
+        caption:         (c.caption as string) ?? '',
+        height:          typeof c.height === 'number' ? c.height : 480,
+        allowFullscreen: (c.allow_fullscreen as boolean) ?? true,
+      }
+    default:
+      return c
+  }
 }

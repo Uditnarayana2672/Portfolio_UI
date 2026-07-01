@@ -28,6 +28,7 @@ export default function Step2CoreFields() {
   const coreFields  = useWizardStore((s) => s.coreFields)
   const setCoreField = useWizardStore((s) => s.setCoreField)
   const setSeoField  = useWizardStore((s) => s.setSeoField)
+  const setMetaField = useWizardStore((s) => s.setMetaField)
 
   const slugEdited = useRef(false)
   const [errors, setErrors] = useState<{ title?: string; slug?: string }>({})
@@ -188,6 +189,54 @@ export default function Step2CoreFields() {
             />
           </div>
 
+        </div>
+      </div>
+
+      {/* ── Card 2b: Public page header ─────────────────────────────── */}
+      <div className={styles.card}>
+        <span className={styles.cardTag}>/// public page header</span>
+        <h3 className={styles.cardTitle}>The detail-page masthead</h3>
+        <p className={styles.seoExplainer}>
+          These fill the editorial header at the top of the public project page — the kicker above
+          the title (shown next to the publish year), plus the Role / Timeline / Status / Recognition
+          meta grid. All optional; empty fields are simply hidden. Tip: add a "&nbsp;·&nbsp;" to fold
+          a secondary detail into a value, e.g. <i>Live in production · v2.1</i>.
+        </p>
+        <div className={styles.form}>
+          <TextField
+            className={styles.fFull}
+            label="Category / kicker"
+            hint="small label above the title"
+            value={coreFields.meta.category}
+            onChange={(v) => setMetaField({ category: v })}
+            placeholder="AI & Agents"
+          />
+          <TextField
+            label="Role"
+            value={coreFields.meta.role}
+            onChange={(v) => setMetaField({ role: v })}
+            placeholder="Solo — design & build · end to end"
+          />
+          <TextField
+            label="Timeline"
+            value={coreFields.meta.projectTimeline}
+            onChange={(v) => setMetaField({ projectTimeline: v })}
+            placeholder="Mar – Jun 2025 · ~10 weeks"
+          />
+          <TextField
+            label="Status"
+            value={coreFields.meta.displayStatus}
+            onChange={(v) => setMetaField({ displayStatus: v })}
+            placeholder="Live in production · v2.1"
+          />
+          <TextField
+            className={styles.fFull}
+            label="Recognition"
+            hint="awards, milestones, press"
+            value={coreFields.meta.recognition}
+            onChange={(v) => setMetaField({ recognition: v })}
+            placeholder="Featured project · 12k+ conversations served"
+          />
         </div>
       </div>
 

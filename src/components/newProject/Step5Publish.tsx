@@ -7,13 +7,13 @@ import styles from './Step5Publish.module.css'
 const BLOCK_ICONS: Record<string, string> = {
   hero: '⬚', text: '¶', image: '⊞', code: '</>',
   gallery: '⊟', video: '▶', quote: '"', stats: '≡',
-  comparison: '⇄', timeline: '○', poll: '◉', form: '☐', cta: '→',
+  comparison: '⇄', timeline: '○', poll: '◉', form: '☐', cta: '→', embed: '◳',
 }
 
 const BLOCK_LABELS: Record<string, string> = {
   hero: 'Hero', text: 'Text', image: 'Image', code: 'Code',
   gallery: 'Gallery', video: 'Video', quote: 'Quote', stats: 'Stats',
-  comparison: 'Comparison', timeline: 'Timeline', poll: 'Poll', form: 'Form', cta: 'CTA',
+  comparison: 'Comparison', timeline: 'Timeline', poll: 'Poll', form: 'Form', cta: 'CTA', embed: 'Embed',
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -37,8 +37,11 @@ export default function Step5Publish() {
   const {
     title, slug, excerpt, status,
     thumbnailUrl, githubUrl, demoUrl,
-    techStack, isFeatured, seo,
+    techStack, isFeatured, seo, meta,
   } = coreFields
+
+  // Editorial header → the flat project columns. Empty → null so the column stays unset.
+  const clean = (v: string): string | null => (v && v.trim() ? v.trim() : null)
 
   const [busy, setBusy]   = useState<'publish' | 'draft' | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -76,6 +79,11 @@ export default function Step5Publish() {
           meta_description: seo.metaDescription || null,
           og_image_url:     seo.ogImageUrl      || null,
         },
+        category:         clean(meta.category),
+        role:             clean(meta.role),
+        project_timeline: clean(meta.projectTimeline),
+        display_status:   clean(meta.displayStatus),
+        recognition:      clean(meta.recognition),
       })
 
       // 2. Add blocks sequentially (position = index)

@@ -1,12 +1,20 @@
 import { useRef, useEffect } from 'react'
+import SegControl from '../../SegControl'
 import styles from './editors.module.css'
 
-interface TextData { html: string }
+interface TextData { html: string; style?: string }
 
 interface Props {
   data: Record<string, unknown>
   onChange: (data: Record<string, unknown>) => void
 }
+
+const STYLE_OPTS = [
+  { value: 'standard', label: 'Standard' },
+  { value: 'dropcap',  label: 'Drop-cap' },
+  { value: 'lead',     label: 'Lead' },
+  { value: 'twocol',   label: 'Two-column' },
+]
 
 export default function TextEditor({ data, onChange }: Props) {
   const d = data as unknown as TextData
@@ -79,6 +87,19 @@ export default function TextEditor({ data, onChange }: Props) {
             onInput={handleInput}
           />
           <div ref={wcRef} className={styles.edWordcount}>0 WORDS</div>
+        </div>
+      </div>
+
+      <div className={styles.edRow}>
+        <div className={styles.fg}>
+          <label className={styles.fl}>
+            Writing style <span className={styles.hint}>how this reads on the public page</span>
+          </label>
+          <SegControl
+            options={STYLE_OPTS}
+            value={d.style || 'standard'}
+            onChange={(v) => onChange({ ...d, style: v })}
+          />
         </div>
       </div>
     </div>

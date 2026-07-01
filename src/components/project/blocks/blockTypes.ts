@@ -1,7 +1,7 @@
 export type BlockId =
   | 'hero' | 'text' | 'image' | 'code' | 'video'
   | 'comparison' | 'poll' | 'stats' | 'quote'
-  | 'gallery' | 'timeline' | 'cta' | 'form'
+  | 'gallery' | 'timeline' | 'cta' | 'form' | 'embed'
 
 export interface BlockTypeDef {
   id: BlockId
@@ -25,6 +25,7 @@ export const BLOCK_TYPES: BlockTypeDef[] = [
   { id: 'timeline',   label: 'Timeline',      icon: '⏱',    pickerLabel: 'Timeline', placeholder: 'add timeline events' },
   { id: 'cta',        label: 'CTA',           icon: '→',    pickerLabel: 'CTA',      placeholder: 'add a call-to-action button' },
   { id: 'form',       label: 'Feedback Form', icon: '✎',    pickerLabel: 'Form',     placeholder: 'connect a feedback form' },
+  { id: 'embed',      label: 'Embed',         icon: '◳',    pickerLabel: 'Embed',    placeholder: 'embed a sandbox · CodeSandbox, Figma, demo' },
 ]
 
 export const TYPE_BY_ID: Record<BlockId, BlockTypeDef> = Object.fromEntries(
@@ -98,6 +99,11 @@ export function previewText(typeId: BlockId, data: Record<string, unknown>): str
       const name = (data.formName as string) ?? ''
       return name || fallback
     }
+    case 'embed': {
+      const url = (data.embedUrl as string) ?? ''
+      const prov = (data.provider as string) ?? ''
+      return url ? `${prov ? prov + ' · ' : ''}${url}` : fallback
+    }
     default:
       return fallback
   }
@@ -118,5 +124,6 @@ export function defaultEditorData(typeId: BlockId): Record<string, unknown> {
     case 'timeline':   return { entries: [{ date: '', title: '', description: '' }] }
     case 'cta':        return { label: 'Learn more', url: '', style: 'primary', align: 'center', subtext: '' }
     case 'form':       return { formId: '', formName: '' }
+    case 'embed':      return { embedUrl: '', provider: '', sourceLabel: '', caption: '', height: 480, allowFullscreen: true }
   }
 }

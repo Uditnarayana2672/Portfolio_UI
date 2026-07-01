@@ -20,6 +20,18 @@ export interface SeoFields {
   ogImageUrl: string
 }
 
+// Editorial header for the public project detail page.
+// One field per backend column (all free-text, all optional). Use " · " or a
+// newline inside a value to add a secondary/muted line, e.g. "Live in production
+// · v2.1"; the renderer splits on a newline into a main + sub line.
+export interface PageMetaFields {
+  category: string        // kicker label, e.g. "AI & Agents"
+  role: string            // e.g. "Solo — design & build"
+  projectTimeline: string // e.g. "Mar – Jun 2025 · ~10 weeks"
+  displayStatus: string   // e.g. "Live in production · v2.1"
+  recognition: string     // e.g. "Featured project · 12k+ conversations served"
+}
+
 export interface CoreFields {
   title: string
   slug: string
@@ -31,6 +43,7 @@ export interface CoreFields {
   techStack: string[]
   isFeatured: boolean
   seo: SeoFields
+  meta: PageMetaFields
 }
 
 export interface WizardBlock {
@@ -51,6 +64,9 @@ const CORE_DEFAULTS: CoreFields = {
   techStack: [],
   isFeatured: false,
   seo: { metaTitle: '', metaDescription: '', ogImageUrl: '' },
+  meta: {
+    category: '', role: '', projectTimeline: '', displayStatus: '', recognition: '',
+  },
 }
 
 let nextId = 1
@@ -75,6 +91,7 @@ interface WizardState {
   setTemplate: (id: TemplateId) => void
   setCoreField: (patch: Partial<CoreFields>) => void
   setSeoField: (patch: Partial<SeoFields>) => void
+  setMetaField: (patch: Partial<PageMetaFields>) => void
   addBlock: (typeId: BlockId, data?: Record<string, unknown>, preview?: string) => void
   deleteBlock: (id: string) => void
   reorderBlocks: (blocks: WizardBlock[]) => void
@@ -102,6 +119,14 @@ export const useWizardStore = create<WizardState>((set) => ({
       coreFields: {
         ...s.coreFields,
         seo: { ...s.coreFields.seo, ...patch },
+      },
+    })),
+
+  setMetaField: (patch) =>
+    set((s) => ({
+      coreFields: {
+        ...s.coreFields,
+        meta: { ...s.coreFields.meta, ...patch },
       },
     })),
 

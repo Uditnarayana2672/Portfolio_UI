@@ -4,6 +4,9 @@ import LoginPage from './pages/LoginPage'
 import MediaManagerPage from './pages/MediaManagerPage'
 import ProjectManagerPage from './pages/ProjectManagerPage'
 import NewProjectPage from './pages/NewProjectPage'
+import EditProjectPage from './pages/EditProjectPage'
+import ProjectPreviewPage from './pages/ProjectPreviewPage'
+import ProjectDetailPage from './pages/ProjectDetailPage'
 import PlaceholderPage from './pages/PlaceholderPage'
 import { supabase } from './lib/supabaseClient'
 
@@ -41,6 +44,10 @@ export default function App() {
         <Route path="/media" element={<Navigate to="/admin/media" replace />} />
         <Route path="/admin/projects" element={<ProtectedRoute><ProjectManagerPage /></ProtectedRoute>} />
         <Route path="/admin/projects/new" element={<ProtectedRoute><NewProjectPage /></ProtectedRoute>} />
+        <Route path="/admin/projects/:id/edit" element={<ProtectedRoute><EditProjectPage /></ProtectedRoute>} />
+        <Route path="/admin/projects/:id/preview" element={<ProtectedRoute><ProjectPreviewPage /></ProtectedRoute>} />
+        {/* Public, unauthenticated project detail page */}
+        <Route path="/projects/:slug" element={<ProjectDetailPage />} />
         <Route path="/projects" element={<Navigate to="/admin/projects" replace />} />
         <Route path="/blog" element={<ProtectedRoute><PlaceholderPage title="Blog Manager" /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><PlaceholderPage title="Dashboard" /></ProtectedRoute>} />
