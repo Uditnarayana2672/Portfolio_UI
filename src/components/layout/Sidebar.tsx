@@ -14,7 +14,7 @@ const NAV_ITEMS = [
 const NAV_ROUTES: Record<string, string> = {
   'Overview':     '/dashboard',
   'Projects':     '/admin/projects',
-  'Blogs':        '/blog',
+  'Blogs':        '/admin/blogs',
   'Media':        '/admin/media',
 }
 

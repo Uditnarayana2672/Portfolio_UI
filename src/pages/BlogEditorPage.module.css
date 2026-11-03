@@ -1,0 +1,117 @@
+/* Blog editor page shell (also used by the Blog Manager placeholder). */
+.page { padding: 28px 32px 80px; min-height: 100vh; }
+
+.pagehead {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  border-bottom: 2px dashed var(--ink); padding-bottom: 14px; margin-bottom: 22px;
+}
+.pagehead h1 { font-family: "Caveat", cursive; font-weight: 700; font-size: 44px; margin: 0; letter-spacing: .5px; }
+.scribble { color: var(--accent); }
+.crumbs { font-family: "Patrick Hand", sans-serif; color: var(--ink-soft); font-size: 16px; margin-top: 4px; }
+.crumbs a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px dashed var(--ink-faint); }
+.crumbs a:hover { color: var(--accent); border-color: var(--accent); }
+.crumbCur { color: var(--ink); margin-left: 6px; }
+.meta {
+  font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink-soft);
+  text-align: right; text-transform: uppercase; letter-spacing: 1.5px; line-height: 1.6;
+}
+
+.layout { display: grid; grid-template-columns: 200px 1fr; gap: 22px; align-items: start; }
+.main { min-width: 0; }
+.editorLayout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 22px; align-items: start; }
+.editor { border: 2px solid var(--ink); background: var(--paper); }
+
+/* title block */
+.editorHead { padding: 24px 32px 16px; border-bottom: 1.5px dashed var(--rule); }
+.titleInput {
+  width: 100%; border: none; background: transparent; resize: none; overflow: hidden; outline: none; padding: 0;
+  font-family: "Caveat", cursive; font-weight: 700; font-size: 46px; line-height: 1.05; color: var(--ink);
+  margin-bottom: 6px; letter-spacing: .5px;
+}
+.titleInput::placeholder, .subtitleInput::placeholder { color: var(--ink-faint); }
+.titleHint { font-family: "JetBrains Mono", monospace; font-size: 10.5px; color: #c98a14; margin-bottom: 4px; }
+.subtitleInput {
+  width: 100%; border: none; background: transparent; outline: none; padding: 0;
+  font-family: "Source Serif 4", "Patrick Hand", serif; font-size: 19px; line-height: 1.4;
+  color: var(--ink-soft); font-style: italic;
+}
+.slugLine {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+  font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink-faint);
+}
+.slugValue { color: var(--ink-soft); }
+.slugInput {
+  background: transparent; border: none; outline: none; padding: 2px 0; min-width: 240px;
+  font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--ink);
+  border-bottom: 1px dashed var(--ink);
+}
+.editMark { border: none; background: none; cursor: pointer; color: var(--ink-faint); font-family: "JetBrains Mono", monospace; font-size: 12px; padding: 0; }
+.editMark:hover { color: var(--accent); }
+.slugOk { color: var(--ok); }
+.slugBad { color: var(--accent); }
+.slugError { margin-top: 6px; font-family: "Patrick Hand", sans-serif; font-size: 14px; color: var(--accent); display: flex; gap: 8px; }
+
+/* cover */
+.coverZone {
+  margin: 16px 32px; width: calc(100% - 64px); height: 180px; position: relative; cursor: pointer;
+  border: 1.5px dashed var(--ink-faint);
+  background: repeating-linear-gradient(45deg, transparent 0 7px, rgba(33,32,28,0.04) 7px 8px), var(--paper);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: "Patrick Hand", sans-serif; font-size: 16px; color: var(--ink-soft);
+}
+.coverZone:hover { border-color: var(--ink); background-color: var(--paper-dark); }
+.cornerTag {
+  position: absolute; top: -10px; left: 14px; background: var(--paper); padding: 0 8px;
+  font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-soft);
+}
+.uglyph { font-family: "Caveat", cursive; font-size: 36px; }
+.ulink { color: var(--accent); border-bottom: 1px dashed var(--accent); }
+.coverSet { margin: 16px 32px; position: relative; }
+.coverSet img { width: 100%; max-height: 300px; object-fit: cover; display: block; border: 1.5px solid var(--ink); }
+.coverActs { position: absolute; right: 10px; bottom: 10px; display: flex; gap: 6px; }
+
+.wordCount {
+  padding: 14px 32px; border-top: 1.5px dashed var(--rule); background: var(--paper);
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ink-soft);
+  text-transform: uppercase; letter-spacing: 1.5px;
+}
+
+.banner {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;
+  border: 2px solid var(--accent); background: var(--accent-soft); padding: 10px 14px;
+  font-family: "Patrick Hand", sans-serif; font-size: 15px;
+}
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 200;
+  background: var(--ink); color: var(--paper); padding: 10px 20px; border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--accent); font-family: "Caveat", cursive; font-size: 20px; max-width: 420px;
+}
+.toastBad { background: var(--accent); box-shadow: 4px 4px 0 var(--ink); }
+
+/* blog manager placeholder */
+.newPostBtn {
+  font-family: "Caveat", cursive; font-size: 22px; border: 2px solid var(--ink); background: var(--ink); color: var(--paper);
+  padding: 6px 18px; cursor: pointer; transition: transform .12s, box-shadow .12s;
+}
+.newPostBtn:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--accent); }
+.placeholder {
+  display: inline-flex; flex-direction: column; align-items: flex-start; gap: 10px;
+  border: 2px dashed var(--rule); padding: 32px 40px; font-family: "Patrick Hand", sans-serif; font-size: 18px; color: var(--ink-soft);
+}
+.placeholderTitle { font-family: "Caveat", cursive; font-size: 32px; color: var(--accent); }
+.placeholder p { margin: 0; }
+
+@media (max-width: 1280px) {
+  .editorLayout { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .page { padding: 16px 16px 60px; }
+  .layout { grid-template-columns: 1fr; }
+  .pagehead { flex-direction: column; align-items: flex-start; }
+  .meta { text-align: left; }
+  .editorHead { padding: 18px 18px 12px; }
+  .titleInput { font-size: 36px; }
+  .coverZone, .coverSet { margin: 12px 18px; width: auto; }
+  .wordCount { padding: 12px 18px; }
+}

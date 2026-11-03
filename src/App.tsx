@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Suspense, lazy, useEffect, useState } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import MediaManagerPage from './pages/MediaManagerPage'
 import ProjectManagerPage from './pages/ProjectManagerPage'
@@ -8,6 +8,10 @@ import EditProjectPage from './pages/EditProjectPage'
 import ProjectPreviewPage from './pages/ProjectPreviewPage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
 import PlaceholderPage from './pages/PlaceholderPage'
+import BlogManagerPage from './pages/BlogManagerPage'
+// The editor pulls in TipTap + highlight.js; load it only on blog routes.
+const BlogEditorPage = lazy(() => import('./pages/BlogEditorPage'))
+const BlogPreviewPage = lazy(() => import('./pages/BlogPreviewPage'))
 import { supabase } from './lib/supabaseClient'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -35,9 +39,15 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+function BlogIdRedirect() {
+  const { id } = useParams()
+  return <Navigate to={`/admin/blogs/${id}/edit`} replace />
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <Suspense fallback={null}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/admin/media" element={<ProtectedRoute><MediaManagerPage /></ProtectedRoute>} />
@@ -49,10 +59,17 @@ export default function App() {
         {/* Public, unauthenticated project detail page */}
         <Route path="/projects/:slug" element={<ProjectDetailPage />} />
         <Route path="/projects" element={<Navigate to="/admin/projects" replace />} />
-        <Route path="/blog" element={<ProtectedRoute><PlaceholderPage title="Blog Manager" /></ProtectedRoute>} />
+        <Route path="/admin/blogs" element={<ProtectedRoute><BlogManagerPage /></ProtectedRoute>} />
+        <Route path="/admin/blogs/new" element={<ProtectedRoute><BlogEditorPage /></ProtectedRoute>} />
+        <Route path="/admin/blogs/:id/edit" element={<ProtectedRoute><BlogEditorPage /></ProtectedRoute>} />
+        <Route path="/admin/blogs/:id/preview" element={<ProtectedRoute><BlogPreviewPage /></ProtectedRoute>} />
+        {/* Media "Used in" links point at /admin/blogs/:id */}
+        <Route path="/admin/blogs/:id" element={<BlogIdRedirect />} />
+        <Route path="/blog" element={<Navigate to="/admin/blogs" replace />} />
         <Route path="/dashboard" element={<ProtectedRoute><PlaceholderPage title="Dashboard" /></ProtectedRoute>} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

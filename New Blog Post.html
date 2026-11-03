@@ -1,0 +1,1212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>New Blog Post — Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&family=Kalam:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f5f1e8;
+    --paper-dark: #ebe4d3;
+    --paper-light: #fcfaf3;
+    --ink: #21201c;
+    --ink-soft: #5a5852;
+    --ink-faint: #9b9789;
+    --rule: #cbc4b1;
+    --accent: #c1432a;
+    --accent-soft: #c1432a22;
+    --highlight: #f4e07a;
+    --grid-line: rgba(33,32,28,0.06);
+    --ok: #6aa84f;
+    --warn: #f4b03a;
+    --scheduled: #2a5fa3;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font-family: "Patrick Hand", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.35;
+    min-height: 100vh;
+    padding: 28px 32px 80px;
+  }
+  .wobble { filter: url(#ink-wobble); }
+  .no-wobble .wobble { filter: none; }
+
+  /* === page head === */
+  .pagehead {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    border-bottom: 2px dashed var(--ink);
+    padding-bottom: 14px; margin-bottom: 22px;
+  }
+  .pagehead h1 {
+    font-family: "Caveat", cursive; font-weight: 700;
+    font-size: 44px; margin: 0; letter-spacing: 0.5px;
+  }
+  .pagehead h1 .scribble { color: var(--accent); }
+  .pagehead .meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px; color: var(--ink-soft);
+    text-align: right; text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .crumbs { font-family: "Patrick Hand"; color: var(--ink-soft); font-size: 16px; margin-top: 4px; }
+  .crumbs a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px dashed var(--ink-faint); }
+  .crumbs a:hover { color: var(--accent); border-color: var(--accent); }
+  .crumbs .cur { color: var(--ink); margin-left: 6px; }
+
+  /* === layout (sidebar + main) === */
+  .layout { display: grid; grid-template-columns: 200px 1fr; gap: 22px; }
+
+  /* sidebar */
+  .v2-nav {
+    border: 2px solid var(--ink); border-style: dashed;
+    padding: 16px; background: var(--paper); min-height: 800px;
+    display: flex; flex-direction: column;
+  }
+  .v2-nav .nav-main { flex: 1; }
+  .v2-nav .navhead {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--ink-soft); margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .v2-nav ul { list-style: none; padding: 0; margin: 0; }
+  .v2-nav li {
+    font-family: "Caveat", cursive; font-size: 20px;
+    padding: 6px 8px; cursor: pointer; border-radius: 3px; color: var(--ink-soft);
+  }
+  .v2-nav li.active { background: var(--ink); color: var(--paper); }
+  .v2-nav li.active::before { content: "→ "; }
+  .v2-nav li:hover:not(.active) { background: var(--paper-dark); color: var(--ink); }
+  .v2-nav .nav-foot { margin-top: 18px; padding-top: 14px; border-top: 1.5px dashed var(--rule); }
+  .v2-nav .who-chip { display: flex; align-items: center; gap: 10px; padding: 8px 6px 12px; }
+  .v2-nav .who-chip .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent); color: var(--paper);
+    display: grid; place-items: center;
+    font-family: "Caveat", cursive; font-size: 20px; font-weight: 700;
+    border: 1.5px solid var(--ink); flex-shrink: 0;
+  }
+  .v2-nav .who-chip .who-name { font-family: "Caveat", cursive; font-size: 18px; line-height: 1; }
+  .v2-nav .who-chip .who-role {
+    font-family: "JetBrains Mono", monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-soft); margin-top: 3px;
+  }
+  .v2-nav .foot-item {
+    font-family: "Caveat", cursive; font-size: 19px;
+    padding: 6px 8px; cursor: pointer; border-radius: 3px;
+    color: var(--ink-soft); display: flex; align-items: center; gap: 8px;
+  }
+  .v2-nav .foot-item:hover { background: var(--paper-dark); color: var(--ink); }
+  .v2-nav .foot-item.signout { color: var(--accent); }
+  .v2-nav .foot-item.signout:hover { background: var(--accent-soft); color: var(--accent); }
+  .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--ok); border: 1.5px solid var(--ink); flex-shrink: 0; }
+
+  main { min-width: 0; }
+
+  /* === sticky publish bar === */
+  .publish-bar {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 18px;
+    position: sticky; top: 16px;
+    z-index: 30;
+  }
+  .pb-left { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; }
+  .pb-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 3px 9px 4px;
+    border: 1.5px dashed var(--ink-faint);
+    border-radius: 999px; color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  .pb-state {
+    font-family: "Patrick Hand", sans-serif; font-size: 14px;
+    color: var(--ink-soft); display: flex; align-items: center; gap: 6px;
+  }
+  .pb-state .save-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 4px rgba(106,168,79,.2);
+  }
+  .pb-divider { width: 1px; height: 20px; background: var(--rule); }
+  .pb-acts { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    font-family: "Caveat", cursive; font-size: 19px;
+    border: 2px solid var(--ink); background: var(--paper);
+    padding: 6px 14px; cursor: pointer; color: var(--ink);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .btn:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--ink); }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.primary:hover { box-shadow: 3px 3px 0 var(--accent); }
+  .btn.ghost { background: transparent; border-color: var(--ink-soft); color: var(--ink-soft); }
+  .btn.ghost:hover { background: var(--paper-dark); color: var(--ink); transform: none; box-shadow: none; border-color: var(--ink); }
+
+  /* === editor + rail === */
+  .editor-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 22px;
+    align-items: start;
+  }
+
+  /* editor canvas */
+  .editor {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 0;
+    overflow: hidden;
+  }
+  .editor-head {
+    padding: 24px 32px 16px;
+    border-bottom: 1.5px dashed var(--rule);
+    background: var(--paper);
+  }
+  .title-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: 46px;
+    line-height: 1.05;
+    color: var(--ink);
+    outline: none;
+    padding: 0;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .title-input::placeholder { color: var(--ink-faint); }
+  .subtitle-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: "Source Serif 4", "Patrick Hand", serif;
+    font-size: 19px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    outline: none;
+    padding: 0;
+    font-style: italic;
+  }
+  .subtitle-input::placeholder { color: var(--ink-faint); }
+  .slug-line {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 12px;
+    font-family: "JetBrains Mono", monospace; font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .slug-line .slug-input {
+    background: transparent; border: none; outline: none;
+    font-family: "JetBrains Mono", monospace; font-size: 12px;
+    color: var(--ink-soft); flex: 1; max-width: 320px;
+    border-bottom: 1px dashed var(--ink-faint);
+    padding: 2px 0;
+  }
+  .slug-line .slug-input:focus { border-bottom-color: var(--ink); color: var(--ink); }
+  .slug-line .edit-mark {
+    cursor: pointer; color: var(--ink-faint);
+  }
+  .slug-line .edit-mark:hover { color: var(--accent); }
+
+  /* cover image dropzone (inline) */
+  .cover-zone {
+    margin: 0 32px 16px;
+    border: 1.5px dashed var(--ink-faint);
+    background:
+      repeating-linear-gradient(45deg, transparent 0 7px, rgba(33,32,28,0.04) 7px 8px),
+      var(--paper);
+    height: 180px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    position: relative;
+  }
+  .cover-zone:hover { border-color: var(--ink); background-color: var(--paper-dark); }
+  .cover-zone .uglyph {
+    font-family: "Caveat", cursive; font-size: 36px; color: var(--ink-soft);
+  }
+  .cover-zone .utxt { font-family: "Patrick Hand"; font-size: 16px; }
+  .cover-zone .ulink { color: var(--accent); border-bottom: 1px dashed var(--accent); }
+  .cover-zone .corner-tag {
+    position: absolute; top: -10px; left: 14px;
+    background: var(--paper); padding: 0 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--ink-soft);
+  }
+
+  /* toolbar */
+  .toolbar {
+    display: flex; align-items: center; gap: 2px;
+    padding: 8px 14px;
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    background: var(--paper-dark);
+    position: sticky; top: 80px; z-index: 20;
+    flex-wrap: wrap;
+  }
+  .tb-group { display: flex; gap: 2px; align-items: center; }
+  .tb-sep { width: 1px; height: 22px; background: var(--rule); margin: 0 6px; }
+  .tb {
+    min-width: 32px; height: 32px;
+    padding: 0 8px;
+    border: 1.5px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    display: grid; place-items: center;
+    font-family: "Caveat", cursive;
+    font-size: 19px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .tb.mono { font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 500; }
+  .tb:hover { background: var(--paper); border-color: var(--ink); }
+  .tb.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .tb.tb-ai { color: var(--accent); margin-left: auto; }
+  .tb.tb-ai:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .tb i { font-style: normal; }
+
+  /* prose body */
+  .prose {
+    padding: 28px 56px 48px;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink);
+    background: var(--paper-light);
+    min-height: 600px;
+  }
+  .prose h2 {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: 34px;
+    margin: 32px 0 14px;
+    color: var(--ink);
+  }
+  .prose h3 {
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 26px;
+    margin: 22px 0 8px;
+    color: var(--ink);
+  }
+  .prose p { margin: 0 0 16px; }
+  .prose a {
+    color: var(--accent);
+    border-bottom: 1px solid var(--accent);
+    text-decoration: none;
+  }
+  .prose blockquote {
+    margin: 22px 0;
+    padding: 12px 22px;
+    border-left: 4px solid var(--accent);
+    background: var(--paper);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .prose ul { margin: 0 0 16px 22px; padding: 0; }
+  .prose ul li { margin-bottom: 6px; }
+  .prose code.inline {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    background: var(--paper-dark);
+    padding: 1px 6px;
+    border: 1px solid var(--rule);
+  }
+  .prose pre.code-block {
+    margin: 22px 0;
+    border: 1.5px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 20px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13.5px;
+    line-height: 1.5;
+    overflow-x: auto;
+    position: relative;
+  }
+  .prose pre.code-block .lang {
+    position: absolute; top: 8px; right: 12px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--ink-faint);
+  }
+  .prose .callout {
+    margin: 22px 0;
+    border: 1.5px solid var(--ink);
+    background: var(--highlight);
+    padding: 14px 18px;
+    display: flex; gap: 12px;
+    align-items: flex-start;
+    font-family: "Patrick Hand", sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .prose .callout .cal-icon {
+    font-family: "Caveat", cursive; font-size: 28px;
+    flex-shrink: 0; line-height: 0.9;
+  }
+  .prose .callout b {
+    font-family: "Caveat", cursive; font-weight: 700;
+    font-size: 22px; display: block; margin-bottom: 2px;
+  }
+  .prose .embed-img {
+    margin: 24px 0 6px;
+    border: 1.5px dashed var(--ink-faint);
+    background:
+      repeating-linear-gradient(45deg, transparent 0 7px, rgba(33,32,28,0.04) 7px 8px),
+      var(--paper);
+    height: 240px;
+    display: grid; place-items: center;
+    color: var(--ink-faint);
+    font-family: "Caveat", cursive; font-size: 22px;
+    position: relative;
+  }
+  .prose .embed-cap {
+    font-size: 13px; color: var(--ink-soft);
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+  .prose .embed-video {
+    margin: 24px 0;
+    border: 1.5px solid var(--ink);
+    background: var(--ink);
+    height: 280px;
+    display: grid; place-items: center;
+    color: var(--paper);
+    position: relative;
+  }
+  .prose .embed-video .play {
+    width: 56px; height: 56px;
+    border: 2px solid var(--paper);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 24px;
+    color: var(--paper);
+  }
+  .prose .embed-video .label {
+    position: absolute; bottom: 12px; left: 16px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--paper); opacity: .7;
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .prose table.editor-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 22px 0;
+    font-family: "Patrick Hand", sans-serif;
+    font-size: 15px;
+  }
+  .prose table.editor-table th,
+  .prose table.editor-table td {
+    border: 1px solid var(--ink-faint);
+    padding: 8px 12px;
+    text-align: left;
+  }
+  .prose table.editor-table th {
+    background: var(--paper-dark);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--ink-soft);
+  }
+  .prose .ghost-line {
+    color: var(--ink-faint);
+    font-style: italic;
+    font-size: 16px;
+    border-left: 2px dashed var(--ink-faint);
+    padding-left: 14px;
+    margin-bottom: 20px;
+  }
+  .prose .slash {
+    color: var(--ink-faint);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    padding: 4px 10px;
+    background: var(--paper-dark);
+    border: 1px dashed var(--ink-faint);
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .word-count {
+    padding: 14px 32px;
+    border-top: 1.5px dashed var(--rule);
+    background: var(--paper);
+    display: flex; justify-content: space-between;
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+
+  /* === right rail === */
+  .rail {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: sticky;
+    top: 86px;
+  }
+  .panel {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 16px 18px 18px;
+    position: relative;
+  }
+  .panel .corner-tag {
+    position: absolute; top: -10px; left: 14px;
+    background: var(--paper); padding: 0 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--ink-soft);
+  }
+  .panel h3 {
+    font-family: "Caveat", cursive; font-weight: 700;
+    font-size: 24px; margin: 0 0 12px;
+  }
+  .field { margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  .fl {
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--ink-soft); margin-bottom: 5px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .fl .hint { font-family: "Patrick Hand"; font-size: 12px; color: var(--ink-faint); text-transform: none; letter-spacing: 0; }
+  .fi {
+    width: 100%;
+    border: 1.5px solid var(--ink);
+    padding: 7px 10px;
+    font-family: "Patrick Hand", sans-serif; font-size: 15px;
+    color: var(--ink); background: var(--paper); outline: none;
+  }
+  .fi:focus { background: white; box-shadow: 3px 3px 0 var(--ink); transform: translate(-1px,-1px); }
+  textarea.fi { resize: none; min-height: 60px; line-height: 1.4; }
+  select.fi {
+    cursor: pointer; appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+    background-size: 5px 5px; background-repeat: no-repeat;
+    padding-right: 26px;
+  }
+
+  /* status segmented */
+  .status-seg {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+  }
+  .status-seg button {
+    border: none; background: transparent;
+    padding: 7px 4px;
+    font-family: "Caveat", cursive; font-size: 17px;
+    color: var(--ink-soft); cursor: pointer;
+    border-right: 1.5px solid var(--ink);
+  }
+  .status-seg button:last-child { border-right: none; }
+  .status-seg button.on { background: var(--ink); color: var(--paper); }
+  .status-seg button:hover:not(.on) { background: var(--paper-dark); color: var(--ink); }
+
+  /* tag chips */
+  .tag-field {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    border: 1.5px solid var(--ink);
+    padding: 7px 8px;
+    min-height: 42px;
+    background: var(--paper);
+    align-items: center;
+  }
+  .chip {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    padding: 3px 8px 4px;
+    border: 1px solid var(--ink-faint);
+    background: var(--paper-dark);
+    color: var(--ink-soft);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip .rm { cursor: pointer; color: var(--ink-faint); font-size: 11px; }
+  .chip .rm:hover { color: var(--accent); }
+  .tag-field .add-tag {
+    border: none; outline: none; background: transparent;
+    font-family: "Patrick Hand", sans-serif; font-size: 14px;
+    color: var(--ink-soft); flex: 1; min-width: 80px;
+  }
+
+  /* cover thumb on rail */
+  .cover-thumb {
+    width: 100%; height: 110px;
+    border: 1.5px dashed var(--ink-faint);
+    background:
+      repeating-linear-gradient(45deg, transparent 0 6px, rgba(33,32,28,0.04) 6px 7px),
+      var(--paper);
+    display: grid; place-items: center;
+    cursor: pointer;
+    color: var(--ink-soft);
+    font-family: "Caveat", cursive; font-size: 18px;
+  }
+  .cover-thumb:hover { border-color: var(--ink); background-color: var(--paper-dark); }
+
+  /* seo preview */
+  .seo-box {
+    border: 1.5px solid var(--ink-faint);
+    background: white; padding: 10px 12px;
+    margin-top: 4px;
+  }
+  .seo-url {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    color: var(--ok); margin-bottom: 3px;
+  }
+  .seo-ttl {
+    font-family: "Caveat", cursive; font-size: 19px;
+    color: #1a4cad; line-height: 1.15; margin-bottom: 4px;
+  }
+  .seo-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+  .char-meter {
+    display: flex; align-items: center; gap: 6px;
+    font-family: "JetBrains Mono", monospace; font-size: 10px;
+    color: var(--ink-faint);
+    margin-top: 4px;
+  }
+  .char-bar {
+    flex: 1; height: 4px;
+    background: var(--paper-dark);
+    border: 1px solid var(--ink-faint);
+    position: relative;
+  }
+  .char-bar .fill { position: absolute; top: 0; left: 0; bottom: 0; background: var(--ok); }
+  .char-bar.warn .fill { background: var(--warn); }
+
+  /* checklist */
+  .checks { display: flex; flex-direction: column; gap: 6px; }
+  .chk {
+    display: flex; align-items: center; gap: 8px;
+    font-family: "Patrick Hand", sans-serif; font-size: 14px;
+  }
+  .chk .mark {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: "Caveat", cursive; font-size: 16px; font-weight: 700; line-height: 0.7;
+    border: 1.5px solid currentColor;
+  }
+  .chk.ok { color: var(--ok); }
+  .chk.warn { color: var(--warn); }
+  .chk.todo { color: var(--ink-faint); }
+  .chk.ok .mark::after { content: "✓"; }
+  .chk.warn .mark::after { content: "!"; }
+  .chk.todo .mark::after { content: "·"; font-size: 22px; line-height: 0.5; }
+
+  /* === AI floating assistant === */
+  .ai-fab {
+    position: fixed; bottom: 24px; right: 24px;
+    width: 56px; height: 56px;
+    border: 2px solid var(--ink);
+    background: var(--accent);
+    color: var(--paper);
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid; place-items: center;
+    font-family: "Caveat", cursive; font-size: 32px;
+    line-height: 0.7;
+    box-shadow: 4px 4px 0 var(--ink);
+    z-index: 50;
+    transition: transform .15s;
+  }
+  .ai-fab:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+  .ai-fab .pulse {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: var(--accent);
+    z-index: -1;
+    animation: aipulse 2s ease-in-out infinite;
+    opacity: 0.4;
+  }
+  @keyframes aipulse { 0%,100% { transform: scale(1); opacity: .4; } 50% { transform: scale(1.25); opacity: 0; } }
+
+  .ai-panel {
+    position: fixed;
+    top: 24px; bottom: 24px; right: 24px;
+    width: 380px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    box-shadow: 6px 6px 0 var(--ink);
+    display: flex; flex-direction: column;
+    transform: translateX(420px);
+    transition: transform .25s ease;
+    z-index: 60;
+  }
+  .ai-panel.open { transform: none; }
+  .ai-head {
+    padding: 12px 16px;
+    border-bottom: 1.5px dashed var(--rule);
+    display: flex; align-items: center; gap: 8px;
+    background: var(--paper-dark);
+  }
+  .ai-head-title { font-family: "Caveat", cursive; font-weight: 700; font-size: 24px; }
+  .ai-badge {
+    font-family: "JetBrains Mono", monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 2px 8px 3px; background: var(--ink); color: var(--paper);
+    margin-left: 8px;
+  }
+  .ai-close {
+    margin-left: auto;
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper); cursor: pointer;
+    font-family: "Caveat", cursive; font-size: 18px;
+    display: grid; place-items: center;
+  }
+  .ai-close:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+  .ai-quick {
+    padding: 10px 14px;
+    border-bottom: 1.5px dashed var(--rule);
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .ai-quick .q {
+    font-family: "Patrick Hand", sans-serif; font-size: 13px;
+    padding: 3px 10px 4px;
+    border: 1.5px dashed var(--ink-faint);
+    background: var(--paper); cursor: pointer;
+    color: var(--ink-soft);
+    border-radius: 999px;
+  }
+  .ai-quick .q:hover { border-color: var(--accent); color: var(--accent); }
+
+  .ai-msgs {
+    flex: 1; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    overflow-y: auto;
+  }
+  .ai-bubble {
+    font-size: 14.5px; line-height: 1.5;
+    padding: 10px 12px;
+    background: var(--paper-dark);
+    border: 1px dashed var(--ink-faint);
+  }
+  .ai-bubble.you { background: var(--paper); border-color: var(--ink-soft); }
+  .ai-bubble.sugg { background: white; border: 1.5px dashed var(--accent); }
+  .ai-bubble .role {
+    font-family: "JetBrains Mono", monospace; font-size: 9.5px;
+    color: var(--ink-faint); text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 5px;
+  }
+  .ai-bubble.sugg .role { color: var(--accent); }
+  .sugg-acts { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .sugg-btn {
+    font-family: "Caveat", cursive; font-size: 15px;
+    padding: 3px 10px;
+    border: 1.5px solid var(--ink); background: var(--paper);
+    cursor: pointer;
+  }
+  .sugg-btn:hover { background: var(--highlight); }
+  .sugg-btn.accept { background: var(--ink); color: var(--paper); }
+
+  .ai-input-row {
+    padding: 10px 12px;
+    border-top: 1.5px dashed var(--rule);
+    display: flex; gap: 6px;
+  }
+  .ai-ti {
+    flex: 1;
+    border: 1.5px solid var(--ink-soft);
+    background: var(--paper);
+    padding: 7px 10px;
+    font-family: "Patrick Hand", sans-serif; font-size: 14.5px;
+    outline: none; resize: none; height: 38px;
+  }
+  .ai-ti:focus { border-color: var(--ink); }
+  .ai-send {
+    width: 38px; height: 38px;
+    background: var(--ink); color: var(--paper);
+    border: none; cursor: pointer;
+    font-family: "Caveat", cursive; font-size: 22px; font-weight: 700;
+    line-height: 0.8;
+  }
+  .ai-send:hover { background: var(--accent); }
+
+  /* responsive collapse for rail */
+  @media (max-width: 1280px) {
+    .editor-layout { grid-template-columns: 1fr; }
+    .rail { position: static; }
+  }
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="ink-wobble">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="t" />
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="1.4" />
+    </filter>
+  </svg>
+
+  <header class="pagehead">
+    <div>
+      <h1>New Post <span class="scribble">/ Editor</span></h1>
+      <div class="crumbs">
+        <a href="Dashboard Overview.html">Dashboard</a> › <a href="Blog Manager.html">Blogs</a> ›<span class="cur">New post</span>
+      </div>
+    </div>
+    <div class="meta">
+      Spec § 5.3<br/>
+      rich editor · SEO · schedule
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- sidebar -->
+    <aside class="v2-nav wobble">
+      <div class="nav-main">
+        <div class="navhead">Admin</div>
+        <ul>
+          <li><a href="Dashboard Overview.html" style="color:inherit;text-decoration:none;display:block;">Overview</a></li>
+          <li><a href="Project Manager.html" style="color:inherit;text-decoration:none;display:block;">Projects</a></li>
+          <li class="active"><a href="Blog Manager.html" style="color:inherit;text-decoration:none;display:block;">Blogs</a></li>
+          <li>Media</li>
+          <li>Polls &amp; forms</li>
+          <li>Users</li>
+          <li>Jerry</li>
+          <li>Notebook</li>
+          <li>Analytics</li>
+        </ul>
+        <div style="margin-top: 24px;">
+          <div class="navhead">Status</div>
+          <div style="display: flex; align-items: center; gap: 8px; font-family: 'Caveat'; font-size: 18px;">
+            <span class="dot"></span> All systems go
+          </div>
+        </div>
+      </div>
+      <div class="nav-foot">
+        <div class="who-chip">
+          <div class="avatar">U</div>
+          <div>
+            <div class="who-name">Udit N.</div>
+            <div class="who-role">Admin</div>
+          </div>
+        </div>
+        <div class="foot-item"><span style="width:16px;text-align:center;">⚙</span> Settings</div>
+        <div class="foot-item signout"><span style="width:16px;text-align:center;">⏏</span> Sign out</div>
+      </div>
+    </aside>
+
+    <!-- main -->
+    <main>
+
+      <!-- sticky publish bar -->
+      <div class="publish-bar wobble">
+        <div class="pb-left">
+          <span class="pb-status">○ Draft</span>
+          <span class="pb-state"><span class="save-dot"></span> autosaved 12 sec ago</span>
+        </div>
+        <div class="pb-acts">
+          <button class="btn ghost">⌕ Preview</button>
+          <button class="btn ghost">Save draft</button>
+          <div class="pb-divider"></div>
+          <button class="btn">📅 Schedule</button>
+          <button class="btn primary">↗ Publish</button>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+
+        <!-- editor -->
+        <div class="editor wobble">
+
+          <!-- title block -->
+          <div class="editor-head">
+            <input class="title-input" type="text" value="Building Jerry: a study in style RAG" placeholder="Title…" />
+            <input class="subtitle-input" type="text" value="How to make a frontier LLM sound like you — without training a model from scratch." placeholder="Subtitle (optional)…" />
+            <div class="slug-line">
+              <span>/blog/</span>
+              <input class="slug-input" type="text" value="building-jerry-style-rag" />
+              <span class="edit-mark">✎ edit</span>
+            </div>
+          </div>
+
+          <!-- cover -->
+          <div class="cover-zone">
+            <span class="corner-tag">/// cover image</span>
+            <span class="uglyph">⬆</span>
+            <span class="utxt">Drop image here, or <span class="ulink">browse Cloudinary library</span></span>
+          </div>
+
+          <!-- toolbar -->
+          <div class="toolbar">
+            <div class="tb-group">
+              <button class="tb mono" title="Heading 1">H1</button>
+              <button class="tb mono" title="Heading 2">H2</button>
+              <button class="tb mono" title="Heading 3">H3</button>
+            </div>
+            <div class="tb-sep"></div>
+            <div class="tb-group">
+              <button class="tb mono" style="font-weight:700;" title="Bold">B</button>
+              <button class="tb mono" style="font-style:italic;" title="Italic">I</button>
+              <button class="tb mono" style="text-decoration:underline;" title="Underline">U</button>
+              <button class="tb mono" style="text-decoration:line-through;" title="Strike">S</button>
+            </div>
+            <div class="tb-sep"></div>
+            <div class="tb-group">
+              <button class="tb" title="Link">⇗</button>
+              <button class="tb" title="Bulleted list">≡</button>
+              <button class="tb" title="Numbered list">№</button>
+              <button class="tb" title="Quote">"</button>
+            </div>
+            <div class="tb-sep"></div>
+            <div class="tb-group">
+              <button class="tb mono" title="Inline code">&lt;/&gt;</button>
+              <button class="tb mono" title="Code block">{ }</button>
+              <button class="tb" title="Table">▦</button>
+              <button class="tb" title="Callout">⚑</button>
+            </div>
+            <div class="tb-sep"></div>
+            <div class="tb-group">
+              <button class="tb" title="Image">📷</button>
+              <button class="tb" title="Video embed">▶</button>
+              <button class="tb" title="Embed">⎘</button>
+            </div>
+            <button class="tb tb-ai" title="AI assistant" onclick="toggleAI()">
+              <span style="font-size:18px;">✨</span>
+              <span style="font-family:'Caveat';font-size:17px;margin-left:4px;">AI assist</span>
+            </button>
+          </div>
+
+          <!-- prose body -->
+          <div class="prose" contenteditable="true">
+            <p>Jerry is Udit's AI-powered client representative — handling requirements, scoping, and discovery calls so no opportunity slips through. Built on <a href="#">LangGraph</a> with a curated style corpus, Jerry speaks in Udit's voice and adapts to every conversation.</p>
+
+            <p>When I started this project, the obvious move felt like training a small language model on chat exports. That intuition turned out to be wrong, and here's why.</p>
+
+            <h2>The trade-offs no one talks about</h2>
+            <p>A 500M-parameter model fine-tuned on your WhatsApp history will <em>sound</em> like you. It will also forget arithmetic, fumble tool use, and confidently invent facts about your projects. The reasoning ability is the first thing to go.</p>
+
+            <div class="callout">
+              <span class="cal-icon">✏︎</span>
+              <div>
+                <b>Voice without reasoning is karaoke.</b>
+                It mimics the surface and loses the substance. For a public-facing agent that answers technical questions, that's a non-starter.
+              </div>
+            </div>
+
+            <h2>Three layers, no training</h2>
+            <p>What ended up working is a three-layer wrapper around a frontier LLM. Each layer adds a different kind of personalization without touching model weights.</p>
+
+            <h3>1. The voice profile</h3>
+            <p>A curated system prompt describing the way you talk: vocabulary preferences, opinions, conversational tics. Versioned in the database, edited from the admin panel. This is the part you can write by hand.</p>
+
+            <h3>2. Style corpus (RAG)</h3>
+            <p>A <code class="inline">pgvector</code> index over your writing samples — WhatsApp exports, emails, blog posts. For every visitor turn, retrieve 3-5 stylistically relevant exchanges and inject them as few-shot examples.</p>
+
+            <pre class="code-block"><span class="lang">Python · LangGraph</span>def style_retriever(state: AgentState) -&gt; AgentState:
+    query = state["last_user_message"]
+    samples = vector_store.similarity_search(
+        query, k=5, filter={"context": state["intent"]}
+    )
+    state["style_examples"] = [s.page_content for s in samples]
+    return state</pre>
+
+            <h3>3. Conversational memory</h3>
+            <p>A graph-shaped memory in Supabase using <code class="inline">pg_graphql</code> + recursive CTEs. We only persist information that the Intent Classifier judges <em>graph-worthy</em>:</p>
+            <ul>
+              <li>Entities mentioned (technologies, project names, people)</li>
+              <li>Stated preferences and constraints</li>
+              <li>Open questions waiting for follow-up</li>
+            </ul>
+
+            <h2>Cost vs. capability</h2>
+            <p>Here's the math that closed the case:</p>
+
+            <table class="editor-table">
+              <thead><tr><th>Approach</th><th>Sounds like you</th><th>Reasoning</th><th>Monthly cost</th></tr></thead>
+              <tbody>
+                <tr><td>Train 500M from scratch</td><td>★★</td><td>★</td><td>$$$$ (one-time)</td></tr>
+                <tr><td>Fine-tune small OSS model</td><td>★★★</td><td>★★</td><td>$$ + GPU hosting</td></tr>
+                <tr><td>Frontier LLM + style RAG</td><td>★★★</td><td>★★★★★</td><td>$ per-token</td></tr>
+              </tbody>
+            </table>
+
+            <div class="embed-img">[ image placeholder · jerry-architecture.png ]</div>
+            <p class="embed-cap">Figure 1 — Jerry's three-layer wrapper around a frontier LLM.</p>
+
+            <h2>The demo</h2>
+            <p>Watch Jerry handle a discovery call from intent detection through calendar booking:</p>
+
+            <div class="embed-video">
+              <div>
+                <div class="play">▶</div>
+              </div>
+              <span class="label">YOUTUBE · DEMO-JERRY · 4:12</span>
+            </div>
+
+            <blockquote>"It's the first AI representative I've talked to that didn't feel like a maze of decision trees pretending to be friendly."<br>— alpha tester, week 2</blockquote>
+
+            <h2>What's next</h2>
+            <p class="ghost-line">Start typing or hit <span class="slash">/</span> to insert a block…</p>
+          </div>
+
+          <!-- footer / word count -->
+          <div class="word-count">
+            <span>~580 words · 8 min read · 12 blocks</span>
+            <span>last edit · 2:47 PM IST</span>
+          </div>
+
+        </div>
+
+        <!-- right rail -->
+        <aside class="rail">
+
+          <div class="panel wobble">
+            <span class="corner-tag">/// status</span>
+            <h3>Publish</h3>
+            <div class="field">
+              <div class="fl">Status</div>
+              <div class="status-seg">
+                <button class="on">Draft</button>
+                <button>Scheduled</button>
+                <button>Publish</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="fl">Scheduled at <span class="hint">date · time · IST</span></div>
+              <input class="fi" type="text" value="May 28, 2026 — 09:00" placeholder="Pick a date…" />
+            </div>
+            <div class="field">
+              <div class="fl">Visibility</div>
+              <select class="fi">
+                <option>Public</option>
+                <option>Logged-in users only</option>
+                <option>Unlisted (link only)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="panel wobble">
+            <span class="corner-tag">/// taxonomy</span>
+            <h3>Category &amp; tags</h3>
+            <div class="field">
+              <div class="fl">Category</div>
+              <select class="fi">
+                <option selected>AI &amp; Agents</option>
+                <option>Web Dev</option>
+                <option>Tutorials</option>
+                <option>Opinion</option>
+                <option>Career</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="fl">Tags <span class="hint">enter to add</span></div>
+              <div class="tag-field">
+                <span class="chip">langgraph <span class="rm">×</span></span>
+                <span class="chip">rag <span class="rm">×</span></span>
+                <span class="chip">claude <span class="rm">×</span></span>
+                <span class="chip">pgvector <span class="rm">×</span></span>
+                <input class="add-tag" placeholder="+ add…" />
+              </div>
+            </div>
+          </div>
+
+          <div class="panel wobble">
+            <span class="corner-tag">/// cover &amp; excerpt</span>
+            <h3>Card preview</h3>
+            <div class="field">
+              <div class="fl">Cover image</div>
+              <div class="cover-thumb">click to add cover</div>
+            </div>
+            <div class="field">
+              <div class="fl">Excerpt <span class="hint">card preview · ~160 chars</span></div>
+              <textarea class="fi">How to make a frontier LLM sound like you — without training a model from scratch. Three layers, no fine-tuning.</textarea>
+            </div>
+          </div>
+
+          <div class="panel wobble">
+            <span class="corner-tag">/// seo</span>
+            <h3>Search &amp; social</h3>
+            <div class="field">
+              <div class="fl">Meta title <span class="hint">55–60</span></div>
+              <input class="fi" type="text" value="Building Jerry: a study in style RAG · Udit N." />
+              <div class="char-meter">
+                <div class="char-bar"><div class="fill" style="width: 80%;"></div></div>
+                <span>48 / 60</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="fl">Meta description <span class="hint">150–160</span></div>
+              <textarea class="fi" style="min-height:54px;">A frontier LLM wrapped in voice profile + style RAG + graph memory. How Jerry speaks in Udit's voice without training a custom model.</textarea>
+              <div class="char-meter warn">
+                <div class="char-bar warn"><div class="fill" style="width: 85%;"></div></div>
+                <span>134 / 160</span>
+              </div>
+            </div>
+            <div class="field">
+              <div class="fl">Canonical URL</div>
+              <input class="fi" type="text" value="uditnarayana.dev/blog/building-jerry-style-rag" />
+            </div>
+            <div class="field">
+              <div class="fl">OpenGraph image</div>
+              <div class="cover-thumb" style="height:74px;">og-image · 1200 × 630</div>
+            </div>
+            <div class="field">
+              <div class="fl">Preview</div>
+              <div class="seo-box">
+                <div class="seo-url">uditnarayana.dev › blog › building-jerry-style-rag</div>
+                <div class="seo-ttl">Building Jerry: a study in style RAG · Udit N.</div>
+                <div class="seo-desc">A frontier LLM wrapped in voice profile + style RAG + graph memory. How Jerry speaks in Udit's voice…</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel wobble">
+            <span class="corner-tag">/// checklist</span>
+            <h3>Before publish</h3>
+            <div class="checks">
+              <div class="chk ok"><span class="mark"></span> Title &amp; subtitle</div>
+              <div class="chk ok"><span class="mark"></span> Excerpt written</div>
+              <div class="chk ok"><span class="mark"></span> Category set</div>
+              <div class="chk ok"><span class="mark"></span> 4 tags added</div>
+              <div class="chk ok"><span class="mark"></span> Meta title &amp; description</div>
+              <div class="chk warn"><span class="mark"></span> Cover image missing</div>
+              <div class="chk warn"><span class="mark"></span> OpenGraph image missing</div>
+              <div class="chk todo"><span class="mark"></span> Spelling pass</div>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- AI floating button -->
+  <button class="ai-fab" onclick="toggleAI()" title="Open AI Content Assistant">
+    <span class="pulse"></span>
+    ✨
+  </button>
+
+  <!-- AI slide-in panel -->
+  <div class="ai-panel" id="aiPanel">
+    <div class="ai-head">
+      <span style="font-family:'Caveat';font-size:26px;color:var(--accent);">✨</span>
+      <span class="ai-head-title">Content Assistant</span>
+      <span class="ai-badge">LangGraph</span>
+      <button class="ai-close" onclick="toggleAI()">×</button>
+    </div>
+    <div class="ai-quick">
+      <span class="q">↻ Rewrite selection</span>
+      <span class="q">↧ Expand</span>
+      <span class="q">↥ Tighten</span>
+      <span class="q">⚑ Suggest SEO</span>
+      <span class="q">⊕ Generate excerpt</span>
+      <span class="q">≡ Outline next section</span>
+    </div>
+    <div class="ai-msgs">
+      <div class="ai-bubble">
+        <div class="role">assistant</div>
+        I've read what you have so far. Strong opening — want me to suggest a sharper closing for "What's next"? Or rework the table so the tradeoffs land harder?
+      </div>
+      <div class="ai-bubble you">
+        <div class="role">you</div>
+        Suggest a meta description under 155 chars that emphasizes the cost angle.
+      </div>
+      <div class="ai-bubble sugg">
+        <div class="role">★ suggestion · 142 chars</div>
+        Train a custom model? Wrong move. How a frontier LLM + style RAG + graph memory makes Jerry sound like Udit — at a fraction of the cost.
+        <div class="sugg-acts">
+          <button class="sugg-btn accept">✓ Use this</button>
+          <button class="sugg-btn">✎ Edit</button>
+          <button class="sugg-btn">↻ Retry</button>
+        </div>
+      </div>
+    </div>
+    <div class="ai-input-row">
+      <textarea class="ai-ti" placeholder="ask for a rewrite, outline, SEO copy…"></textarea>
+      <button class="ai-send">↑</button>
+    </div>
+  </div>
+
+  <!-- Tweaks -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <script>
+    function toggleAI() {
+      document.getElementById('aiPanel').classList.toggle('open');
+    }
+
+    // status segmented
+    document.querySelectorAll('.status-seg').forEach(seg => {
+      seg.querySelectorAll('button').forEach(b => {
+        b.addEventListener('click', () => {
+          seg.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+          b.classList.add('on');
+        });
+      });
+    });
+
+    // toolbar active state demo for B/I etc
+    document.querySelectorAll('.toolbar .tb').forEach(b => {
+      if (b.classList.contains('tb-ai')) return;
+      b.addEventListener('click', () => b.classList.toggle('active'));
+    });
+  </script>
+
+  <script type="text/babel">
+    const { useEffect } = React;
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "accent": "#c1432a",
+      "wobble": true,
+      "paper": "#f5f1e8"
+    }/*EDITMODE-END*/;
+
+    function Tweaks() {
+      const [t, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
+      useEffect(() => {
+        document.documentElement.style.setProperty('--accent', t.accent);
+        document.documentElement.style.setProperty('--accent-soft', t.accent + '22');
+        document.documentElement.style.setProperty('--paper', t.paper);
+        document.body.classList.toggle('no-wobble', !t.wobble);
+      }, [t]);
+      return (
+        <window.TweaksPanel title="Tweaks">
+          <window.TweakSection title="Look">
+            <window.TweakColor label="Accent (ink)" value={t.accent} onChange={v => setTweak('accent', v)}
+              options={['#c1432a','#2a5fa3','#3d7a3a','#7a3aa6','#21201c']} />
+            <window.TweakColor label="Paper" value={t.paper} onChange={v => setTweak('paper', v)}
+              options={['#f5f1e8','#ffffff','#ede4cf','#e6e4dd']} />
+            <window.TweakToggle label="Ink wobble" value={t.wobble} onChange={v => setTweak('wobble', v)} />
+          </window.TweakSection>
+        </window.TweaksPanel>
+      );
+    }
+
+    const wait = setInterval(() => {
+      if (window.TweaksPanel && window.useTweaks) {
+        clearInterval(wait);
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        ReactDOM.createRoot(host).render(<Tweaks />);
+      }
+    }, 50);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Blog Manager — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&family=Kalam:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #f5f1e8;
+    --paper-dark: #ebe4d3;
+    --ink: #21201c;
+    --ink-soft: #5a5852;
+    --ink-faint: #9b9789;
+    --rule: #cbc4b1;
+    --accent: #c1432a;
+    --accent-soft: #c1432a22;
+    --highlight: #f4e07a;
+    --grid-line: rgba(33,32,28,0.06);
+    --ok: #6aa84f;
+    --warn: #f4b03a;
+    --archived: #9b9789;
+    --scheduled: #2a5fa3;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font-family: "Patrick Hand", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.35;
+    min-height: 100vh;
+    padding: 28px 32px 80px;
+  }
+  .wobble { filter: url(#ink-wobble); }
+  .no-wobble .wobble { filter: none; }
+
+  /* page header */
+  .pagehead {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    border-bottom: 2px dashed var(--ink);
+    padding-bottom: 14px; margin-bottom: 22px;
+  }
+  .pagehead h1 {
+    font-family: "Caveat", cursive; font-weight: 700;
+    font-size: 44px; margin: 0; letter-spacing: 0.5px;
+  }
+  .pagehead h1 .scribble { color: var(--accent); }
+  .pagehead .meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px; color: var(--ink-soft);
+    text-align: right; text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .crumbs { font-family: "Patrick Hand"; color: var(--ink-soft); font-size: 16px; margin-top: 4px; }
+  .crumbs a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px dashed var(--ink-faint); }
+  .crumbs a:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* layout */
+  .layout { display: grid; grid-template-columns: 200px 1fr; gap: 22px; }
+
+  /* sidebar */
+  .v2-nav {
+    border: 2px solid var(--ink); border-style: dashed;
+    padding: 16px; background: var(--paper); min-height: 720px;
+    display: flex; flex-direction: column;
+  }
+  .v2-nav .nav-main { flex: 1; }
+  .v2-nav .navhead {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--ink-soft); margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .v2-nav ul { list-style: none; padding: 0; margin: 0; }
+  .v2-nav li {
+    font-family: "Caveat", cursive; font-size: 20px;
+    padding: 6px 8px; cursor: pointer; border-radius: 3px; color: var(--ink-soft);
+  }
+  .v2-nav li.active { background: var(--ink); color: var(--paper); }
+  .v2-nav li.active::before { content: "→ "; }
+  .v2-nav li:hover:not(.active) { background: var(--paper-dark); color: var(--ink); }
+  .v2-nav .nav-foot { margin-top: 18px; padding-top: 14px; border-top: 1.5px dashed var(--rule); }
+  .v2-nav .who-chip { display: flex; align-items: center; gap: 10px; padding: 8px 6px 12px; }
+  .v2-nav .who-chip .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent); color: var(--paper);
+    display: grid; place-items: center;
+    font-family: "Caveat", cursive; font-size: 20px; font-weight: 700;
+    border: 1.5px solid var(--ink); flex-shrink: 0;
+  }
+  .v2-nav .who-chip .who-name { font-family: "Caveat", cursive; font-size: 18px; line-height: 1; }
+  .v2-nav .who-chip .who-role {
+    font-family: "JetBrains Mono", monospace; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-soft); margin-top: 3px;
+  }
+  .v2-nav .foot-item {
+    font-family: "Caveat", cursive; font-size: 19px;
+    padding: 6px 8px; cursor: pointer; border-radius: 3px;
+    color: var(--ink-soft); display: flex; align-items: center; gap: 8px;
+  }
+  .v2-nav .foot-item:hover { background: var(--paper-dark); color: var(--ink); }
+  .v2-nav .foot-item.signout { color: var(--accent); }
+  .v2-nav .foot-item.signout:hover { background: var(--accent-soft); color: var(--accent); }
+  .dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent); border: 1.5px solid var(--ink); flex-shrink: 0;
+  }
+  .dot.ok { background: var(--ok); }
+  .dot.warn { background: var(--warn); }
+  .dot.archived { background: var(--archived); }
+  .dot.draft { background: var(--paper); }
+  .dot.scheduled { background: var(--scheduled); }
+
+  /* === main === */
+  main { min-width: 0; }
+
+  /* stats strip */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .ministat {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 12px 14px 10px;
+    position: relative;
+  }
+  .ministat .label {
+    font-family: "JetBrains Mono", monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-soft);
+  }
+  .ministat .num {
+    font-family: "Caveat", cursive; font-weight: 700;
+    font-size: 36px; line-height: 1; margin-top: 4px;
+  }
+  .ministat .sub {
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    color: var(--ink-soft); margin-top: 4px;
+  }
+  .ministat .sub.up { color: var(--ok); }
+  .ministat.dark {
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+  }
+  .ministat.dark .label { color: var(--paper); opacity: .65; }
+  .ministat.dark .sub { color: var(--paper); opacity: .7; }
+
+  /* moderation banner */
+  .mod-banner {
+    border: 2px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: "Caveat", cursive;
+    font-size: 22px;
+  }
+  .mod-banner .badge {
+    background: var(--accent); color: var(--paper);
+    padding: 4px 10px 5px;
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    border-radius: 999px;
+  }
+  .mod-banner .right { margin-left: auto; display: flex; gap: 8px; }
+  .mod-banner .mod-btn {
+    font-family: "Caveat", cursive; font-size: 18px;
+    padding: 4px 12px;
+    border: 1.5px solid var(--accent); color: var(--accent);
+    background: transparent; cursor: pointer;
+  }
+  .mod-banner .mod-btn.primary {
+    background: var(--accent); color: var(--paper);
+  }
+  .mod-banner .mod-btn:hover { background: var(--accent); color: var(--paper); }
+
+  /* toolbar */
+  .toolbar {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .toolbar .right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .search-wrap { flex: 1; min-width: 260px; position: relative; }
+  .search-wrap input {
+    width: 100%;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 10px 14px 10px 38px;
+    font-family: "Patrick Hand", sans-serif;
+    font-size: 17px; color: var(--ink); outline: none;
+  }
+  .search-wrap input::placeholder { color: var(--ink-faint); }
+  .search-wrap input:focus { background: white; box-shadow: 3px 3px 0 var(--ink); transform: translate(-1px,-1px); }
+  .search-wrap .glass {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; border: 2px solid var(--ink-soft); border-radius: 50%;
+  }
+  .search-wrap .glass::after {
+    content: ""; position: absolute; right: -6px; bottom: -3px;
+    width: 8px; height: 2px; background: var(--ink-soft); transform: rotate(45deg);
+  }
+  .search-wrap .kbd {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    font-family: "JetBrains Mono", monospace; font-size: 10px;
+    color: var(--ink-faint); border: 1px solid var(--ink-faint);
+    padding: 2px 5px; border-radius: 3px;
+  }
+  .btn {
+    font-family: "Caveat", cursive; font-size: 20px;
+    border: 2px solid var(--ink); background: var(--paper);
+    padding: 8px 16px; cursor: pointer; color: var(--ink);
+    transition: transform .12s, box-shadow .12s;
+  }
+  .btn:hover { transform: translate(-2px,-2px); box-shadow: 3px 3px 0 var(--ink); }
+  .btn.primary { background: var(--ink); color: var(--paper); }
+  .btn.primary:hover { box-shadow: 3px 3px 0 var(--accent); }
+  .btn .plus { font-size: 24px; line-height: 0.9; margin-right: 4px; }
+
+  /* filter pills */
+  .pills {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    margin-bottom: 10px;
+  }
+  .pills .pill-label {
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-soft);
+    margin-right: 4px;
+  }
+  .pill {
+    font-family: "Patrick Hand", sans-serif; font-size: 14.5px;
+    padding: 4px 12px 5px;
+    border: 1.5px solid var(--ink-faint); border-radius: 999px;
+    background: var(--paper); cursor: pointer; color: var(--ink-soft);
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all .12s;
+  }
+  .pill:hover { border-color: var(--ink); color: var(--ink); }
+  .pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .pill.active .count { color: var(--paper); opacity: .7; }
+  .pill .count {
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    color: var(--ink-faint);
+  }
+  .pill-divider { width: 1px; height: 18px; background: var(--rule); margin: 0 6px; }
+
+  /* tag cloud */
+  .tagcloud {
+    border: 1.5px dashed var(--ink-faint);
+    background: var(--paper);
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    display: flex; flex-wrap: wrap; gap: 6px;
+    align-items: center;
+  }
+  .tagcloud .tc-label {
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-soft);
+    margin-right: 8px;
+  }
+  .tagcloud .tag {
+    font-family: "Patrick Hand", sans-serif; font-size: 14.5px;
+    color: var(--ink-soft); cursor: pointer;
+    padding: 1px 6px;
+  }
+  .tagcloud .tag.s2 { font-size: 16px; color: var(--ink); }
+  .tagcloud .tag.s3 { font-size: 18px; color: var(--ink); font-family: "Caveat", cursive; font-weight: 600; }
+  .tagcloud .tag.s4 { font-size: 22px; color: var(--accent); font-family: "Caveat", cursive; font-weight: 700; }
+  .tagcloud .tag:hover { background: var(--highlight); color: var(--ink); }
+  .tagcloud .tag .num {
+    font-family: "JetBrains Mono", monospace; font-size: 10px;
+    color: var(--ink-faint); margin-left: 2px;
+  }
+
+  /* bulk-bar */
+  .bulk-bar {
+    background: var(--ink); color: var(--paper);
+    border: 2px solid var(--ink);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+    font-family: "Caveat", cursive; font-size: 20px;
+  }
+  .bulk-bar .count-badge {
+    background: var(--accent); padding: 2px 10px 3px;
+    border-radius: 999px;
+    font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 1px;
+  }
+  .bulk-bar .bulk-btns { margin-left: auto; display: flex; gap: 8px; }
+  .bulk-bar .bulk-btn {
+    font-family: "Caveat", cursive; font-size: 18px;
+    padding: 4px 12px;
+    border: 1.5px dashed var(--paper);
+    color: var(--paper); background: transparent; cursor: pointer;
+  }
+  .bulk-bar .bulk-btn:hover { background: rgba(255,255,255,.1); }
+  .bulk-bar .bulk-btn.danger { color: #f4b03a; border-color: #f4b03a; }
+
+  /* table */
+  .table-wrap {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    overflow: hidden;
+  }
+  table.posts { width: 100%; border-collapse: collapse; font-family: "Patrick Hand", sans-serif; }
+  table.posts thead th {
+    background: var(--paper-dark);
+    text-align: left;
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--ink-soft); padding: 12px 14px;
+    border-bottom: 2px solid var(--ink);
+    font-weight: 500; white-space: nowrap;
+  }
+  table.posts thead th .sort-arr { color: var(--ink); margin-left: 4px; }
+  table.posts tbody td {
+    padding: 14px 14px;
+    border-bottom: 1px dashed var(--rule);
+    vertical-align: middle; font-size: 16px;
+  }
+  table.posts tbody tr:last-child td { border-bottom: 0; }
+  table.posts tbody tr { transition: background .12s; }
+  table.posts tbody tr:hover { background: rgba(244, 224, 122, 0.18); }
+  table.posts tbody tr.selected { background: var(--accent-soft); }
+
+  .check {
+    width: 18px; height: 18px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    display: inline-block;
+    cursor: pointer; position: relative; vertical-align: middle; flex-shrink: 0;
+  }
+  .check.on::after {
+    content: "✓"; position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-family: "Caveat", cursive; font-size: 22px;
+    color: var(--accent); font-weight: 700; line-height: 0.9;
+  }
+
+  .cover {
+    width: 64px; height: 44px;
+    border: 1.5px solid var(--ink);
+    background:
+      repeating-linear-gradient(45deg, transparent 0 6px, rgba(33,32,28,.08) 6px 7px),
+      var(--paper-dark);
+    position: relative; flex-shrink: 0;
+  }
+  .cover.featured::after {
+    content: "★";
+    position: absolute; top: -8px; right: -6px;
+    width: 16px; height: 16px;
+    background: var(--highlight);
+    border: 1.5px solid var(--ink); border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 10px; color: var(--ink);
+  }
+
+  .title-cell {
+    display: flex; align-items: center; gap: 12px; min-width: 0;
+  }
+  .title-cell .title-text { min-width: 0; }
+  .title-cell .title {
+    font-family: "Caveat", cursive; font-size: 22px; font-weight: 600;
+    line-height: 1.1; display: block; color: var(--ink);
+    max-width: 380px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .title-cell .title:hover { color: var(--accent); cursor: pointer; }
+  .title-cell .excerpt {
+    font-size: 13px; color: var(--ink-soft);
+    max-width: 380px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    margin-top: 2px;
+  }
+  .title-cell .slug {
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    color: var(--ink-faint); margin-top: 3px;
+  }
+
+  .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 3px 9px 4px;
+    border: 1.5px solid currentColor;
+    border-radius: 999px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .status.published { color: var(--ok); }
+  .status.draft { color: var(--ink-faint); border-style: dashed; }
+  .status.scheduled { color: var(--scheduled); }
+  .status.archived { color: var(--archived); }
+
+  .cat-badge {
+    display: inline-block;
+    font-family: "Caveat", cursive; font-size: 17px; font-weight: 600;
+    color: var(--ink); background: var(--paper-dark);
+    padding: 2px 10px 3px; border-radius: 3px;
+    border-left: 3px solid var(--accent);
+    white-space: nowrap;
+  }
+  .cat-badge.c-ai { border-left-color: var(--accent); }
+  .cat-badge.c-web { border-left-color: var(--scheduled); }
+  .cat-badge.c-tut { border-left-color: var(--ok); }
+  .cat-badge.c-op { border-left-color: var(--warn); }
+  .cat-badge.c-career { border-left-color: var(--ink); }
+
+  .tag-row {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    max-width: 180px;
+  }
+  .tag-chip {
+    font-family: "JetBrains Mono", monospace; font-size: 10px;
+    padding: 2px 7px 3px;
+    border: 1px solid var(--ink-faint);
+    color: var(--ink-soft);
+    background: var(--paper);
+    white-space: nowrap;
+  }
+  .tag-chip.more { border-style: dashed; color: var(--ink-faint); }
+
+  .author-cell {
+    font-family: "Patrick Hand", sans-serif; font-size: 14px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .author-cell .date {
+    display: block;
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    color: var(--ink-soft); margin-top: 2px;
+  }
+  .author-cell .when {
+    display: block;
+    font-family: "Patrick Hand", sans-serif; font-size: 14px;
+    color: var(--ink);
+  }
+
+  .reading-time {
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .reading-time b {
+    font-family: "Patrick Hand", sans-serif; font-size: 15px;
+    color: var(--ink); font-weight: 500;
+  }
+
+  .stat-mini {
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    color: var(--ink-soft);
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 2px 8px;
+    white-space: nowrap;
+  }
+  .stat-mini b {
+    color: var(--ink); font-weight: 500;
+    font-family: "Patrick Hand", sans-serif; font-size: 14px;
+  }
+  .stat-mini .mod-flag {
+    grid-column: 1 / -1;
+    color: var(--accent);
+    font-family: "Patrick Hand", sans-serif; font-size: 13px;
+  }
+
+  .row-actions {
+    display: flex; gap: 4px; justify-content: flex-end;
+    opacity: 0.6; transition: opacity .12s;
+  }
+  tr:hover .row-actions { opacity: 1; }
+  .icon-btn {
+    width: 30px; height: 30px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+    display: grid; place-items: center;
+    font-family: "Caveat", cursive; font-size: 16px; color: var(--ink);
+    transition: transform .1s, background .1s;
+  }
+  .icon-btn:hover { background: var(--highlight); transform: translate(-1px,-1px); box-shadow: 2px 2px 0 var(--ink); }
+  .icon-btn.danger { color: var(--accent); border-color: var(--accent); }
+  .icon-btn.danger:hover { background: var(--accent-soft); box-shadow: 2px 2px 0 var(--accent); }
+  .icon-btn.ai { color: var(--accent); }
+  .icon-btn.ai:hover { background: var(--accent-soft); border-color: var(--accent); box-shadow: 2px 2px 0 var(--accent); }
+
+  /* table footer */
+  .table-foot {
+    margin-top: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    color: var(--ink-soft); text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .pages { display: flex; gap: 6px; align-items: center; }
+  .page-btn {
+    min-width: 28px; height: 28px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    font-family: "Patrick Hand", sans-serif; font-size: 14px;
+    cursor: pointer; padding: 0 8px; color: var(--ink);
+  }
+  .page-btn.active { background: var(--ink); color: var(--paper); }
+  .page-btn:hover:not(.active) { background: var(--highlight); }
+  .page-btn.disabled { color: var(--ink-faint); cursor: not-allowed; border-color: var(--ink-faint); }
+
+  .annot {
+    font-family: "Caveat", cursive; color: var(--accent); font-size: 18px;
+    margin-top: 18px;
+  }
+  .annot .ai-pill {
+    background: var(--accent); color: var(--paper);
+    padding: 1px 8px 2px; margin: 0 2px;
+    font-family: "JetBrains Mono", monospace; font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute">
+    <filter id="ink-wobble">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="t" />
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="1.4" />
+    </filter>
+  </svg>
+
+  <header class="pagehead">
+    <div>
+      <h1>Blogs <span class="scribble">/ Manage</span></h1>
+      <div class="crumbs">
+        <a href="Dashboard Overview.html">Dashboard</a> &nbsp;›&nbsp; Blogs
+      </div>
+    </div>
+    <div class="meta">
+      Spec § 5.3<br/>
+      41 posts · 5 awaiting moderation
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- sidebar -->
+    <aside class="v2-nav wobble">
+      <div class="nav-main">
+        <div class="navhead">Admin</div>
+        <ul>
+          <li><a href="Dashboard Overview.html" style="color:inherit;text-decoration:none;display:block;">Overview</a></li>
+          <li><a href="Project Manager.html" style="color:inherit;text-decoration:none;display:block;">Projects</a></li>
+          <li class="active">Blogs</li>
+          <li>Media</li>
+          <li>Polls &amp; forms</li>
+          <li>Users</li>
+          <li>Jerry</li>
+          <li>Notebook</li>
+          <li>Analytics</li>
+        </ul>
+        <div style="margin-top: 24px;">
+          <div class="navhead">Status</div>
+          <div style="display: flex; align-items: center; gap: 8px; font-family: 'Caveat'; font-size: 18px;">
+            <span class="dot ok"></span> All systems go
+          </div>
+        </div>
+      </div>
+      <div class="nav-foot">
+        <div class="who-chip">
+          <div class="avatar">U</div>
+          <div>
+            <div class="who-name">Udit N.</div>
+            <div class="who-role">Admin</div>
+          </div>
+        </div>
+        <div class="foot-item"><span style="width:16px;text-align:center;">⚙</span> Settings</div>
+        <div class="foot-item signout"><span style="width:16px;text-align:center;">⏏</span> Sign out</div>
+      </div>
+    </aside>
+
+    <!-- main canvas -->
+    <main>
+
+      <!-- stats strip -->
+      <div class="stats-row wobble">
+        <div class="ministat dark">
+          <div class="label">Total posts</div>
+          <div class="num">41</div>
+          <div class="sub up">▲ 3 this month</div>
+        </div>
+        <div class="ministat">
+          <div class="label">Published</div>
+          <div class="num">32</div>
+          <div class="sub">live on the site</div>
+        </div>
+        <div class="ministat">
+          <div class="label">Drafts</div>
+          <div class="num">7</div>
+          <div class="sub">in progress</div>
+        </div>
+        <div class="ministat">
+          <div class="label">Scheduled</div>
+          <div class="num">2</div>
+          <div class="sub">next: tomorrow 09:00</div>
+        </div>
+        <div class="ministat">
+          <div class="label">Pending comments</div>
+          <div class="num" style="color: var(--accent);">5</div>
+          <div class="sub" style="color: var(--accent);">moderation queue</div>
+        </div>
+      </div>
+
+      <!-- moderation banner -->
+      <div class="mod-banner wobble">
+        <span class="badge">5 comments</span>
+        <span>are awaiting your review — last one came in 12 min ago.</span>
+        <div class="right">
+          <button class="mod-btn">Skim now</button>
+          <button class="mod-btn primary">Open queue →</button>
+        </div>
+      </div>
+
+      <!-- toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="glass"></span>
+          <input type="text" placeholder="Search posts by title, slug, excerpt, or content…" />
+          <span class="kbd">⌘ K</span>
+        </div>
+        <div class="right">
+          <button class="btn">Import</button>
+          <button class="btn primary"><span class="plus">+</span> New post</button>
+        </div>
+      </div>
+
+      <!-- filter pills: status -->
+      <div class="pills">
+        <span class="pill-label">Status</span>
+        <span class="pill active">All <span class="count">41</span></span>
+        <span class="pill"><span class="dot ok" style="width:8px;height:8px;border-width:1px"></span> Published <span class="count">32</span></span>
+        <span class="pill"><span class="dot draft" style="width:8px;height:8px;border-width:1px"></span> Draft <span class="count">7</span></span>
+        <span class="pill"><span class="dot scheduled" style="width:8px;height:8px;border-width:1px"></span> Scheduled <span class="count">2</span></span>
+        <span class="pill"><span class="dot archived" style="width:8px;height:8px;border-width:1px"></span> Archived <span class="count">0</span></span>
+
+        <span class="pill-divider"></span>
+        <span class="pill-label">Category</span>
+        <span class="pill active">All</span>
+        <span class="pill">AI &amp; Agents <span class="count">14</span></span>
+        <span class="pill">Web Dev <span class="count">11</span></span>
+        <span class="pill">Tutorials <span class="count">8</span></span>
+        <span class="pill">Opinion <span class="count">5</span></span>
+        <span class="pill">Career <span class="count">3</span></span>
+
+        <span class="pill-divider"></span>
+        <span class="pill-label">Sort</span>
+        <span class="pill">Newest ↓</span>
+      </div>
+
+      <!-- tag cloud -->
+      <div class="tagcloud wobble">
+        <span class="tc-label">Tags</span>
+        <span class="tag s4">langgraph <span class="num">12</span></span>
+        <span class="tag s3">claude <span class="num">9</span></span>
+        <span class="tag s3">react <span class="num">8</span></span>
+        <span class="tag s2">supabase <span class="num">6</span></span>
+        <span class="tag s2">postgres <span class="num">5</span></span>
+        <span class="tag s2">rag <span class="num">5</span></span>
+        <span class="tag">vector-search <span class="num">4</span></span>
+        <span class="tag">fastapi <span class="num">4</span></span>
+        <span class="tag">framer-motion <span class="num">3</span></span>
+        <span class="tag">cloudinary <span class="num">3</span></span>
+        <span class="tag">jwt <span class="num">2</span></span>
+        <span class="tag">webhooks <span class="num">2</span></span>
+        <span class="tag">cron <span class="num">1</span></span>
+      </div>
+
+      <!-- bulk action bar -->
+      <div class="bulk-bar wobble">
+        <span class="count-badge">2 SELECTED</span>
+        <span>What do you want to do with these?</span>
+        <div class="bulk-btns">
+          <button class="bulk-btn">↑ Publish</button>
+          <button class="bulk-btn">📅 Schedule</button>
+          <button class="bulk-btn">⚑ Feature</button>
+          <button class="bulk-btn">▭ Archive</button>
+          <button class="bulk-btn danger">✕ Delete</button>
+        </div>
+      </div>
+
+      <!-- table -->
+      <div class="table-wrap wobble">
+        <table class="posts">
+          <thead>
+            <tr>
+              <th style="width:38px;"><span class="check"></span></th>
+              <th style="width:84px;">Cover</th>
+              <th>Title <span class="sort-arr">↓</span></th>
+              <th>Status</th>
+              <th>Category</th>
+              <th>Tags</th>
+              <th>Read</th>
+              <th>Stats</th>
+              <th>Author / date <span class="sort-arr">↓</span></th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr class="selected">
+              <td><span class="check on"></span></td>
+              <td><div class="cover featured"></div></td>
+              <td>
+                <div class="title-cell">
+                  <div class="title-text">
+                    <span class="title">Building Jerry: a study in style RAG</span>
+                    <span class="excerpt">How to make a frontier LLM sound like you without training a model from scratch.</span>
+                    <span class="slug">/blog/building-jerry-style-rag</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="status published">● Published</span></td>
+              <td><span class="cat-badge c-ai">AI &amp; Agents</span></td>
+              <td>
+                <div class="tag-row">
+                  <span class="tag-chip">langgraph</span>
+                  <span class="tag-chip">rag</span>
+                  <span class="tag-chip">claude</span>
+                  <span class="tag-chip more">+2</span>
+                </div>
+              </td>
+              <td><div class="reading-time"><b>8</b> min</div></td>
+              <td>
+                <div class="stat-mini">
+                  <span><b>2.1k</b> views</span>
+                  <span><b>89</b> ★</span>
+                  <span><b>14</b> comments</span>
+                  <span><b>—</b></span>
+                </div>
+              </td>
+              <td>
+                <div class="author-cell">
+                  <span class="when">Udit N.</span>
+                  <span class="date">May 27 · 13:48</span>
+                </div>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn ai" title="AI assist">✨</button>
+                  <button class="icon-btn" title="Open">↗</button>
+                  <button class="icon-btn" title="Edit">✎</button>
+                  <button class="icon-btn danger" title="Archive">▭</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr class="selected">
+              <td><span class="check on"></span></td>
+              <td><div class="cover"></div></td>
+              <td>
+                <div class="title-cell">
+                  <div class="title-text">
+                    <span class="title">The graph that remembers: visitor memory for chatbots</span>
+                    <span class="excerpt">A pg_graphql + pgvector pattern for cross-session continuity, without a separate graph DB.</span>
+                    <span class="slug">/blog/visitor-memory-graph</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="status published">● Published</span></td>
+              <td><span class="cat-badge c-ai">AI &amp; Agents</span></td>
+              <td>
+                <div class="tag-row">
+                  <span class="tag-chip">supabase</span>
+                  <span class="tag-chip">postgres</span>
+                  <span class="tag-chip">rag</span>
+                </div>
+              </td>
+              <td><div class="reading-time"><b>12</b> min</div></td>
+              <td>
+                <div class="stat-mini">
+                  <span><b>1.6k</b> views</span>
+                  <span><b>52</b> ★</span>
+                  <span><b>9</b> comments</span>
+                  <span class="mod-flag">⚠ 2 to moderate</span>
+                </div>
+              </td>
+              <td>
+                <div class="author-cell">
+                  <span class="when">Udit N.</span>
+                  <span class="date">May 24 · 10:20</span>
+                </div>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn ai">✨</button>
+                  <button class="icon-btn">↗</button>
+                  <button class="icon-btn">✎</button>
+                  <button class="icon-btn danger">▭</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="check"></span></td>
+              <td><div class="cover"></div></td>
+              <td>
+                <div class="title-cell">
+                  <div class="title-text">
+                    <span class="title">Why I picked FastAPI over ASP.NET Core in 2026</span>
+                    <span class="excerpt">A practical comparison from someone who shipped in both.</span>
+                    <span class="slug">/blog/fastapi-vs-aspnet-2026</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="status published">● Published</span></td>
+              <td><span class="cat-badge c-op">Opinion</span></td>
+              <td>
+                <div class="tag-row">
+                  <span class="tag-chip">fastapi</span>
+                  <span class="tag-chip">python</span>
+                  <span class="tag-chip more">+1</span>
+                </div>
+              </td>
+              <td><div class="reading-time"><b>6</b> min</div></td>
+              <td>
+                <div class="stat-mini">
+                  <span><b>3.4k</b> views</span>
+                  <span><b>112</b> ★</span>
+                  <span><b>28</b> comments</span>
+                  <span class="mod-flag">⚠ 3 to moderate</span>
+                </div>
+              </td>
+              <td>
+                <div class="author-cell">
+                  <span class="when">Udit N.</span>
+                  <span class="date">May 22 · 14:18</span>
+                </div>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn ai">✨</button>
+                  <button class="icon-btn">↗</button>
+                  <button class="icon-btn">✎</button>
+                  <button class="icon-btn danger">▭</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="check"></span></td>
+              <td><div class="cover"></div></td>
+              <td>
+                <div class="title-cell">
+                  <div class="title-text">
+                    <span class="title">Tutorial — Drag-and-drop page builder with React + Zustand</span>
+                    <span class="excerpt">Block-based editing from scratch in under an evening.</span>
+                    <span class="slug">/blog/dnd-page-builder-react</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="status scheduled">● Scheduled · tomorrow 09:00</span></td>
+              <td><span class="cat-badge c-tut">Tutorials</span></td>
+              <td>
+                <div class="tag-row">
+                  <span class="tag-chip">react</span>
+                  <span class="tag-chip">zustand</span>
+                </div>
+              </td>
+              <td><div class="reading-time"><b>15</b> min</div></td>
+              <td>
+                <div class="stat-mini">
+                  <span style="color: var(--ink-faint);">— scheduled —</span>
+                </div>
+              </td>
+              <td>
+                <div class="author-cell">
+                  <span class="when">Udit N.</span>
+                  <span class="date">May 28 · 09:00 IST</span>
+                </div>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn ai">✨</button>
+                  <button class="icon-btn">↗</button>
+                  <button class="icon-btn">✎</button>
+                  <button class="icon-btn danger">▭</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="check"></span></td>
+              <td><div class="cover featured"></div></td>
+              <td>
+                <div class="title-cell">
+                  <div class="title-text">
+                    <span class="title">Animating SVG mascots with Framer Motion + GSAP</span>
+                    <span class="excerpt">How Jerry's mouse character comes to life — timing, easing, mouth-shapes.</span>
+                    <span class="slug">/blog/svg-mascot-animation</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="status published">● Published</span></td>
+              <td><span class="cat-badge c-web">Web Dev</span></td>
+              <td>
+                <div class="tag-row">
+                  <span class="tag-chip">framer-motion</span>
+                  <span class="tag-chip">gsap</span>
+                  <span class="tag-chip">svg</span>
+                </div>
+              </td>
+              <td><div class="reading-time"><b>9</b> min</div></td>
+              <td>
+                <div class="stat-mini">
+                  <span><b>1.2k</b> views</span>
+                  <span><b>47</b> ★</span>
+                  <span><b>6</b> comments</span>
+                  <span><b>—</b></span>
+                </div>
+              </td>
+              <td>
+                <div class="author-cell">
+                  <span class="when">Udit N.</span>
+                  <span class="date">May 18 · 22:04</span>
+                </div>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn ai">✨</button>
+                  <button class="icon-btn">↗</button>
+                  <button class="icon-btn">✎</button>
+                  <button class="icon-btn danger">▭</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="check"></span></td>
+              <td><div class="cover"></div></td>
+              <td>
+                <div class="title-cell">
+                  <div class="title-text">
+                    <span class="title">From contractor to consultant: what I'd tell my younger self</span>
+                    <span class="excerpt">Pricing, scope, and the contracts I wish I'd signed.</span>
+                    <span class="slug">/blog/contractor-to-consultant</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="status draft">○ Draft · 60% complete</span></td>
+              <td><span class="cat-badge c-career">Career</span></td>
+              <td>
+                <div class="tag-row">
+                  <span class="tag-chip">freelance</span>
+                  <span class="tag-chip">pricing</span>
+                </div>
+              </td>
+              <td><div class="reading-time"><b>~7</b> min</div></td>
+              <td>
+                <div class="stat-mini">
+                  <span style="color: var(--ink-faint);">— not yet published —</span>
+                </div>
+              </td>
+              <td>
+                <div class="author-cell">
+                  <span class="when">Udit N.</span>
+                  <span class="date">edited 2h ago</span>
+                </div>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn ai">✨</button>
+                  <button class="icon-btn">↗</button>
+                  <button class="icon-btn">✎</button>
+                  <button class="icon-btn danger">▭</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="check"></span></td>
+              <td><div class="cover"></div></td>
+              <td>
+                <div class="title-cell">
+                  <div class="title-text">
+                    <span class="title">Cloudinary recipes: transforms I use every day</span>
+                    <span class="excerpt">Aspect-ratio crops, WebP/AVIF, OG image generation.</span>
+                    <span class="slug">/blog/cloudinary-recipes</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="status published">● Published</span></td>
+              <td><span class="cat-badge c-tut">Tutorials</span></td>
+              <td>
+                <div class="tag-row">
+                  <span class="tag-chip">cloudinary</span>
+                  <span class="tag-chip">media</span>
+                </div>
+              </td>
+              <td><div class="reading-time"><b>5</b> min</div></td>
+              <td>
+                <div class="stat-mini">
+                  <span><b>892</b> views</span>
+                  <span><b>34</b> ★</span>
+                  <span><b>3</b> comments</span>
+                  <span><b>—</b></span>
+                </div>
+              </td>
+              <td>
+                <div class="author-cell">
+                  <span class="when">Udit N.</span>
+                  <span class="date">May 12 · 11:30</span>
+                </div>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn ai">✨</button>
+                  <button class="icon-btn">↗</button>
+                  <button class="icon-btn">✎</button>
+                  <button class="icon-btn danger">▭</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><span class="check"></span></td>
+              <td><div class="cover"></div></td>
+              <td>
+                <div class="title-cell">
+                  <div class="title-text">
+                    <span class="title">Notes from building a multi-agent negotiation sim</span>
+                    <span class="excerpt">What works, what breaks, and the protocol I keep coming back to.</span>
+                    <span class="slug">/blog/multi-agent-negotiation</span>
+                  </div>
+                </div>
+              </td>
+              <td><span class="status draft">○ Draft · 30% complete</span></td>
+              <td><span class="cat-badge c-ai">AI &amp; Agents</span></td>
+              <td>
+                <div class="tag-row">
+                  <span class="tag-chip">multi-agent</span>
+                  <span class="tag-chip">autogen</span>
+                </div>
+              </td>
+              <td><div class="reading-time"><b>~14</b> min</div></td>
+              <td>
+                <div class="stat-mini">
+                  <span style="color: var(--ink-faint);">— not yet published —</span>
+                </div>
+              </td>
+              <td>
+                <div class="author-cell">
+                  <span class="when">Udit N.</span>
+                  <span class="date">edited 5d ago</span>
+                </div>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn ai">✨</button>
+                  <button class="icon-btn">↗</button>
+                  <button class="icon-btn">✎</button>
+                  <button class="icon-btn danger">▭</button>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- pagination -->
+      <div class="table-foot">
+        <span id="foot-text">Showing 1–8 of 41 posts · 2 selected</span>
+        <div class="pages">
+          <button class="page-btn disabled">←</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">4</button>
+          <button class="page-btn">5</button>
+          <button class="page-btn">→</button>
+        </div>
+      </div>
+
+      <div class="annot">
+        ↑ click any title to open the editor · the
+        <span class="ai-pill">✨ ai-assist</span>
+        button is available on every row, every block, and inside the editor
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Tweaks -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <script>
+    // checkbox + bulk bar
+    document.querySelectorAll('.check').forEach(c => {
+      c.addEventListener('click', e => {
+        e.stopPropagation();
+        c.classList.toggle('on');
+        const tr = c.closest('tr');
+        if (tr) tr.classList.toggle('selected', c.classList.contains('on'));
+        const n = document.querySelectorAll('tbody .check.on').length;
+        const bar = document.querySelector('.bulk-bar');
+        bar.querySelector('.count-badge').textContent = n + ' SELECTED';
+        bar.style.display = n === 0 ? 'none' : 'flex';
+        document.getElementById('foot-text').textContent =
+          'Showing 1–8 of 41 posts · ' + n + ' selected';
+      });
+    });
+
+    // filter pill toggles within groups
+    document.querySelectorAll('.pills .pill-divider').forEach(() => {});
+    let group = [];
+    document.querySelectorAll('.pills > *').forEach(el => {
+      if (el.classList.contains('pill-label') || el.classList.contains('pill-divider')) {
+        if (group.length) {
+          group.forEach(p => p.addEventListener('click', () => {
+            group.forEach(x => x.classList.remove('active'));
+            p.classList.add('active');
+          }));
+        }
+        group = [];
+      } else if (el.classList.contains('pill')) {
+        group.push(el);
+      }
+    });
+    if (group.length) {
+      group.forEach(p => p.addEventListener('click', () => {
+        group.forEach(x => x.classList.remove('active'));
+        p.classList.add('active');
+      }));
+    }
+  </script>
+
+  <script type="text/babel">
+    const { useEffect } = React;
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "accent": "#c1432a",
+      "wobble": true,
+      "paper": "#f5f1e8"
+    }/*EDITMODE-END*/;
+
+    function Tweaks() {
+      const [t, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
+      useEffect(() => {
+        document.documentElement.style.setProperty('--accent', t.accent);
+        document.documentElement.style.setProperty('--accent-soft', t.accent + '22');
+        document.documentElement.style.setProperty('--paper', t.paper);
+        document.body.classList.toggle('no-wobble', !t.wobble);
+      }, [t]);
+      return (
+        <window.TweaksPanel title="Tweaks">
+          <window.TweakSection title="Look">
+            <window.TweakColor label="Accent (ink)" value={t.accent} onChange={v => setTweak('accent', v)}
+              options={['#c1432a','#2a5fa3','#3d7a3a','#7a3aa6','#21201c']} />
+            <window.TweakColor label="Paper" value={t.paper} onChange={v => setTweak('paper', v)}
+              options={['#f5f1e8','#ffffff','#ede4cf','#e6e4dd']} />
+            <window.TweakToggle label="Ink wobble" value={t.wobble} onChange={v => setTweak('wobble', v)} />
+          </window.TweakSection>
+        </window.TweaksPanel>
+      );
+    }
+
+    const wait = setInterval(() => {
+      if (window.TweaksPanel && window.useTweaks) {
+        clearInterval(wait);
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        ReactDOM.createRoot(host).render(<Tweaks />);
+      }
+    }, 50);
+  </script>
+</body>
+</html>
