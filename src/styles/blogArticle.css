@@ -11,8 +11,12 @@
 .bp-title { font-family: "Caveat", cursive; font-weight: 700; font-size: clamp(36px, 6vw, 54px); line-height: 1.05; margin: 8px 0 10px; }
 .bp-subtitle { font-family: "Source Serif 4", Georgia, serif; font-style: italic; font-size: 20px; color: var(--ink-soft); margin: 0 0 14px; line-height: 1.45; }
 .bp-byline { display: flex; gap: 8px; flex-wrap: wrap; font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 1.2px; }
-.bp-cover { margin: 0 -28px 28px; }
-.bp-cover img { width: 100%; display: block; max-height: 460px; object-fit: cover; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
+/* The cover is never cropped: whole image, centred, on a paper band. */
+.bp-cover {
+  margin: 0 -28px 28px; display: flex; justify-content: center;
+  background: var(--paper-dark); border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink);
+}
+.bp-cover img { display: block; width: auto; max-width: 100%; height: auto; max-height: min(70vh, 640px); object-fit: contain; margin: 0 auto; }
 
 .bp-toc { border: 1.5px dashed var(--rule); padding: 12px 18px; margin-bottom: 28px; background: var(--paper); }
 .bp-toc__title { font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--ink-soft); margin-bottom: 6px; }
@@ -110,11 +114,35 @@
 .bp-align--center { text-align: center !important; }
 .bp-align--right { text-align: right !important; }
 
-.bp-image { margin: 28px 0; }
-.bp-image img { width: 100%; height: auto; display: block; border: 1.5px solid var(--ink); }
+/* Sizes: the renderer sets an inline max-width (small 360, medium 560,
+   normal 760 — never wider than the file); figures are centred. */
+.bp-image { margin: 28px auto; }
 .bp-image--wide { margin-left: -60px; margin-right: -60px; }
 .bp-image--full { margin-left: -28px; margin-right: -28px; }
-.bp-image--full img { border-left: none; border-right: none; }
+.bp-image__frame { position: relative; overflow: hidden; border: 1.5px solid var(--ink); touch-action: pan-y; }
+.bp-image--full .bp-image__frame { border-left: none; border-right: none; }
+.bp-image img { width: 100%; height: auto; display: block; transform-origin: 0 0; }
+.bp-image__frame.is-zoomed { cursor: grab; touch-action: none; }
+.bp-image__frame.is-dragging { cursor: grabbing; }
+.bp-image__frame.is-zoomed img { will-change: transform; }
+.bp-image__frame.is-animating img { transition: transform .18s ease-out; }
+@media (prefers-reduced-motion: reduce) { .bp-image__frame.is-animating img { transition: none; } }
+
+/* zoom controls (added by blogArticleBehaviour.ts) */
+.bp-zoom {
+  position: absolute; right: 8px; bottom: 8px; display: flex; align-items: center; gap: 4px;
+  background: var(--paper); border: 1.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); padding: 2px;
+  opacity: 0; transition: opacity .15s; font-family: "JetBrains Mono", monospace; font-size: 11px;
+}
+.bp-image__frame:hover .bp-zoom, .bp-image__frame:focus-within .bp-zoom, .bp-image__frame.is-zoomed .bp-zoom { opacity: 1; }
+@media (hover: none) { .bp-zoom { opacity: 1; } }
+.bp-zoom button {
+  width: 28px; height: 28px; border: none; background: transparent; cursor: pointer;
+  font-size: 16px; line-height: 1; color: var(--ink); display: grid; place-items: center;
+}
+.bp-zoom button:hover:not(:disabled) { background: var(--highlight); }
+.bp-zoom button:disabled { color: var(--ink-faint); cursor: default; }
+.bp-zoom__level { min-width: 38px; text-align: center; color: var(--ink-soft); }
 .bp-image figcaption, .bp-video figcaption, .bp-gallery__caption {
   font-family: "Source Serif 4", Georgia, serif; font-size: 14px; font-style: italic; color: var(--ink-soft);
   text-align: center; margin-top: 8px;
@@ -138,7 +166,7 @@
 .bp-gallery__nav--prev { left: -14px; }
 .bp-gallery__nav--next { right: -14px; }
 
-.bp-video { margin: 28px 0; }
+.bp-video { margin: 28px auto; }
 .bp-video video, .bp-video__frame { width: 100%; aspect-ratio: 16 / 9; display: block; background: var(--ink); border: 1.5px solid var(--ink); }
 .bp-video__frame iframe { width: 100%; height: 100%; border: 0; display: block; }
 .bp-video__play { position: relative; width: 100%; height: 100%; padding: 0; border: none; cursor: pointer; background: var(--ink); }

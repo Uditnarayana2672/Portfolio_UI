@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { CSSProperties } from 'react'
 import { NodeViewContent, NodeViewWrapper } from '@tiptap/react'
 import type { ReactNodeViewProps } from '@tiptap/react'
 import { useBlogEditorStore } from '../../../store/blogEditorStore'
@@ -134,6 +135,17 @@ export function CodeBlockView({ node, updateAttributes }: ReactNodeViewProps) {
   )
 }
 
+// Same caps as the reader page (tiptap_renderer._MEDIA_MAX_PX): small 360,
+// medium 560, large = column; never wider than the file. Wide/full fill the
+// editor column (the extra bleed only exists on the page).
+const MEDIA_MAX_PX: Record<string, number> = { small: 360, medium: 560 }
+
+function mediaWidthStyle(size: string, naturalWidth: number | null): CSSProperties {
+  const caps = [MEDIA_MAX_PX[size], size in MEDIA_MAX_PX || size === 'normal' ? naturalWidth : null]
+    .filter((c): c is number => typeof c === 'number' && c > 0)
+  return caps.length ? { maxWidth: Math.min(...caps), marginInline: 'auto' } : {}
+}
+
 // ── image ────────────────────────────────────────────────────────────────────
 
 export function ImageView({ node, updateAttributes, deleteNode, selected }: ReactNodeViewProps) {
@@ -148,7 +160,9 @@ export function ImageView({ node, updateAttributes, deleteNode, selected }: Reac
           onChange={(e) => updateAttributes({ size: e.target.value })}
           aria-label="Image width"
         >
-          <option value="normal">Normal width</option>
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="normal">Large (column)</option>
           <option value="wide">Wide</option>
           <option value="full">Full bleed</option>
         </select>
@@ -164,7 +178,8 @@ export function ImageView({ node, updateAttributes, deleteNode, selected }: Reac
         </button>
       </BlockChrome>
       {attrs.src ? (
-        <img className={s.mediaImg} src={cldThumb(str(attrs.src), 'f_auto,q_auto,w_1200')} alt={alt} />
+        <img className={s.mediaImg} src={cldThumb(str(attrs.src), 'f_auto,q_auto,w_1200')} alt={alt}
+          style={mediaWidthStyle(str(attrs.size) || 'normal', typeof attrs.width === 'number' ? attrs.width : null)} />
       ) : (
         <div className={s.mediaMissing}>Image missing</div>
       )}
@@ -290,8 +305,19 @@ export function VideoView({ node, updateAttributes, deleteNode, selected }: Reac
   const poster = str(attrs.poster_url) || (youtube ? `https://i.ytimg.com/vi/${str(attrs.external_id)}/hqdefault.jpg` : '')
   return (
     <NodeViewWrapper className={s.media}>
-      <BlockChrome label={youtube ? 'YouTube video' : 'Video'} onDelete={deleteNode} selected={selected} />
-      <div className={s.video} contentEditable={false}>
+      <BlockChrome label={youtube ? 'YouTube video' : 'Video'} onDelete={deleteNode} selected={selected}>
+        <select
+          className={s.miniSelect}
+          value={str(attrs.size) || 'normal'}
+          onChange={(e) => updateAttributes({ size: e.target.value })}
+          aria-label="Video width"
+        >
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="normal">Large (column)</option>
+        </select>
+      </BlockChrome>
+      <div className={s.video} contentEditable={false} style={mediaWidthStyle(str(attrs.size) || 'normal', null)}>
         {youtube ? (
           <>
             {poster && <img src={poster} alt="" />}

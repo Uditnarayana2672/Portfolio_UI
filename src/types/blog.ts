@@ -278,3 +278,71 @@ export interface LinkTarget {
   status: string
   url: string
 }
+
+// ── Blog Manager ("Blog Manager API.md") ─────────────────────────────────────
+
+export type ListSort = 'updated_at' | 'published_at' | 'created_at' | 'title' | 'views' | 'relevance'
+
+export interface PostListItem {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  status: BlogStatus
+  has_unpublished_changes: boolean
+  category: { id: string; name: string; slug: string | null } | null
+  tags: string[]
+  cover: { id: string; thumb_url: string; alt: string } | null
+  read_time: number | null
+  word_count: number
+  views: number
+  author: { id: string; name: string } | null
+  version: number
+  scheduled_at: string | null
+  schedule_error: string | null
+  published_at: string | null
+  archived_at: string | null
+  created_at: string
+  updated_at: string
+  /** HTML with only <mark> tags (escaped by the server). */
+  search: { rank: number; matched: string[]; snippet: string | null } | null
+}
+
+export interface PostListResponse {
+  items: PostListItem[]
+  total: number
+  page: number
+  limit: number
+  total_pages: number
+  facets: { status: Record<string, number>; category: Record<string, number> }
+  applied: { status: BlogStatus[]; category_id: string | null; q: string | null; sort: ListSort; dir: 'asc' | 'desc' }
+}
+
+export interface PostListParams {
+  status: BlogStatus[]
+  category: string | null
+  q: string
+  sort: ListSort | null
+  dir: 'asc' | 'desc' | null
+  page: number
+}
+
+export interface BlogStats {
+  total: number
+  published: number
+  draft: number
+  scheduled: number
+  archived: number
+  created_this_month: number
+  next_scheduled_at: string | null
+  failed_schedules: number
+}
+
+export type BulkAction = 'archive' | 'delete'
+
+export interface BulkResult {
+  action: BulkAction
+  requested: number
+  succeeded: string[]
+  failed: { id: string; error: string; message: string; current_version: number | null }[]
+}

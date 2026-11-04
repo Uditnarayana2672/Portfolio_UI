@@ -59,7 +59,7 @@ function insertAtom(editor: Editor, node: Record<string, unknown>) {
 export function imageAttrs(a: PickedAsset) {
   return {
     asset_id: a.id, public_id: a.public_id, src: a.url, alt: a.alt || null,
-    width: a.width, height: a.height, caption: null, size: 'normal',
+    width: a.width, height: a.height, caption: null, size: 'medium',
   }
 }
 
@@ -120,6 +120,7 @@ export const insertBlock: Record<string, (editor: Editor, range?: Range, variant
             title: a.title,
             duration_seconds: a.duration_seconds,
             caption: null,
+            size: 'medium',
           },
         })
       },

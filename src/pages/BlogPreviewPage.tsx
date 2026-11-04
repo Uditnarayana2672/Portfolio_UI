@@ -124,7 +124,8 @@ export default function BlogPreviewPage() {
             </header>
             {p.cover && (
               <figure className="bp-cover">
-                <img src={p.cover.url} srcSet={p.cover.srcset} sizes="(max-width: 900px) 100vw, 900px" alt={p.cover.alt} />
+                <img src={p.cover.url} srcSet={p.cover.srcset} sizes="(max-width: 900px) 100vw, 900px" alt={p.cover.alt}
+                  width={p.cover.width ?? undefined} height={p.cover.height ?? undefined} />
               </figure>
             )}
             <div className="bp-body">

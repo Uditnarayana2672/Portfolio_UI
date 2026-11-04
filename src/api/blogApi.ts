@@ -1,10 +1,15 @@
 import { supabase } from '../lib/supabaseClient'
 import type {
   BlogCategory,
+  BlogStats,
+  BulkAction,
+  BulkResult,
   Checklist,
   EditorConfig,
   LinkTarget,
   PostDetail,
+  PostListParams,
+  PostListResponse,
   PostWritable,
   PreviewPayload,
   ResolvedEmbed,
@@ -172,3 +177,27 @@ export const resolveEmbed = (url: string) =>
 
 export const searchLinkTargets = (q: string) =>
   request<{ items: LinkTarget[] }>(`/admin/blogs/link-targets?q=${encodeURIComponent(q)}&limit=8`)
+
+// ── Blog Manager ─────────────────────────────────────────────────────────────
+
+export const LIST_PAGE_SIZE = 20
+
+export function listPosts(params: PostListParams, signal?: AbortSignal) {
+  const qs = new URLSearchParams()
+  params.status.forEach((s) => qs.append('status', s))
+  if (params.category) qs.set('category_id', params.category)
+  if (params.q.trim().length >= 2) qs.set('q', params.q.trim())
+  if (params.sort) qs.set('sort', params.sort)
+  if (params.dir) qs.set('dir', params.dir)
+  qs.set('page', String(params.page))
+  qs.set('limit', String(LIST_PAGE_SIZE))
+  return request<PostListResponse>(`/admin/blogs?${qs}`, { signal })
+}
+
+export const getBlogStats = () => request<BlogStats>('/admin/blogs/stats')
+
+export const bulkPosts = (action: BulkAction, items: { id: string; version: number }[]) =>
+  request<BulkResult>('/admin/blogs/bulk', json('POST', { action, items }))
+
+export const unarchivePost = (id: string, version: number) =>
+  request<PostDetail>(`/admin/blogs/${id}/unarchive`, json('POST', { version }))

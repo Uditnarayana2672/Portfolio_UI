@@ -215,7 +215,7 @@ const ImageGallery = atomNode('imageGallery', { items: [], height: 'md', caption
 
 const Video = atomNode('video', {
   source: null, asset_id: null, src: null, external_id: null, poster_url: null,
-  title: null, duration_seconds: null, caption: null, start_seconds: null,
+  title: null, duration_seconds: null, caption: null, start_seconds: null, size: 'normal',
 }, VideoView)
 
 const Embed = atomNode('embed', {

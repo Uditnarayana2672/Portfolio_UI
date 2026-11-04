@@ -23,6 +23,7 @@ import {
   restoreRevision,
   saveRevision,
   schedulePost,
+  unarchivePost,
   unpublishPost,
   unschedulePost,
 } from '../api/blogApi'
@@ -148,7 +149,8 @@ function TitleBlock() {
 function CoverZone() {
   const cover = useBlogEditorStore((x) => x.coverPreview)
   if (cover) {
-    const src = cover.url.includes('/upload/') ? cover.url.replace('/upload/', '/upload/f_auto,q_auto,w_1400,h_520,c_fill/') : cover.url
+    // c_limit only resizes — the whole cover is always shown, never cropped.
+    const src = cover.url.includes('/upload/') ? cover.url.replace('/upload/', '/upload/f_auto,q_auto,w_1400,c_limit/') : cover.url
     return (
       <div className={s.coverSet}>
         <img src={src} alt={cover.alt ?? ''} />
@@ -196,6 +198,7 @@ export default function BlogEditorPage() {
   const config = useBlogEditorStore((x) => x.config)
   const postId = useBlogEditorStore((x) => x.postId)
   const saveState = useBlogEditorStore((x) => x.saveState)
+  const archived = useBlogEditorStore((x) => x.post?.status === 'archived')
 
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -419,6 +422,23 @@ export default function BlogEditorPage() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  // Archived posts are read-only (server: POST_ARCHIVED) until restored.
+  async function onRestoreFromArchive() {
+    const st = store.getState()
+    if (!st.postId || busy) return
+    setBusy('restore')
+    try {
+      const post = await unarchivePost(st.postId, st.version)
+      st.loadPost(post)
+      setEditorKey((k) => k + 1)
+      showToast('Restored to drafts — you can edit again')
+    } catch (e) {
+      handleApiError(e, 'Could not restore the post')
+    } finally {
+      setBusy(null)
+    }
+  }
+
   async function reloadFromServer() {
     const st = store.getState()
     if (!st.postId) return
@@ -474,6 +494,15 @@ export default function BlogEditorPage() {
             <div className={ui.note}>Loading editor…</div>
           ) : (
             <>
+              {archived && (
+                <div className={s.banner}>
+                  <b>This post is archived.</b>
+                  <span>It's read-only and not on the site. Restore it to drafts to edit or publish it again.</span>
+                  <button type="button" className={ui.btnSmall} disabled={busy !== null}
+                    onClick={() => void onRestoreFromArchive()}>↺ Restore to drafts</button>
+                </div>
+              )}
+              <div inert={archived} className={archived ? s.readOnly : undefined}>
               <PublishBar
                 busy={busy}
                 scheduleOpen={scheduleOpen}
@@ -514,6 +543,7 @@ export default function BlogEditorPage() {
                   <WordFooter editor={editor} />
                 </div>
                 <Rail onOpenSchedule={() => setScheduleOpen(true)} highlightChecklist={highlightChecklist} />
+              </div>
               </div>
             </>
           )}

@@ -66,8 +66,12 @@
 }
 .uglyph { font-family: "Caveat", cursive; font-size: 36px; }
 .ulink { color: var(--accent); border-bottom: 1px dashed var(--accent); }
-.coverSet { margin: 16px 32px; position: relative; }
-.coverSet img { width: 100%; max-height: 300px; object-fit: cover; display: block; border: 1.5px solid var(--ink); }
+/* Whole cover, centred; letterboxed on paper instead of cropped. */
+.coverSet {
+  margin: 16px 32px; position: relative; display: flex; justify-content: center;
+  background: var(--paper-dark); border: 1.5px solid var(--ink);
+}
+.coverSet img { display: block; width: auto; max-width: 100%; height: auto; max-height: 420px; object-fit: contain; }
 .coverActs { position: absolute; right: 10px; bottom: 10px; display: flex; gap: 6px; }
 
 .wordCount {
@@ -77,6 +81,7 @@
   text-transform: uppercase; letter-spacing: 1.5px;
 }
 
+.readOnly { opacity: .65; }
 .banner {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;
   border: 2px solid var(--accent); background: var(--accent-soft); padding: 10px 14px;
