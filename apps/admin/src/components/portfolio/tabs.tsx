@@ -58,23 +58,6 @@ export function AboutTab({ content, onChange }: TabProps) {
       <TextArea label="Statement" path="about.statement" value={about.statement} hint={HIGHLIGHT_HINT} onChange={(statement) => set({ statement })} />
       <TextArea label="“Today I build” text" path="about.today" value={about.today} hint={HIGHLIGHT_HINT} onChange={(today) => set({ today })} />
       <fieldset className={styles.group}>
-        <legend>Through-line labels</legend>
-        <p className={styles.hint}>The three stages of the animated orange line beside your statement.</p>
-        <div className={styles.threeCol}>
-          {about.through_line.map((label, i) => (
-            <TextField
-              key={i}
-              label={['Wave stage', 'Route stage', 'Agent graph stage'][i]}
-              path={`about.through_line[${i}]`}
-              value={label}
-              maxLength={20}
-              onChange={(next) => set({ through_line: replaced(about.through_line, i, next) })}
-            />
-          ))}
-        </div>
-        <FieldError path="about.through_line" />
-      </fieldset>
-      <fieldset className={styles.group}>
         <legend>Stats</legend>
         {stats.map((stat, i) => (
           <div key={stat.id} className={styles.card}>

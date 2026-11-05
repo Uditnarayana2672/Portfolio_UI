@@ -23,7 +23,7 @@ export interface PortfolioDocument {
     eyebrow: string; headline: string; headline_accent: string; intro: string; highlights: string[]
     portrait: Portrait | null
   }
-  about: { statement: string; today: string; through_line: string[]; stats: Stat[] }
+  about: { statement: string; today: string; stats: Stat[] }
   what_i_do: { title: string; subtitle: string; points: { id: string; text: string }[] }
   skills: SectionText
   tech: Tech[]

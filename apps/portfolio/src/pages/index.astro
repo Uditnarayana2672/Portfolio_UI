@@ -73,10 +73,7 @@ const headlineLines = c.hero.headline.split('\n')
   <section class="sec" id="about">
     <div class="wrap">
       <div class="hello">
-        <div class="hello-side rv">
-          <span class="eyebrow"><span class="n">01</span>&nbsp;Hello</span>
-          <div class="thru" data-through-line={JSON.stringify(c.about.through_line)} aria-hidden="true"></div>
-        </div>
+        <div class="rv"><span class="eyebrow"><span class="n">01</span>&nbsp;Hello</span></div>
         <div class="rv d1">
           <blockquote set:html={highlightedHtml(c.about.statement)} />
           <p class="lede today" set:html={highlightedHtml(c.about.today, 'b')} />
@@ -121,7 +118,7 @@ const headlineLines = c.hero.headline.split('\n')
     </section>
   )}
 
-  <section class="sec dark" id="experience">
+  <section class="sec dark xp-sec" id="experience">
     <div class="wrap">
       <div class="sec-head">
         <div class="rv"><span class="eyebrow"><span class="n">04</span>&nbsp;Experience</span><h2 class="h2 mt">{c.experience_section.title}<br /><span class="soft">{c.experience_section.title_soft}</span></h2></div>
@@ -136,7 +133,7 @@ const headlineLines = c.hero.headline.split('\n')
             <article class={`job${j.end_year === null ? ' now' : ''}`} tabindex="0">
               <span class="xp-dot" aria-hidden="true"></span>
               <div class="when">{period(j)}</div>
-              <div class={`mono-co${logo ? ' has-logo' : ''}`} aria-hidden={logo ? undefined : 'true'}>
+              <div class="mono-co" aria-hidden={logo ? undefined : 'true'}>
                 {logo ? <img src={companyLogo(logo.url, 160)} alt={logo.alt || `${j.company} logo`} loading="lazy" /> : letter(j.company)}
               </div>
               <div class="body"><h3 class="job-h">{j.role} <span>@ {j.company}</span></h3><p>{j.summary}</p>
@@ -189,7 +186,7 @@ const headlineLines = c.hero.headline.split('\n')
   )}
 
   {c.education.length > 0 && (
-    <section class="sec" id="education">
+    <section class="sec edu-sec" id="education">
       <div class="wrap">
         <div class="sec-head">
           <div class="rv"><span class="eyebrow"><span class="n">06</span>&nbsp;Education</span><h2 class="h2 mt">{c.education_section.title}<br /><span class="soft">{c.education_section.title_soft}</span></h2></div>

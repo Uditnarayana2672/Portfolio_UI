@@ -15,7 +15,6 @@
     "./text": "./src/text.tsx",
     "./interactions": "./src/Interactions.tsx",
     "./client": "./src/client.ts",
-    "./through-line": "./src/through-line.ts",
     "./experience": "./src/experience.ts"
   },
   "dependencies": {

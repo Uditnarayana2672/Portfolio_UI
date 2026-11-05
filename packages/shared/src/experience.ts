@@ -1,10 +1,9 @@
 // Experience section: orange scroll timeline, rows that lift near the cursor,
-// and a company image that follows the cursor through the middle of the section.
+// and a company image fixed on the right that rides up and down with the cursor.
 
 const ROTATE_MS = 1600
 const NEAR_PX = 220
-const REVEAL_PX = 40
-const GAP = 28
+const EASE = 0.16
 
 const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max)
 
@@ -62,140 +61,108 @@ function initRotation(jobs: HTMLElement[]): void {
   })
 }
 
+/**
+ * Only the cursor's height on the screen matters, and it is re-read on every
+ * scroll: a cursor that isn't moving still changes job as the page scrolls past it.
+ */
 function initCursor(root: HTMLElement, jobs: HTMLElement[], calm: boolean): () => void {
   const section = root.closest<HTMLElement>('.sec') ?? root
-  const cards = jobs.map((job) => job.querySelector<HTMLElement>('.xp-card'))
-  const pos = { x: 0, y: 0, tx: 0, ty: 0, rx: 0, ry: 0, trx: 0, try: 0 }
-  let frame = 0
+  const card = jobs.map((job) => job.querySelector<HTMLElement>('.xp-card')).find(Boolean)
+  // Before the first mouse move the browser won't say where the cursor is, so assume mid-screen.
+  let cursorY: number | null = innerHeight / 2
   let active: HTMLElement | null = null
-  let lastX = 0
-  let lastY = 0
-  let placedOnce = false
+  let y = 0
+  let targetY = 0
+  let placed = false
+  let frame = 0
+  let lastScroll = scrollY
+  let queued = false
 
-  const cardSize = () => {
-    const card = cards.find(Boolean)
-    return { w: card?.offsetWidth ?? 380, h: card?.offsetHeight ?? 304 }
-  }
-
-  /** Keep the image beside the cursor, and clear of the text being read. */
-  function target(job: HTMLElement): void {
-    const box = root.getBoundingClientRect()
-    const { w, h } = cardSize()
-    const x = lastX - box.left
-    const maxX = Math.max(box.width - w, 0)
-    const textRight = (job.querySelector<HTMLElement>('.body')?.getBoundingClientRect().right ?? box.left) - box.left
-
-    let left: number
-    if (x < textRight) {
-      // Reading the text: stay to its right, drifting slightly with the cursor.
-      left = clamp(textRight + GAP + (x / Math.max(textRight, 1)) * 60, 0, maxX)
-    } else {
-      // Past the text: follow the cursor across the section, flipping side at the edge.
-      left = x + GAP + w <= box.width ? x + GAP : x - GAP - w
-      left = clamp(left, 0, maxX)
-    }
-
-    // Vertically centred on the part of the section that is on screen.
-    const area = section.getBoundingClientRect()
-    const centre = (Math.max(area.top, 0) + Math.min(area.bottom, innerHeight)) / 2
-    pos.tx = left
-    pos.ty = clamp(centre - h / 2 - box.top, 0, Math.max(box.height - h, 0))
-    pos.trx = clamp(-(lastY - (box.top + pos.ty + h / 2)) / 40, -6, 6)
-    pos.try = clamp((lastX - (box.left + left + w / 2)) / 60, -6, 6)
-  }
-
-  function paint(): void {
-    const ease = calm ? 1 : 0.14
-    pos.x += (pos.tx - pos.x) * ease
-    pos.y += (pos.ty - pos.y) * ease
-    pos.rx += (pos.trx - pos.rx) * ease
-    pos.ry += (pos.try - pos.ry) * ease
-    root.style.setProperty('--cx', `${pos.x.toFixed(1)}px`)
-    root.style.setProperty('--cy', `${pos.y.toFixed(1)}px`)
-    root.style.setProperty('--crx', `${pos.rx.toFixed(2)}deg`)
-    root.style.setProperty('--cry', `${pos.ry.toFixed(2)}deg`)
-    const moving = Math.abs(pos.tx - pos.x) + Math.abs(pos.ty - pos.y) > 0.3
-    frame = active || moving ? requestAnimationFrame(paint) : 0
+  const paint = () => {
+    y += (targetY - y) * (calm ? 1 : EASE)
+    const settled = Math.abs(targetY - y) <= 0.3
+    if (settled) y = targetY
+    root.style.setProperty('--cy', `${y.toFixed(1)}px`)
+    frame = settled ? 0 : requestAnimationFrame(paint)
   }
   const wake = () => { if (!frame) frame = requestAnimationFrame(paint) }
 
   function setActive(job: HTMLElement | null): void {
     if (job === active) return
-    active?.classList.remove('active')
+    active?.classList.remove('active', 'near')
     active = job
-    if (!job) return
-    job.classList.add('active')
-    target(job)
-    if (!placedOnce) { // appears in place the first time instead of sliding in from the corner
-      pos.x = pos.tx
-      pos.y = pos.ty
-      placedOnce = true
-    }
-    wake()
+    job?.classList.add('active', 'near')
   }
 
-  function setLift(y: number, x: number): void {
+  function update(): void {
+    const area = section.getBoundingClientRect()
+    if (cursorY === null || cursorY < area.top || cursorY > area.bottom) {
+      jobs.forEach((job) => job.style.setProperty('--near', '0'))
+      setActive(null)
+      return
+    }
+
+    let closest = jobs[0]
+    let closestDistance = Infinity
+    jobs.forEach((job) => {
+      const r = job.getBoundingClientRect()
+      const distance = cursorY! < r.top ? r.top - cursorY! : cursorY! > r.bottom ? cursorY! - r.bottom : 0
+      job.style.setProperty('--near', clamp(1 - distance / NEAR_PX, 0, 1).toFixed(3))
+      if (distance < closestDistance) { closest = job; closestDistance = distance }
+    })
+    setActive(closest)
+
     const box = root.getBoundingClientRect()
-    const inside = x >= box.left - NEAR_PX && x <= box.right + NEAR_PX
-    jobs.forEach((job) => {
-      const r = job.getBoundingClientRect()
-      const distance = y < r.top ? r.top - y : y > r.bottom ? y - r.bottom : 0
-      job.style.setProperty('--near', inside ? clamp(1 - distance / NEAR_PX, 0, 1).toFixed(3) : '0')
-      job.classList.toggle('near', inside && distance <= REVEAL_PX)
-    })
-  }
-
-  const onMove = (e: PointerEvent) => {
-    lastX = e.clientX
-    lastY = e.clientY
-    setLift(lastY, lastX)
-    const over = jobs.find((job) => {
-      const r = job.getBoundingClientRect()
-      return lastY >= r.top && lastY <= r.bottom
-    }) ?? null
-    setActive(over)
-    if (active) target(active)
-    const card = active?.querySelector<HTMLElement>('.xp-card')
-    if (card) {
-      const r = card.getBoundingClientRect()
-      card.style.setProperty('--sx', `${clamp(((lastX - r.left) / r.width) * 100, 0, 100).toFixed(1)}%`)
-      card.style.setProperty('--sy', `${clamp(((lastY - r.top) / r.height) * 100, 0, 100).toFixed(1)}%`)
-    }
+    const height = card?.offsetHeight ?? 300
+    targetY = clamp(cursorY - height / 2 - box.top, 0, Math.max(box.height - height, 0))
+    if (!placed) { y = targetY; placed = true } // first appearance is in place, not sliding in
     wake()
   }
-  const onLeave = () => {
-    setActive(null)
-    jobs.forEach((job) => {
-      job.style.setProperty('--near', '0')
-      job.classList.remove('near')
+
+  const onPointer = (e: PointerEvent) => {
+    cursorY = e.clientY
+    update()
+  }
+  const onLeaveWindow = () => {
+    cursorY = null
+    update()
+  }
+  const onScroll = () => {
+    // The card sits in the page, so hold it still on screen while the page moves under it.
+    y += scrollY - lastScroll
+    lastScroll = scrollY
+    if (queued) return
+    queued = true
+    requestAnimationFrame(() => {
+      queued = false
+      update()
     })
   }
-  const onScroll = () => { if (active) { target(active); wake() } }
   const onFocus = (e: FocusEvent) => {
     const job = (e.target as HTMLElement).closest<HTMLElement>('.job')
-    if (!job) return
+    if (!job || !job.matches(':focus-visible')) return
     const r = job.getBoundingClientRect()
-    lastX = r.left + 10
-    lastY = r.top + r.height / 2
-    setActive(job)
+    cursorY = r.top + r.height / 2
+    update()
   }
-  const onBlur = () => setActive(null)
 
-  section.addEventListener('pointermove', onMove)
-  section.addEventListener('pointerleave', onLeave)
-  root.addEventListener('focusin', onFocus)
-  root.addEventListener('focusout', onBlur)
+  addEventListener('pointermove', onPointer, { passive: true })
   addEventListener('scroll', onScroll, { passive: true })
+  addEventListener('resize', update)
+  document.documentElement.addEventListener('pointerleave', onLeaveWindow)
+  root.addEventListener('focusin', onFocus)
+  update()
 
   return () => {
     cancelAnimationFrame(frame)
     frame = 0
-    onLeave()
-    section.removeEventListener('pointermove', onMove)
-    section.removeEventListener('pointerleave', onLeave)
-    root.removeEventListener('focusin', onFocus)
-    root.removeEventListener('focusout', onBlur)
+    cursorY = null
+    update()
+    removeEventListener('pointermove', onPointer)
     removeEventListener('scroll', onScroll)
+    removeEventListener('resize', update)
+    document.documentElement.removeEventListener('pointerleave', onLeaveWindow)
+    root.removeEventListener('focusin', onFocus)
   }
 }
 

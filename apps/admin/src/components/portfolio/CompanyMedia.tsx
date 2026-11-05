@@ -54,7 +54,7 @@ export function CompanyLogoField({ company, path, value, onChange }: {
           ? <img className={styles.logoPreview} src={companyLogo(value.url, 160)} alt={value.alt} />
           : <div className={styles.logoLetter} aria-hidden="true">{letter}</div>}
         <div className={styles.grow}>
-          <p className={styles.hint}>{value ? 'A transparent PNG or SVG looks best.' : `No logo yet, so the page shows the letter "${letter}".`}</p>
+          <p className={styles.hint}>{value ? 'The logo fills its tile, so a square image works best.' : `No logo yet, so the page shows the letter "${letter}".`}</p>
           <div className={styles.mediaButtons}>
             <button type="button" className={styles.add} onClick={() => open((asset) => onChange({ url: asset.url, alt: asset.alt || `${company} logo`, media_asset_id: asset.id }))}>
               {value ? 'Change logo' : 'Add logo'}

@@ -40,7 +40,6 @@
 .jobHead { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .jobTitle { font-family: "Caveat", cursive; font-size: 24px; color: var(--ink); }
 .twoCol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.threeCol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .yearRow { display: grid; grid-template-columns: 110px 110px 1fr; gap: 8px; align-items: end; }
 .present { font-family: "Patrick Hand", sans-serif; font-size: 16px; color: var(--ink); padding-bottom: 8px; }
 .saveBar { position: sticky; bottom: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 14px; background: var(--paper-dark); border: 2px solid var(--ink); border-top: 0; padding: 10px 14px; }
@@ -53,7 +52,7 @@
 .saveBtn:disabled { opacity: .4; cursor: default; }
 @media (max-width: 720px) {
   .panel { padding: 12px; }
-  .techMain, .twoCol, .threeCol { grid-template-columns: 1fr; }
+  .techMain, .twoCol { grid-template-columns: 1fr; }
   .statRow { grid-template-columns: 1fr 1fr; }
   .statRow > :nth-child(3) { grid-column: 1 / -1; }
   .yearRow { grid-template-columns: 1fr 1fr; }
@@ -65,7 +64,7 @@
 .portraitEmpty { width: 112px; aspect-ratio: 4 / 5; border: 1.5px dashed var(--rule); display: grid; place-items: center; font-family: "Patrick Hand", sans-serif; color: var(--ink-faint); }
 
 .mediaRow { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
-.logoPreview { width: 72px; height: 72px; object-fit: contain; padding: 8px; box-sizing: border-box; background: #fff; border: 1.5px solid var(--ink); display: block; }
+.logoPreview { width: 72px; height: 72px; object-fit: cover; border: 1.5px solid var(--ink); display: block; }
 .logoLetter { width: 72px; height: 72px; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-family: "Caveat", cursive; font-size: 38px; font-weight: 700; }
 .mediaButtons { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .imageCard { width: 180px; display: grid; gap: 6px; }

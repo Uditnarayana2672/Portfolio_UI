@@ -53,7 +53,7 @@ export interface PortfolioDocument {
     highlights: string[]
     portrait: Portrait | null
   }
-  about: { statement: string; today: string; through_line: string[]; stats: Stat[] }
+  about: { statement: string; today: string; stats: Stat[] }
   what_i_do: { title: string; subtitle: string; points: Point[] }
   skills: SectionText
   tech: Tech[]
