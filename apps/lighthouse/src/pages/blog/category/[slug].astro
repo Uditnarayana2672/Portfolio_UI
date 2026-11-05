@@ -1,0 +1,18 @@
+---
+import { api } from '@udit/shared/api'
+import Base from '../../../layouts/Base.astro'
+import PostList from '../../../components/PostList.astro'
+import Topics from '../../../components/Topics.astro'
+
+export async function getStaticPaths() {
+  const { items } = await api.blogCategories()
+  return items.filter((c) => c.post_count > 0).map((c) => ({ params: { slug: c.slug }, props: { category: c } }))
+}
+const { category } = Astro.props
+const { items, total } = await api.blogs(`?limit=12&category=${encodeURIComponent(category.slug)}`)
+---
+<Base title={`${category.name} — LighthouseInfo`} description={category.description ?? `Notes about ${category.name}.`}>
+  <div class="crumbbar"><div class="wrap"><a class="back" href="/"><span aria-hidden="true">←</span> All notes</a></div></div>
+  <section class="phero"><div class="wrap"><span class="eyebrow">Topic</span><h1 class="h1">{category.name}<span class="or">.</span></h1>{category.description && <p class="lede">{category.description}</p>}</div></section>
+  <section class="sec"><div class="wrap"><Topics active={category.slug} /><PostList items={items} total={total} category={category.slug} /></div></section>
+</Base>

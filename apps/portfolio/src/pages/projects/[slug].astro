@@ -1,0 +1,79 @@
+---
+import { api } from '@udit/shared/api'
+import { BlockView, INTERACTIVE_BLOCKS } from '@udit/shared/blocks'
+import { Reactions } from '@udit/shared/interactions'
+import Base from '../../layouts/Base.astro'
+
+export async function getStaticPaths() {
+  const { items } = await api.projectSlugs()
+  return items.map((slug) => ({ params: { slug } }))
+}
+
+const { slug } = Astro.params as { slug: string }
+const [p, related] = await Promise.all([api.project(slug), api.relatedBlogs(slug)])
+let no = 0
+let fig = 0
+const blocks = p.blocks.map((block) => {
+  const hasEyebrow = typeof block.config?.eyebrow === 'string' && block.config.eyebrow
+  if (hasEyebrow) no += 1
+  if (block.block_type === 'image') fig += 1
+  return { block, no: hasEyebrow ? no : null, fig }
+})
+const facts = [['Role', p.role], ['Timeline', p.timeline], ['Status', p.status_label], ['Recognition', p.recognition]].filter(([, v]) => v)
+const hostname = (u: string) => u.replace(/^https?:\/\//, '').replace(/\/$/, '')
+---
+<Base
+  title={p.seo.meta_title || `${p.title} — Udit Narayana`}
+  description={p.seo.meta_description || p.excerpt || p.title}
+  image={p.seo.og_image_url || p.image_url}
+  canonical={p.seo.canonical_url || undefined}
+  active="work"
+>
+  <div class="crumbbar"><div class="wrap"><a class="back" href="/#work"><span aria-hidden="true">←</span> Back to portfolio</a><div class="crumbs"><a href="/">Portfolio</a><span>/</span><a href="/projects">Projects</a><span>/</span><b>{p.title}</b></div></div></div>
+  <section class="dark dh-simple"><div class="wrap"><div class="grid">
+    <div>
+      {p.category && <span class="eyebrow">{p.category}</span>}
+      <h1>{p.title}<span class="or">.</span></h1>
+      {p.excerpt && <p class="lede">{p.excerpt}</p>}
+      <div class="actions">
+        {p.demo_url && <a class="btn" href={p.demo_url} target="_blank" rel="noopener noreferrer">Visit live site <span aria-hidden="true">↗</span></a>}
+        {p.github_url && <a class="btn-ghost btn-line" href={p.github_url} target="_blank" rel="noopener noreferrer">View source <span aria-hidden="true">↗</span></a>}
+      </div>
+    </div>
+    {(facts.length > 0 || p.tech_stack.length > 0) && (
+      <div class="meta">
+        {facts.map(([k, v]) => <div><span>{k}</span>{v}</div>)}
+        {p.demo_url && <div><span>Address</span>{hostname(p.demo_url)}</div>}
+        {p.tech_stack.length > 0 && <div class="stack-row"><span>Built with</span>{p.tech_stack.join(' · ')}</div>}
+      </div>
+    )}
+  </div></div></section>
+  <div class="wrap blocks">
+    {blocks.map(({ block, no, fig }) => (
+      <section class="b-section" data-block={block.block_type}>
+        {INTERACTIVE_BLOCKS.has(block.block_type)
+          ? <BlockView client:visible block={block} no={no} fig={fig} />
+          : <BlockView block={block} no={no} fig={fig} />}
+      </section>
+    ))}
+    <section class="b-section react-row"><div class="b-col"><span class="eyebrow">What did you think?</span><Reactions client:visible kind="project" slug={p.slug} /></div></section>
+  </div>
+  {related.items.length > 0 && (
+    <section class="sec alt"><div class="wrap">
+      <div class="sec-head"><div><span class="eyebrow">Go deeper</span><h2 class="h2 mt">Related notes.</h2></div><p>From lighthouseinfo.com.</p></div>
+      <div class="posts">{related.items.map((b) => (
+        <a class="post" href={b.url}>
+          {b.cover?.url ? <div class="pcover has-img"><img class="tone" src={b.cover.url} alt={b.cover.alt || ''} loading="lazy" /></div>
+            : <div class="pcover"><span class="g">{(b.category?.name ?? b.title).slice(0, 3).toUpperCase()}<small>.</small></span></div>}
+          <div class="pbody"><div class="k">{b.category?.name ?? 'Note'}<i>{b.reading_time_min} min</i></div><h3>{b.title}</h3>{b.excerpt && <p>{b.excerpt}</p>}<span class="more">Read note →</span></div>
+        </a>
+      ))}</div>
+    </div></section>
+  )}
+  {(p.prev_project || p.next_project) && (
+    <nav class="next-prev" aria-label="More projects">
+      {p.prev_project ? <a href={`/projects/${p.prev_project.slug}`}><small>← Previous</small><b>{p.prev_project.title}</b></a> : <span></span>}
+      {p.next_project ? <a href={`/projects/${p.next_project.slug}`}><small>Next →</small><b>{p.next_project.title}</b></a> : <span></span>}
+    </nav>
+  )}
+</Base>

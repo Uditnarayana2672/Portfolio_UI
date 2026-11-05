@@ -1,0 +1,102 @@
+---
+import { api } from '@udit/shared/api'
+import { Comments, Reactions, SubscribeForm } from '@udit/shared/interactions'
+import { formatDate } from '@udit/shared/text'
+import Base from '../../layouts/Base.astro'
+import { withInlineRelated } from '../../lib/inline-related'
+
+export async function getStaticPaths() {
+  const first = await api.blogs('?limit=50')
+  const pages = [first.items]
+  while (pages.flat().length < first.total) {
+    const next = await api.blogs(`?limit=50&offset=${pages.flat().length}`)
+    if (!next.items.length) break
+    pages.push(next.items)
+  }
+  return pages.flat().map((p) => ({ params: { slug: p.slug } }))
+}
+
+const { slug } = Astro.params as { slug: string }
+const [post, related, latest] = await Promise.all([api.blog(slug), api.blogRelated(slug), api.blogs(`?limit=4&exclude=${encodeURIComponent(slug)}`)])
+const toc = post.toc.filter((t) => t.level <= 3)
+const PORTFOLIO = (import.meta.env.PUBLIC_PORTFOLIO_URL ?? 'https://uditworks.com').replace(/\/$/, '')
+
+const html = withInlineRelated(post.content_html, related.items[0])
+---
+<Base title={post.head.title} description={post.excerpt ?? post.title} canonical={post.head.links[0]?.href} head={{ meta: post.head.meta, jsonLd: post.head.json_ld }}>
+  <div class="prog" aria-hidden="true"></div>
+  <div class="crumbbar"><div class="wrap"><a class="back" href="/"><span aria-hidden="true">←</span> All notes</a>
+    <div class="crumbs"><a href="/">lighthouseinfo</a>{post.category && <><span>/</span><a href={post.category.url}>{post.category.name}</a></>}<span>/</span><b>{post.title}</b></div></div></div>
+  <header class="dark art-head"><div class="wrap">
+    {post.category && <span class="eyebrow">{post.category.name}</span>}
+    <h1 class="h1">{post.title}</h1>
+    {post.subtitle && <p class="art-sub">{post.subtitle}</p>}
+    <div class="byline">
+      <span><i class="av" aria-hidden="true">{post.author.avatar_url ? <img src={post.author.avatar_url} alt="" /> : post.author.name[0]}</i><b>{post.author.name}</b></span>
+      <span>{formatDate(post.published_at)}</span><span>{post.reading_time_min} min read</span>
+    </div>
+  </div></header>
+
+  <div class="read">
+    <aside class="rail-actions" aria-label="Post actions">
+      <Reactions client:visible kind="blog" slug={post.slug} />
+      {post.excerpt && <button type="button" data-toggle-summary aria-label="Show summary" title="Summary">≡</button>}
+      <button type="button" data-copy-link aria-label="Copy link" title="Copy link">🔗</button>
+      <a href="#comments" aria-label="Jump to comments" title="Comments">💬</a>
+    </aside>
+
+    <div class="lh-article">
+      {post.excerpt && <div class="summary" id="summary" hidden><b>Summary</b>{post.excerpt}</div>}
+      {post.cover && (
+        <figure class="art-cover" style={`background-image:linear-gradient(rgba(245,246,248,.72),rgba(245,246,248,.72)),url("${post.cover.url}")`}>
+          <img src={post.cover.url} srcset={post.cover.srcset} sizes="(max-width: 900px) 100vw, 820px" alt={post.cover.alt || ''} width={post.cover.width ?? undefined} height={post.cover.height ?? undefined} fetchpriority="high" />
+        </figure>
+      )}
+      {toc.length > 2 && (
+        <details class="mobile-toc"><summary>On this page</summary><ol class="toc-list">{toc.map((t) => <li class={`l${t.level}`}><a href={`#${t.id}`}>{t.text}</a></li>)}</ol></details>
+      )}
+      <article class="bp-article" id="post-body" set:html={html} />
+      {post.tags.length > 0 && <div class="tagrow">{post.tags.map((t) => <a href={t.url}>#{t.name}</a>)}</div>}
+      <div class="nl-card">
+        <span class="eyebrow on-dark-eb">The newsletter</span>
+        <h3>Liked this? Get the next one.</h3>
+        <p>An email when a new note goes live. Confirm by email, unsubscribe anytime.</p>
+        <div class="dark-bg"><SubscribeForm client:visible dark /></div>
+      </div>
+      <Comments client:visible slug={post.slug} open={post.allow_comments} />
+    </div>
+
+    <aside class="side" aria-label="On this page and more">
+      {toc.length > 0 && <div><h2>On this page</h2><ol class="toc-list">{toc.map((t) => <li class={`l${t.level}`}><a href={`#${t.id}`}>{t.text}</a></li>)}</ol></div>}
+      {latest.items.length > 0 && <div><h2>Latest notes</h2><div class="side-posts">{latest.items.slice(0, 3).map((p) => <a href={`/blog/${p.slug}`}>{p.title}<small>{p.reading_time_min} min</small></a>)}</div></div>}
+      <div><h2>By the author</h2><a class="link-arrow" href={PORTFOLIO}>uditworks.com ↗</a></div>
+    </aside>
+  </div>
+
+  <nav class="mobile-bar" aria-label="Post actions">
+    {toc.length > 2 && <a href="#post-body">Top</a>}
+    <button type="button" data-copy-link>Share</button>
+    <a href="#comments">Comments</a>
+    <button type="button" data-open-sub>Subscribe</button>
+  </nav>
+
+  {related.items.length > 0 && (
+    <section class="sec alt"><div class="wrap">
+      <div class="sec-head"><div><span class="eyebrow">Keep reading</span><h2 class="h2 mt">More from<br /><span class="soft">the lighthouse.</span></h2></div><a class="btn" href="/">All notes <span aria-hidden="true">↗</span></a></div>
+      <div class="posts">{related.items.map((p) => (
+        <a class="post" href={`/blog/${p.slug}`}>
+          {p.cover?.url ? <div class="pcover has-img"><img class="tone" src={p.cover.url} alt={p.cover.alt || ''} loading="lazy" /></div>
+            : <div class="pcover"><span class="g">{(p.category?.name ?? p.title).slice(0, 3).toUpperCase()}<small>.</small></span></div>}
+          <div class="pbody"><div class="k">{p.category?.name ?? 'Note'}<i>{p.reading_time_min} min</i></div><h3>{p.title}</h3>{p.excerpt && <p>{p.excerpt}</p>}<span class="more">Read note →</span></div>
+        </a>
+      ))}</div>
+    </div></section>
+  )}
+  <script>
+    import { enhanceArticle } from '@udit/shared/behaviours'
+    import { initReading } from '@udit/shared/client'
+    const body = document.getElementById('post-body')
+    if (body) enhanceArticle(body)
+    initReading()
+  </script>
+</Base>

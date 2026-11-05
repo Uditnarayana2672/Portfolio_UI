@@ -1,0 +1,14 @@
+---
+import { api } from '@udit/shared/api'
+
+interface Props { active?: string }
+const { active } = Astro.props
+const { items } = await api.blogCategories()
+const shown = items.filter((c) => c.post_count > 0)
+---
+{shown.length > 0 && (
+  <nav class="topics" id="topics" aria-label="Topics">
+    <a href="/" class={active ? '' : 'on'}>All</a>
+    {shown.map((c) => <a href={`/blog/category/${c.slug}`} class={active === c.slug ? 'on' : ''}>{c.name}<small>{c.post_count}</small></a>)}
+  </nav>
+)}

@@ -1,0 +1,228 @@
+---
+import { api } from '@udit/shared/api'
+import { portraitImage, cropped, usableImage } from '@udit/shared/images'
+import { highlightedHtml } from '@udit/shared/text'
+import { ContactForm } from '@udit/shared/interactions'
+import Base from '../layouts/Base.astro'
+import DevScene from '../components/DevScene.astro'
+import ProjectCard from '../components/ProjectCard.astro'
+import { BLOG_URL, EDUCATION, PROFILE } from '../site-config'
+
+const [{ content: c }, projects, blogs] = await Promise.all([api.portfolio(), api.projects('?limit=50&sort=featured'), api.blogs('?limit=3')])
+const featured = projects.items.slice(0, 4)
+const more = projects.total - featured.length
+const portrait = c.hero.portrait && usableImage(c.hero.portrait.url)
+
+const logo = (slug: string | null, name: string, cls = '') => slug
+  ? `<img class="${cls}" src="https://cdn.simpleicons.org/${encodeURIComponent(slug)}/1d2025" alt="" loading="lazy" width="24" height="24" data-badge="${name.slice(0, 2)}" onerror="var s=document.createElement('span');s.className='mb';s.textContent=this.dataset.badge;this.replaceWith(s)">`
+  : `<span class="mb">${name.trim().slice(0, 2).replace(/[<>&"]/g, '')}</span>`
+
+const strip = c.tech.filter((t) => t.show_in_strip)
+const chips = c.tech.filter((t) => t.show_in_what_i_do)
+const CATEGORIES = [['ai', 'AI & Agents'], ['backend', 'Backend'], ['frontend', 'Frontend'], ['cloud', 'Cloud & Ops']] as const
+const LEVEL = { working: { label: 'Working', w: 55 }, advanced: { label: 'Advanced', w: 80 }, expert: { label: 'Expert', w: 95 } }
+const panels = CATEGORIES
+  .map(([key, label]) => ({ key, label, items: c.tech.filter((t) => t.show_in_skills && t.categories.includes(key)) }))
+  .filter((p) => p.items.length)
+const period = (j: { start_year: number; end_year: number | null }) => `${j.start_year} — ${j.end_year ?? 'Present'}`
+const initial = (s: string) => s.length <= 3 ? s : s[0]
+const headlineLines = c.hero.headline.split('\n')
+---
+<Base title={`${PROFILE.name} — Agentic AI Engineer`} description={c.hero.intro} image={portrait ? cropped(portrait, 1200, '1.91:1') : undefined}>
+  <section class="hero dark" id="top">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">{c.hero.eyebrow}</span>
+        <h1 class="h1">{headlineLines.map((l, i) => <>{l}{i < headlineLines.length - 1 && <br />}</>)}<span class="l2">{c.hero.headline_accent}</span></h1>
+        <p class="lede">{c.hero.intro}</p>
+        <div class="hero-actions">
+          <a class="btn" href="#work">See my work <span aria-hidden="true">↗</span></a>
+          <a class="btn-ghost" href="#contact">Reach out <span aria-hidden="true">↓</span></a>
+        </div>
+        {c.hero.highlights.length > 0 && <div class="ticks">{c.hero.highlights.map((h) => <span><i aria-hidden="true" class="tick">✓</i>{h}</span>)}</div>}
+      </div>
+      {portrait ? (
+        <div class="portrait">
+          <span class="frame"><img src={portraitImage(portrait, 720)} srcset={`${portraitImage(portrait, 480)} 480w, ${portraitImage(portrait, 720)} 720w, ${portraitImage(portrait, 1000)} 1000w`} sizes="(max-width: 960px) 78vw, 430px" alt={c.hero.portrait?.alt || PROFILE.name} fetchpriority="high" /></span>
+        </div>
+      ) : (
+        <div class="hero-art" aria-hidden="true">
+          <div class="hint"><i></i>Ready for your next big thing</div>
+          <div class="code">
+            <div class="bar"><b></b><b></b><b></b><span>&gt;_ udit.ts</span></div>
+<pre><span class="ln"><span class="c">// From idea to agent to production.</span></span><span class="ln"><span class="k">const</span> udit = <span class="k">await</span> engineer.<span class="o">build</span>(&#123;</span><span class="ln">  focus: <span class="s">'Agentic AI'</span>,</span><span class="ln">  stack: [<span class="s">'Python'</span>, <span class="s">'FastAPI'</span>, <span class="s">'React'</span>],</span><span class="ln">  memory: <span class="s">'persistent'</span>,</span><span class="ln">  honest: <span class="o">true</span>,</span><span class="ln">  ships: <span class="o">Infinity</span></span><span class="ln">&#125;);</span></pre>
+          </div>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {strip.length > 0 && (
+    <div class="stackbar" aria-label="Tech stack"><div class="wrap"><div class="stack-in">
+      <div class="stack-lbl">The stack I reach for.<br />Chosen for the job.</div>
+      <div class="stack-view"><div class="mq-track">
+        {[...strip, ...strip].map((t, i) => <span class="tech" aria-hidden={i >= strip.length ? 'true' : undefined} set:html={`${logo(t.logo_slug, t.name)}${t.name.replace(/&/g, '&amp;').replace(/</g, '&lt;')}`} />)}
+      </div></div>
+    </div></div></div>
+  )}
+
+  <section class="sec" id="about">
+    <div class="wrap">
+      <div class="hello">
+        <div class="rv"><span class="eyebrow"><span class="n">01</span>&nbsp;Hello</span></div>
+        <div class="rv d1">
+          <blockquote set:html={highlightedHtml(c.about.statement)} />
+          <p class="lede today" set:html={highlightedHtml(c.about.today, 'b')} />
+          <div class="sign">— {PROFILE.name}</div>
+        </div>
+      </div>
+      {c.about.stats.length > 0 && (
+        <div class="stats rv">{c.about.stats.map((s) => <div class="stat"><b>{s.value}<i>{s.suffix}</i></b><span>{s.label}</span></div>)}</div>
+      )}
+    </div>
+  </section>
+
+  <section class="sec alt" id="whatido">
+    <div class="wrap"><div class="wid">
+      <div class="scene-box rv"><DevScene /><div class="cap"><span>Udit · at the desk</span><span>● coding</span></div></div>
+      <div>
+        <span class="eyebrow rv"><span class="n">02</span>&nbsp;What I do</span>
+        <h2 class="h3 rv wid-title" set:html={highlightedHtml(c.what_i_do.title).replace(/<em>/g, '<span class="or">').replace(/<\/em>/g, '</span>')} />
+        <div class="sub-mono">{c.what_i_do.subtitle}</div>
+        <div class="chips">{chips.map((t) => <span class="chip" set:html={`${logo(t.logo_slug, t.name)}${t.name.replace(/&/g, '&amp;').replace(/</g, '&lt;')}`} />)}</div>
+        <ul class="pts">{c.what_i_do.points.map((p, i) => <li><span class="z">{String(i + 1).padStart(2, '0')}</span><span set:html={highlightedHtml(p.text, 'b')} /></li>)}</ul>
+      </div>
+    </div></div>
+  </section>
+
+  {panels.length > 0 && (
+    <section class="sec" id="skills">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="rv"><span class="eyebrow"><span class="n">03</span>&nbsp;Proficiencies</span><h2 class="h2 mt">{c.skills.title}<br /><span class="soft">{c.skills.title_soft}</span></h2></div>
+          <p class="rv d1">{c.skills.intro}</p>
+        </div>
+        <div class="tabs rv" role="tablist" aria-label="Skill categories">
+          {panels.map((p, i) => <button type="button" role="tab" class={`tab${i === 0 ? ' on' : ''}`} aria-selected={i === 0 ? 'true' : 'false'} data-k={p.key}>{p.label}</button>)}
+        </div>
+        {panels.map((p, i) => (
+          <div class="skills" role="tabpanel" data-panel={p.key} hidden={i !== 0}>
+            {p.items.map((t) => <div class="skill"><Fragment set:html={logo(t.logo_slug, t.name)} /><b>{t.name}</b><em>{LEVEL[t.level].label}</em><div class="meter"><i data-w={LEVEL[t.level].w}></i></div></div>)}
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="sec alt" id="experience">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="rv"><span class="eyebrow"><span class="n">04</span>&nbsp;Experience</span><h2 class="h2 mt">{c.experience_section.title}<br /><span class="soft">{c.experience_section.title_soft}</span></h2></div>
+        <p class="rv d1">{c.experience_section.intro}</p>
+      </div>
+      <div class="tl">
+        {c.experience.map((j) => (
+          <article class={`job rv${j.end_year === null ? ' now' : ''}`}>
+            <div class="when">{period(j)}</div>
+            <div class="mono-co" aria-hidden="true">{initial(j.company)}</div>
+            <div class="body"><h3 class="job-h">{j.role} <span>@ {j.company}</span></h3><p>{j.summary}</p>
+              {j.highlights.length > 0 && <ul>{j.highlights.map((h) => <li><i aria-hidden="true" class="tick">✓</i>{h}</li>)}</ul>}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="education">
+    <div class="wrap"><div class={`edu${PROFILE.collegePhoto ? '' : ' no-photo'}`}>
+      {PROFILE.collegePhoto && (
+        <figure class="photo rv">
+          <div class="frame"><img src={PROFILE.collegePhoto} alt={PROFILE.collegeName || 'College campus'} loading="lazy" /></div>
+          <figcaption class="cap"><span>{PROFILE.collegeName}</span><span>{EDUCATION[0].years}</span></figcaption>
+        </figure>
+      )}
+      <div class="rv d1">
+        <span class="eyebrow">Education</span>
+        <h2 class="h2 mt">Learning the<br /><span class="soft">theory first.</span></h2>
+        <div class="edu-list">
+          {EDUCATION.map((e) => (
+            <div class="deg"><div class="yr">{e.years}</div><h3>{e.title}</h3><div class="sp">{e.detail}</div><p>{e.summary}</p><ul>{e.points.map((x) => <li>{x}</li>)}</ul></div>
+          ))}
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  {featured.length > 0 && (
+    <section class="sec work" id="work">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="rv"><span class="eyebrow"><span class="n">05</span>&nbsp;Selected work</span><h2 class="h2 mt">Not just shipped.<br /><span class="soft">Built to make a difference.</span></h2></div>
+          <p class="rv d1">Projects I’m proudest of. Use the arrows to browse, or jump to the full archive at the end.</p>
+        </div>
+        <div class="rail-wrap" data-rail>
+          <button type="button" class="arrow-btn prev" aria-label="Previous project">←</button>
+          <button type="button" class="arrow-btn next" aria-label="Next project">→</button>
+          <div class="rail" tabindex="0" aria-label="Projects">
+            {featured.map((p) => <ProjectCard project={p} />)}
+            <a class="endcard" href="/projects">
+              <span class="eyebrow">More work</span>
+              <div>
+                {more > 0 && <div class="count">+{more}</div>}
+                <h3>{more > 0 ? 'More projects, same standard.' : 'See them all in one place.'}</h3>
+                <p>Browse everything I’ve built, with filters and the story behind each one.</p>
+                <span class="btn">See all projects <span aria-hidden="true">↗</span></span>
+              </div>
+            </a>
+          </div>
+          <div class="rail-ctl"><div class="dots"></div><span class="count-lbl"></span></div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {blogs.items.length > 0 && (
+    <section class="sec" id="writing">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="rv"><span class="eyebrow"><span class="n">06</span>&nbsp;Knowledge blog</span><h2 class="h2 mt">Writing about<br /><span class="soft">what I build.</span></h2></div>
+          <p class="rv d1">Practical notes on agents, retrieval and shipping.</p>
+        </div>
+        <div class="posts">
+          {blogs.items.map((b) => (
+            <a class="post rv" href={b.url}>
+              {b.cover?.url ? <div class="pcover has-img"><img class="tone" src={b.cover.url} alt={b.cover.alt || ''} loading="lazy" /></div>
+                : <div class="pcover"><span class="g">{(b.category?.name ?? b.title).slice(0, 3).toUpperCase()}<small>.</small></span></div>}
+              <div class="pbody"><div class="k">{b.category?.name ?? 'Note'}<i>{b.reading_time_min} min</i></div><h3>{b.title}</h3>{b.excerpt && <p>{b.excerpt}</p>}<span class="more">Read note →</span></div>
+            </a>
+          ))}
+        </div>
+        <div class="bridge rv">
+          <p><b>Want more?</b> Every concept I learn goes on <b>lighthouseinfo.com</b>, with search, topics and a newsletter.</p>
+          <a class="btn" href={BLOG_URL}>More blogs on lighthouseinfo.com <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="sec contact" id="contact">
+    <div class="wrap grid">
+      <div>
+        <span class="eyebrow rv"><span class="n">07</span>&nbsp;Let’s build something that matters</span>
+        <h2 class="h1 rv">Let’s make<br /><span class="or">something</span><br />good.</h2>
+        <p class="lede rv">Have an idea? I take on a few projects at a time: full-stack builds, AI agents, or rescuing a product that’s stuck. I’ll reply within a day or two.</p>
+        <ul class="checks"><li><i aria-hidden="true" class="tick">✓</i>An honest technical conversation</li><li><i aria-hidden="true" class="tick">✓</i>No account needed, just a message</li><li><i aria-hidden="true" class="tick">✓</i>No pressure, no commitment</li></ul>
+        <div class="reach">
+          {PROFILE.email && <a href={`mailto:${PROFILE.email}`}><span><small>Email</small>{PROFILE.email}</span><i aria-hidden="true">↗</i></a>}
+          {PROFILE.github && <a href={PROFILE.github} rel="noopener"><span><small>GitHub</small>{PROFILE.github.replace('https://', '')}</span><i aria-hidden="true">↗</i></a>}
+          {PROFILE.linkedin && <a href={PROFILE.linkedin} rel="noopener"><span><small>LinkedIn</small>{PROFILE.linkedin.replace('https://www.', '')}</span><i aria-hidden="true">↗</i></a>}
+        </div>
+      </div>
+      <div class="form rv d1">
+        <h3>Let’s start with the essentials.</h3><div class="req">Fields marked * are required</div>
+        <ContactForm client:visible />
+      </div>
+    </div>
+  </section>
+</Base>

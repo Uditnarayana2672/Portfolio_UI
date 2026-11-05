@@ -1,0 +1,25 @@
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.filters button { font-family: "Caveat", cursive; font-size: 20px; border: 2px solid var(--ink); background: var(--paper); color: var(--ink); padding: 3px 14px; cursor: pointer; }
+.filters .on { background: var(--ink); color: var(--paper); }
+.note { font-family: "Patrick Hand", sans-serif; color: var(--ink-soft); font-size: 18px; }
+.error { font-family: "Patrick Hand", sans-serif; color: var(--accent); font-size: 16px; }
+.card { border: 2px solid var(--ink); background: var(--paper); padding: 14px 16px; margin-bottom: 12px; color: var(--ink); }
+.unread { box-shadow: 4px 4px 0 var(--accent); }
+.card header { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; font-family: "Patrick Hand", sans-serif; font-size: 17px; }
+.card header a { color: var(--pop); overflow-wrap: anywhere; }
+.card time { margin-left: auto; font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ink-soft); }
+.card h2 { font-family: "Caveat", cursive; font-size: 25px; margin: 6px 0 2px; }
+.card p { font-family: "Patrick Hand", sans-serif; font-size: 17px; line-height: 1.4; white-space: pre-line; overflow-wrap: anywhere; margin: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.small { font-family: "Patrick Hand", sans-serif; font-size: 16px; background: var(--paper); color: var(--ink); border: 1.5px solid var(--ink); padding: 3px 11px; cursor: pointer; text-decoration: none; display: inline-block; }
+.small:hover { background: var(--paper-dark); }
+.small:disabled { opacity: .5; cursor: default; }
+.danger { color: var(--accent); border-color: var(--accent); }
+.reply { margin-top: 10px; display: grid; gap: 6px; justify-items: start; }
+.reply label { display: grid; gap: 4px; width: 100%; font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-soft); }
+.reply textarea { font-family: "Patrick Hand", sans-serif; font-size: 17px; border: 1.5px solid var(--ink); padding: 6px 9px; background: #fffdf7; width: 100%; box-sizing: border-box; }
+.tableWrap { overflow-x: auto; border: 2px solid var(--ink); background: var(--paper); }
+.table { width: 100%; border-collapse: collapse; font-family: "Patrick Hand", sans-serif; font-size: 17px; color: var(--ink); }
+.table th { font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; text-align: left; padding: 8px 12px; color: var(--ink-soft); }
+.table td { padding: 8px 12px; border-top: 1px dashed var(--rule); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

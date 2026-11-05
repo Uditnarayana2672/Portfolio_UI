@@ -1,0 +1,44 @@
+---
+import { api } from '@udit/shared/api'
+import { SubscribeForm } from '@udit/shared/interactions'
+import Base from '../layouts/Base.astro'
+import PostList from '../components/PostList.astro'
+import Topics from '../components/Topics.astro'
+
+const { items, total } = await api.blogs('?limit=12')
+const latest = items[0]
+const PORTFOLIO = (import.meta.env.PUBLIC_PORTFOLIO_URL ?? 'https://uditworks.com').replace(/\/$/, '')
+---
+<Base title="LighthouseInfo — Notes by Udit Narayana" description="Concepts I learn, written down so they stick: AI agents, architecture and the craft of shipping." image={latest?.cover?.url}>
+  <section class="hero dark lh-hero" id="top"><div class="wrap">
+    <div>
+      <span class="eyebrow">A blog by Udit Narayana</span>
+      <h1 class="h1">Notes from<br />the <span class="or">lighthouse.</span></h1>
+      <p class="lede">Concepts I learn, written down so they stick: AI agents, architecture and the craft of shipping. Free to read, no account needed.</p>
+      <SubscribeForm client:visible dark />
+      <div class="sub-note"><i aria-hidden="true" class="tick">✓</i>Confirm by email. Unsubscribe anytime.</div>
+    </div>
+    {latest && (
+      <a class="feature" href={`/blog/${latest.slug}`}>
+        {latest.cover?.url
+          ? <div class="pcover has-img"><img src={latest.cover.url} alt={latest.cover.alt || ''} /></div>
+          : <div class="pcover"><span class="g">{(latest.category?.name ?? latest.title).slice(0, 3).toUpperCase()}<small>.</small></span></div>}
+        <div class="fc"><small>Latest · {latest.reading_time_min} min read</small><b>{latest.title}</b>{latest.excerpt && <span>{latest.excerpt}</span>}</div>
+      </a>
+    )}
+  </div></section>
+
+  <section class="sec" id="latest"><div class="wrap">
+    <div class="sec-head"><div><span class="eyebrow">Latest notes</span><h2 class="h2 mt">Fresh off<br /><span class="soft">the desk.</span></h2></div><p>Search by keyword, or narrow by topic.</p></div>
+    <Topics />
+    <PostList items={items} total={total} />
+  </div></section>
+
+  <section class="sec alt" id="about"><div class="wrap">
+    <div class="about-strip">
+      <div class="av" aria-hidden="true">U</div>
+      <div><span class="eyebrow on-dark-eb">About the author</span><h2 class="h3 mt-sm">I’m Udit. I build agentic AI.</h2><p>I write what I learn while building. The work behind these notes lives on my portfolio.</p></div>
+      <a class="btn" href={PORTFOLIO}>Visit uditworks.com <span aria-hidden="true">↗</span></a>
+    </div>
+  </div></section>
+</Base>

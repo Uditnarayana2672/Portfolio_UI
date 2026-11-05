@@ -1,0 +1,8 @@
+---
+import { PostBrowser } from '@udit/shared/interactions'
+import type { BlogCard } from '@udit/shared/types'
+
+interface Props { items: BlogCard[]; total: number; category?: string; tag?: string }
+const { items, total, category, tag } = Astro.props
+---
+<PostBrowser client:load initial={items} total={total} category={category} tag={tag} />

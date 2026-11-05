@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local settings: real values go in each host's settings
+.env
+.env.*
+!.env.example
+.astro

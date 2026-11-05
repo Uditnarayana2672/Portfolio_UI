@@ -1,0 +1,39 @@
+---
+import { api } from '@udit/shared/api'
+import Base from '../../layouts/Base.astro'
+import ProjectCard from '../../components/ProjectCard.astro'
+
+const { items, categories } = await api.projects('?limit=50&sort=newest')
+const live = items.filter((p) => p.demo_url)
+const hasOther = items.some((p) => !p.category)
+---
+<Base title="All projects — Udit Narayana" description="Production apps, research sandboxes and small experiments by Udit Narayana." active="work">
+  <div class="crumbbar"><div class="wrap"><a class="back" href="/#work"><span aria-hidden="true">←</span> Back to portfolio</a><div class="crumbs"><a href="/">Portfolio</a><span>/</span><b>All projects</b></div></div></div>
+  <section class="phero"><div class="wrap">
+    <span class="eyebrow">The full archive</span>
+    <h1 class="h1">Everything I’ve built.<br /><span class="soft">Shipped and sketched.</span></h1>
+    <p class="lede">Filter by type, or open any project for the story behind it.</p>
+  </div></section>
+  <section class="sec" style="padding-top:clamp(40px,5vw,70px)"><div class="wrap">
+    {categories.length > 1 && (
+      <div class="filters" role="group" aria-label="Filter projects">
+        <button type="button" class="fbtn on" aria-pressed="true" data-c="All">All<small>{items.length}</small></button>
+        {categories.map((c) => <button type="button" class="fbtn" aria-pressed="false" data-c={c.name}>{c.name}<small>{c.count}</small></button>)}
+        {hasOther && <button type="button" class="fbtn" aria-pressed="false" data-c="Other">Other<small>{items.filter((p) => !p.category).length}</small></button>}
+      </div>
+    )}
+    {items.length ? <div class="pgrid">{items.map((p) => <ProjectCard project={p} />)}</div> : <p class="empty-note">Projects are on their way.</p>}
+  </div></section>
+  {live.length > 0 && (
+    <section class="sec alt"><div class="wrap">
+      <div class="sec-head"><div><span class="eyebrow">Live on the web</span><h2 class="h2 mt">Sites I’ve shipped.</h2></div><p>Everything with a public address, in one list.</p></div>
+      <div class="live-list">
+        {live.map((p, i) => <a href={p.demo_url} target="_blank" rel="noopener noreferrer"><span class="no">{String(i + 1).padStart(2, '0')}</span><div><b>{p.title}</b><small>{(p.demo_url ?? '').replace(/^https?:\/\//, '')}</small></div><span aria-hidden="true" class="go">↗</span></a>)}
+      </div>
+    </div></section>
+  )}
+  <section class="dark cta-band"><div class="wrap">
+    <h2 class="h2">Have something<br /><span class="or">in mind?</span></h2>
+    <a class="btn" href="/#contact">Let’s build something <span aria-hidden="true">↗</span></a>
+  </div></section>
+</Base>

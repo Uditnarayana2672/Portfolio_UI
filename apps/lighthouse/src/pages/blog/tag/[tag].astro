@@ -1,0 +1,17 @@
+---
+import { api } from '@udit/shared/api'
+import Base from '../../../layouts/Base.astro'
+import PostList from '../../../components/PostList.astro'
+
+export async function getStaticPaths() {
+  const { items } = await api.blogTags()
+  return items.map((t) => ({ params: { tag: t.tag } }))
+}
+const { tag } = Astro.params as { tag: string }
+const { items, total } = await api.blogs(`?limit=12&tag=${encodeURIComponent(tag)}`)
+---
+<Base title={`#${tag} — LighthouseInfo`} description={`Notes tagged ${tag}.`}>
+  <div class="crumbbar"><div class="wrap"><a class="back" href="/"><span aria-hidden="true">←</span> All notes</a></div></div>
+  <section class="phero"><div class="wrap"><span class="eyebrow">Tag</span><h1 class="h1">#{tag}</h1></div></section>
+  <section class="sec"><div class="wrap"><PostList items={items} total={total} tag={tag} /></div></section>
+</Base>

@@ -1,0 +1,25 @@
+{
+  "name": "@udit/shared",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./blocks": "./src/blocks/Blocks.tsx",
+    "./site.css": "./src/site.css",
+    "./blocks.css": "./src/blocks/blocks.css",
+    "./article.css": "./src/article.css",
+    "./api": "./src/api.ts",
+    "./behaviours": "./src/behaviours.ts",
+    "./images": "./src/images.ts",
+    "./types": "./src/types.ts",
+    "./text": "./src/text.tsx",
+    "./interactions": "./src/Interactions.tsx",
+    "./client": "./src/client.ts"
+  },
+  "dependencies": {
+    "highlight.js": "^11.12.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

@@ -1,0 +1,74 @@
+---
+import '@udit/shared/site.css'
+import '@udit/shared/blocks.css'
+import { BLOG_URL, PROFILE } from '../site-config'
+
+interface Props { title: string; description: string; image?: string | null; canonical?: string; noindex?: boolean; active?: string }
+const { title, description, image, canonical, noindex = false, active = '' } = Astro.props
+const url = canonical ?? new URL(Astro.url.pathname, Astro.site).href
+const links = [
+  ['About', '/#about', 'about'], ['Skills', '/#skills', 'skills'], ['Experience', '/#experience', 'experience'],
+  ['Work', '/#work', 'work'], ['Writing', '/#writing', 'writing'], ['Contact', '/#contact', 'contact'],
+]
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={url} />
+  {noindex && <meta name="robots" content="noindex" />}
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={url} />
+  {image && <meta property="og:image" content={image} />}
+  <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script is:inline>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <header class="site-head">
+    <div class="wrap">
+      <a class="logo" href="/"><span class="mk">&lt;/&gt;</span><span>udit<span class="dot">.</span>works</span></a>
+      <nav class="nav" aria-label="Main">
+        {links.map(([label, href, key]) => <a href={href} class={active === key ? 'on' : ''}>{label}</a>)}
+      </nav>
+      <div class="head-cta">
+        <a class="x-site" href={BLOG_URL}>lighthouseinfo.com ↗</a>
+        <a class="btn sm" href="/#contact">Let’s build something ↗</a>
+        <button class="burger" aria-label="Menu" aria-expanded="false" aria-controls="mnav"><i></i></button>
+      </div>
+    </div>
+    <nav class="mnav" id="mnav" aria-label="Mobile">
+      {links.map(([label, href]) => <a href={href}>{label} <span aria-hidden="true">→</span></a>)}
+      <a href={BLOG_URL}>Read the blog · lighthouseinfo.com <span aria-hidden="true">↗</span></a>
+      <a class="btn" href="/#contact">Let’s build something <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+  <main><slot /></main>
+  <footer class="foot">
+    <div class="wrap">
+      <div class="top">
+        <div><a class="logo" href="/"><span class="mk">&lt;/&gt;</span><span>udit<span class="dot">.</span>works</span></a><p>Agentic-AI engineer building things that reason, remember and ship.</p></div>
+        <div><h2 class="foot-h">Explore</h2><ul><li><a href="/#about">About</a></li><li><a href="/#experience">Experience</a></li><li><a href="/projects">All projects</a></li><li><a href="/#contact">Contact</a></li></ul></div>
+        <div><h2 class="foot-h">Writing</h2><ul><li><a href={BLOG_URL}>lighthouseinfo.com ↗</a></li></ul></div>
+        <div><h2 class="foot-h">Elsewhere</h2><ul>
+          {PROFILE.github && <li><a href={PROFILE.github} rel="noopener">GitHub ↗</a></li>}
+          {PROFILE.linkedin && <li><a href={PROFILE.linkedin} rel="noopener">LinkedIn ↗</a></li>}
+          {PROFILE.email && <li><a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a></li>}
+        </ul></div>
+      </div>
+      <div class="bot"><span>© {new Date().getFullYear()} {PROFILE.name}</span><span>uditworks.com</span></div>
+    </div>
+  </footer>
+  <script>
+    import { initSite } from '@udit/shared/client'
+    initSite()
+  </script>
+</body>
+</html>

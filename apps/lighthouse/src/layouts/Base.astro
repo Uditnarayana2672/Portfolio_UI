@@ -1,0 +1,80 @@
+---
+import '@udit/shared/site.css'
+import '@udit/shared/article.css'
+import { SubscribeForm } from '@udit/shared/interactions'
+
+interface Props { title: string; description: string; image?: string | null; canonical?: string; noindex?: boolean; head?: { meta?: { name?: string; property?: string; content: string }[]; jsonLd?: object } }
+const { title, description, image, canonical, noindex = false, head } = Astro.props
+const url = canonical ?? new URL(Astro.url.pathname, Astro.site).href
+const PORTFOLIO = (import.meta.env.PUBLIC_PORTFOLIO_URL ?? 'https://uditworks.com').replace(/\/$/, '')
+const links = [['Latest', '/#latest'], ['Topics', '/#topics'], ['About', '/#about']]
+const jsonLd = head?.jsonLd ? JSON.stringify(head.jsonLd).replace(/</g, '\\u003c') : ''
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{title}</title>
+  <link rel="canonical" href={url} />
+  {noindex && <meta name="robots" content="noindex" />}
+  {head?.meta ? head.meta.map((m) => <meta name={m.name} property={m.property} content={m.content} />) : (
+    <>
+      <meta name="description" content={description} />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:url" content={url} />
+      {image && <meta property="og:image" content={image} />}
+      <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+    </>
+  )}
+  {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate" type="application/rss+xml" title="LighthouseInfo" href="/rss.xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script is:inline>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <header class="site-head">
+    <div class="wrap">
+      <a class="logo" href="/"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M11 25 12.500 10h3L17 25M10 25h8M12.500 10l1.500-5 1.500 5M3 7l6 2M25 7l-6 2M2 12l7 1M26 12l-7 1"/></svg><span>lighthouse<span class="dot">.</span>info</span></a>
+      <nav class="nav" aria-label="Main">{links.map(([label, href]) => <a href={href}>{label}</a>)}</nav>
+      <div class="head-cta">
+        <a class="x-site" href={PORTFOLIO}>uditworks.com ↗</a>
+        <button type="button" class="btn sm" data-open-sub>Subscribe ↗</button>
+        <button class="burger" aria-label="Menu" aria-expanded="false" aria-controls="mnav"><i></i></button>
+      </div>
+    </div>
+    <nav class="mnav" id="mnav" aria-label="Mobile">
+      {links.map(([label, href]) => <a href={href}>{label} <span aria-hidden="true">→</span></a>)}
+      <a href={PORTFOLIO}>Portfolio · uditworks.com <span aria-hidden="true">↗</span></a>
+      <button type="button" class="btn" data-open-sub>Subscribe <span aria-hidden="true">↗</span></button>
+    </nav>
+  </header>
+  <main><slot /></main>
+  <footer class="foot">
+    <div class="wrap">
+      <div class="top">
+        <div><a class="logo" href="/"><span>lighthouse<span class="dot">.</span>info</span></a><p>Concepts I learn, written down so they stick. By Udit Narayana.</p></div>
+        <div><h2 class="foot-h">Read</h2><ul><li><a href="/#latest">Latest notes</a></li><li><a href="/#topics">Topics</a></li><li><a href="/rss.xml">RSS</a></li></ul></div>
+        <div><h2 class="foot-h">Follow</h2><ul><li><button type="button" data-open-sub>Newsletter</button></li></ul></div>
+        <div><h2 class="foot-h">The author</h2><ul><li><a href={PORTFOLIO}>uditworks.com ↗</a></li><li><a href={`${PORTFOLIO}/projects`}>Projects ↗</a></li></ul></div>
+      </div>
+      <div class="bot"><span>© {new Date().getFullYear()} Udit Narayana</span><span>lighthouseinfo.com</span></div>
+    </div>
+  </footer>
+  <dialog id="subscribe" aria-labelledby="sub-title">
+    <button type="button" class="mclose" aria-label="Close">✕</button>
+    <span class="eyebrow">The newsletter</span>
+    <h3 id="sub-title">Notes, in your inbox.</h3>
+    <p>An email when a new concept goes up. No spam. You’ll confirm your address first, and can leave anytime.</p>
+    <SubscribeForm client:idle />
+  </dialog>
+  <script>
+    import { initSite } from '@udit/shared/client'
+    initSite()
+  </script>
+</body>
+</html>
