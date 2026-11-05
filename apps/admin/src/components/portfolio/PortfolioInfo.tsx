@@ -3,7 +3,7 @@ import { BlogApiError } from '../../api/blogApi'
 import { getPortfolioContent, savePortfolioContent } from '../../api/portfolioApi'
 import type { AdminPortfolioContent, PortfolioDocument } from '../../types/portfolio'
 import { ErrorsContext } from './portfolioHelpers'
-import { AboutTab, ExperienceTab, HeroTab, TechTab, WhatIDoTab } from './tabs'
+import { AboutTab, EducationTab, ExperienceTab, HeroTab, TechTab, WhatIDoTab } from './tabs'
 import { useUnsavedGuard } from './useUnsavedGuard'
 import styles from './PortfolioInfo.module.css'
 
@@ -13,6 +13,7 @@ const TABS = [
   { id: 'what', label: 'What I do', sections: ['what_i_do'], Component: WhatIDoTab },
   { id: 'tech', label: 'Tech & skills', sections: ['skills', 'tech'], Component: TechTab },
   { id: 'experience', label: 'Experience', sections: ['experience_section', 'experience'], Component: ExperienceTab },
+  { id: 'education', label: 'Education', sections: ['education_section', 'education'], Component: EducationTab },
 ] as const
 
 type TabId = (typeof TABS)[number]['id']

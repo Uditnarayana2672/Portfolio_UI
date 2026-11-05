@@ -1,4 +1,5 @@
 import type {
+  Education,
   Job,
   PortfolioDocument,
   SectionText,
@@ -7,6 +8,7 @@ import type {
   TechLevel,
 } from '../../types/portfolio'
 import { FieldError, RowActions, StringList, TechLogo, TextArea, TextField } from './fields'
+import { CompanyImagesField, CompanyLogoField } from './CompanyMedia'
 import PortraitField from './PortraitField'
 import { moved, newId, removed, replaced } from './portfolioHelpers'
 import styles from './PortfolioInfo.module.css'
@@ -55,6 +57,23 @@ export function AboutTab({ content, onChange }: TabProps) {
     <div className={styles.stack}>
       <TextArea label="Statement" path="about.statement" value={about.statement} hint={HIGHLIGHT_HINT} onChange={(statement) => set({ statement })} />
       <TextArea label="“Today I build” text" path="about.today" value={about.today} hint={HIGHLIGHT_HINT} onChange={(today) => set({ today })} />
+      <fieldset className={styles.group}>
+        <legend>Through-line labels</legend>
+        <p className={styles.hint}>The three stages of the animated orange line beside your statement.</p>
+        <div className={styles.threeCol}>
+          {about.through_line.map((label, i) => (
+            <TextField
+              key={i}
+              label={['Wave stage', 'Route stage', 'Agent graph stage'][i]}
+              path={`about.through_line[${i}]`}
+              value={label}
+              maxLength={20}
+              onChange={(next) => set({ through_line: replaced(about.through_line, i, next) })}
+            />
+          ))}
+        </div>
+        <FieldError path="about.through_line" />
+      </fieldset>
       <fieldset className={styles.group}>
         <legend>Stats</legend>
         {stats.map((stat, i) => (
@@ -141,14 +160,6 @@ function TechRow({ tech, index, count, onChange, onMove, onRemove }: {
   onRemove: (index: number) => void
 }) {
   const path = `tech[${index}]`
-  const toggleCategory = (category: TechCategory) =>
-    onChange({
-      ...tech,
-      categories: tech.categories.includes(category)
-        ? tech.categories.filter((c) => c !== category)
-        : [...tech.categories, category],
-    })
-
   return (
     <div className={styles.card}>
       <div className={styles.techHead}>
@@ -170,18 +181,16 @@ function TechRow({ tech, index, count, onChange, onMove, onRemove }: {
             </select>
             <FieldError path={`${path}.level`} />
           </label>
+          <label className={styles.field}>
+            <span className={styles.label}>Category</span>
+            <select value={tech.category} onChange={(e) => onChange({ ...tech, category: e.target.value as TechCategory })}>
+              {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+            </select>
+            <FieldError path={`${path}.category`} />
+          </label>
         </div>
         <RowActions index={index} count={count} name={tech.name || 'tech'} onMove={onMove} onRemove={onRemove} />
       </div>
-      <div className={styles.checks}>
-        <span className={styles.label}>Categories</span>
-        {CATEGORIES.map((c) => (
-          <label key={c.value}>
-            <input type="checkbox" checked={tech.categories.includes(c.value)} onChange={() => toggleCategory(c.value)} /> {c.label}
-          </label>
-        ))}
-      </div>
-      <FieldError path={`${path}.categories`} />
       <div className={styles.checks}>
         <span className={styles.label}>Show in</span>
         <label><input type="checkbox" checked={tech.show_in_strip} onChange={(e) => onChange({ ...tech, show_in_strip: e.target.checked })} /> Scrolling strip</label>
@@ -225,7 +234,7 @@ export function TechTab({ content, onChange }: TabProps) {
             id: newId('t'),
             name: '',
             logo_slug: null,
-            categories: ['ai'],
+            category: 'ai',
             level: 'working',
             show_in_strip: true,
             show_in_what_i_do: true,
@@ -285,6 +294,8 @@ function JobRow({ job, index, count, onChange, onMove, onRemove }: {
       <FieldError path={path} />
       <TextArea label="Summary" path={`${path}.summary`} value={job.summary} rows={2} onChange={(summary) => onChange({ ...job, summary })} />
       <StringList label="Highlights" path={`${path}.highlights`} values={job.highlights} max={8} addLabel="Add highlight" onChange={(highlights) => onChange({ ...job, highlights })} />
+      <CompanyLogoField company={job.company} path={`${path}.logo`} value={job.logo} onChange={(logo) => onChange({ ...job, logo })} />
+      <CompanyImagesField company={job.company} path={`${path}.images`} value={job.images} onChange={(images) => onChange({ ...job, images })} />
     </div>
   )
 }
@@ -325,9 +336,101 @@ export function ExperienceTab({ content, onChange }: TabProps) {
             end_year: null,
             summary: '',
             highlights: [],
+            logo: null,
+            images: [],
           }, ...jobs])}
         >
           + Add job
+        </button>
+      </fieldset>
+    </div>
+  )
+}
+
+function EducationRow({ item, index, count, onChange, onMove, onRemove }: {
+  item: Education
+  index: number
+  count: number
+  onChange: (item: Education) => void
+  onMove: (from: number, to: number) => void
+  onRemove: (index: number) => void
+}) {
+  const path = `education[${index}]`
+  const ongoing = item.end_year === null
+
+  return (
+    <div className={styles.card}>
+      <div className={styles.jobHead}>
+        <strong className={styles.jobTitle}>{item.degree || 'New entry'}</strong>
+        <RowActions index={index} count={count} name={item.degree || 'education entry'} onMove={onMove} onRemove={onRemove} />
+      </div>
+      <div className={styles.twoCol}>
+        <TextField label="Degree or course" path={`${path}.degree`} value={item.degree} maxLength={120} onChange={(degree) => onChange({ ...item, degree })} />
+        <TextField label="Institution" path={`${path}.institution`} value={item.institution} maxLength={120} onChange={(institution) => onChange({ ...item, institution })} />
+      </div>
+      <div className={styles.yearRow}>
+        <label className={styles.field}>
+          <span className={styles.label}>Start year</span>
+          <input type="number" min={1950} max={2100} value={item.start_year} onChange={(e) => onChange({ ...item, start_year: Number(e.target.value) })} />
+          <FieldError path={`${path}.start_year`} />
+        </label>
+        <label className={styles.field}>
+          <span className={styles.label}>End year</span>
+          <input type="number" min={1950} max={2100} disabled={ongoing} value={item.end_year ?? ''} onChange={(e) => onChange({ ...item, end_year: Number(e.target.value) })} />
+          <FieldError path={`${path}.end_year`} />
+        </label>
+        <label className={styles.present}>
+          <input type="checkbox" checked={ongoing} onChange={(e) => onChange({ ...item, end_year: e.target.checked ? null : new Date().getFullYear() })} /> Still studying
+        </label>
+      </div>
+      <FieldError path={path} />
+      <TextArea label="Summary (optional)" path={`${path}.summary`} value={item.summary} rows={2} onChange={(summary) => onChange({ ...item, summary })} />
+      <StringList label="Highlights" path={`${path}.highlights`} values={item.highlights} max={8} addLabel="Add highlight" onChange={(highlights) => onChange({ ...item, highlights })} />
+    </div>
+  )
+}
+
+export function EducationTab({ content, onChange }: TabProps) {
+  const items = content.education
+  const section = content.education_section
+  const setItems = (education: Education[]) => onChange({ ...content, education })
+
+  return (
+    <div className={styles.stack}>
+      <fieldset className={styles.group}>
+        <legend>Section text</legend>
+        <TextField label="Title" path="education_section.title" value={section.title} maxLength={120} onChange={(title) => onChange({ ...content, education_section: { ...section, title } })} />
+        <TextField label="Grey second line" path="education_section.title_soft" value={section.title_soft} maxLength={120} onChange={(title_soft) => onChange({ ...content, education_section: { ...section, title_soft } })} />
+      </fieldset>
+      <fieldset className={styles.group}>
+        <legend>Education ({items.length})</legend>
+        {items.map((item, i) => (
+          <EducationRow
+            key={item.id}
+            item={item}
+            index={i}
+            count={items.length}
+            onChange={(next) => setItems(replaced(items, i, next))}
+            onMove={(from, to) => setItems(moved(items, from, to))}
+            onRemove={(index) => setItems(removed(items, index))}
+          />
+        ))}
+        <FieldError path="education" />
+        <button
+          type="button"
+          className={styles.add}
+          disabled={items.length >= 10}
+          onClick={() => setItems([{
+            id: newId('ed'),
+            degree: '',
+            institution: '',
+            start_year: new Date().getFullYear(),
+            end_year: null,
+            summary: '',
+            highlights: [],
+          }, ...items])}
+        >
+          + Add education
         </button>
       </fieldset>
     </div>

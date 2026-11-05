@@ -36,3 +36,21 @@ export function blurredBackdrop(url: string): string {
 export function portraitImage(url: string, width = 720): string {
   return cld(url, `f_auto,q_auto,c_fill,g_face,ar_4:5,w_${width}`)
 }
+
+export interface ImageCrop { x: number; y: number; width: number; height: number }
+
+const fraction = (value: number) => Math.min(Math.max(value, 0), 1).toFixed(4)
+
+/** Company photo: the area chosen in admin, or a smart crop when none was chosen. */
+export function companyImage(url: string, crop: ImageCrop | null | undefined, width = 800): string {
+  const fill = `f_auto,q_auto,c_fill,ar_5:4,w_${width}`
+  if (!crop) return cld(url, `${fill},g_auto`)
+  // The decimals matter: Cloudinary reads "1" as one pixel but "1.0000" as 100%.
+  const area = `c_crop,x_${fraction(crop.x)},y_${fraction(crop.y)},w_${fraction(crop.width)},h_${fraction(crop.height)}`
+  return cld(url, `${area}/${fill}`)
+}
+
+/** Company logo: never cropped, and transparency is kept. */
+export function companyLogo(url: string, width = 240): string {
+  return cld(url, `f_auto,q_auto,c_limit,w_${width}`)
+}

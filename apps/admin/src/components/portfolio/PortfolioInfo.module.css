@@ -31,7 +31,7 @@
 .add:disabled { opacity: .4; cursor: default; }
 .statRow { display: grid; grid-template-columns: 90px 70px minmax(0, 1fr) auto; gap: 8px; align-items: start; }
 .techHead { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: start; }
-.techMain { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 120px; gap: 8px; }
+.techMain { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 120px 150px; gap: 8px; }
 .logo { width: 28px; height: 28px; object-fit: contain; margin-top: 16px; }
 .badge { width: 28px; height: 28px; margin-top: 16px; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-family: "JetBrains Mono", monospace; font-size: 11px; }
 .checks { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; font-family: "Patrick Hand", sans-serif; font-size: 16px; color: var(--ink); }
@@ -40,6 +40,7 @@
 .jobHead { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .jobTitle { font-family: "Caveat", cursive; font-size: 24px; color: var(--ink); }
 .twoCol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.threeCol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .yearRow { display: grid; grid-template-columns: 110px 110px 1fr; gap: 8px; align-items: end; }
 .present { font-family: "Patrick Hand", sans-serif; font-size: 16px; color: var(--ink); padding-bottom: 8px; }
 .saveBar { position: sticky; bottom: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 14px; background: var(--paper-dark); border: 2px solid var(--ink); border-top: 0; padding: 10px 14px; }
@@ -52,7 +53,7 @@
 .saveBtn:disabled { opacity: .4; cursor: default; }
 @media (max-width: 720px) {
   .panel { padding: 12px; }
-  .techMain, .twoCol { grid-template-columns: 1fr; }
+  .techMain, .twoCol, .threeCol { grid-template-columns: 1fr; }
   .statRow { grid-template-columns: 1fr 1fr; }
   .statRow > :nth-child(3) { grid-column: 1 / -1; }
   .yearRow { grid-template-columns: 1fr 1fr; }
@@ -62,3 +63,17 @@
 .portraitRow { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
 .portraitPreview { width: 112px; aspect-ratio: 4 / 5; object-fit: cover; border: 1.5px solid var(--ink); background: var(--paper-dark); display: block; }
 .portraitEmpty { width: 112px; aspect-ratio: 4 / 5; border: 1.5px dashed var(--rule); display: grid; place-items: center; font-family: "Patrick Hand", sans-serif; color: var(--ink-faint); }
+
+.mediaRow { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+.logoPreview { width: 72px; height: 72px; object-fit: contain; padding: 8px; box-sizing: border-box; background: #fff; border: 1.5px solid var(--ink); display: block; }
+.logoLetter { width: 72px; height: 72px; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-family: "Caveat", cursive; font-size: 38px; font-weight: 700; }
+.mediaButtons { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.imageCard { width: 180px; display: grid; gap: 6px; }
+.imagePreview { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; display: block; border: 1.5px solid var(--ink); background: var(--paper-dark); }
+.cropOverlay { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 16px; background: rgba(20, 20, 20, .7); }
+.cropDialog { width: min(720px, 100%); max-height: 100%; overflow: auto; display: grid; gap: 12px; padding: 16px; box-sizing: border-box; background: var(--paper); border: 2px solid var(--ink); }
+.cropTitle { font-family: "Caveat", cursive; font-size: 26px; font-weight: 700; margin: 0; color: var(--ink); }
+.cropArea { position: relative; width: 100%; height: min(56vh, 420px); background: #1d2025; }
+.cropZoom { display: flex; gap: 10px; align-items: center; font-family: "Patrick Hand", sans-serif; font-size: 16px; color: var(--ink); }
+.cropZoom input { flex: 1; accent-color: var(--accent); }
+.cropActions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }

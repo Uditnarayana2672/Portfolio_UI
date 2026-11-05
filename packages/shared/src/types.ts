@@ -2,13 +2,19 @@ export type TechLevel = 'working' | 'advanced' | 'expert'
 export type TechCategory = 'ai' | 'backend' | 'frontend' | 'cloud'
 
 export interface Portrait { url: string; alt: string; media_asset_id: string | null }
+export interface ImageCrop { x: number; y: number; width: number; height: number }
+export interface CompanyImage extends Portrait { crop: ImageCrop | null }
 export interface Stat { id: string; source: 'manual' | 'published_projects'; value: string | null; suffix: string; label: string }
 export interface Tech {
-  id: string; name: string; logo_slug: string | null; categories: TechCategory[]; level: TechLevel
+  id: string; name: string; logo_slug: string | null; category: TechCategory; level: TechLevel
   show_in_strip: boolean; show_in_what_i_do: boolean; show_in_skills: boolean
 }
 export interface Job {
   id: string; company: string; role: string; start_year: number; end_year: number | null
+  summary: string; highlights: string[]; logo: Portrait | null; images: CompanyImage[]
+}
+export interface Education {
+  id: string; degree: string; institution: string; start_year: number; end_year: number | null
   summary: string; highlights: string[]
 }
 export interface SectionText { title: string; title_soft: string; intro: string }
@@ -17,12 +23,14 @@ export interface PortfolioDocument {
     eyebrow: string; headline: string; headline_accent: string; intro: string; highlights: string[]
     portrait: Portrait | null
   }
-  about: { statement: string; today: string; stats: Stat[] }
+  about: { statement: string; today: string; through_line: string[]; stats: Stat[] }
   what_i_do: { title: string; subtitle: string; points: { id: string; text: string }[] }
   skills: SectionText
   tech: Tech[]
   experience_section: SectionText
   experience: Job[]
+  education_section: { title: string; title_soft: string }
+  education: Education[]
 }
 
 export interface ProjectCard {

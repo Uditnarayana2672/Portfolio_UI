@@ -24,15 +24,16 @@
     "@tiptap/react": "^3.32.2",
     "@tiptap/starter-kit": "^3.32.2",
     "@tiptap/suggestion": "^3.32.2",
+    "@udit/shared": "*",
     "axios": "^1.16.1",
     "highlight.js": "^11.12.0",
     "lowlight": "^3.3.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "react-easy-crop": "^6.2.4",
     "react-image-crop": "^11.0.10",
     "react-router-dom": "^7.16.0",
-    "zustand": "^5.0.14",
-    "@udit/shared": "*"
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

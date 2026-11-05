@@ -27,9 +27,9 @@ const hostname = (u: string) => u.replace(/^https?:\/\//, '').replace(/\/$/, '')
   description={p.seo.meta_description || p.excerpt || p.title}
   image={p.seo.og_image_url || p.image_url}
   canonical={p.seo.canonical_url || undefined}
-  active="work"
+  active="projects"
 >
-  <div class="crumbbar"><div class="wrap"><a class="back" href="/#work"><span aria-hidden="true">←</span> Back to portfolio</a><div class="crumbs"><a href="/">Portfolio</a><span>/</span><a href="/projects">Projects</a><span>/</span><b>{p.title}</b></div></div></div>
+  <div class="crumbbar"><div class="wrap"><a class="back" href="/#projects"><span aria-hidden="true">←</span> Back to portfolio</a><div class="crumbs"><a href="/">Portfolio</a><span>/</span><a href="/projects">Projects</a><span>/</span><b>{p.title}</b></div></div></div>
   <section class="dark dh-simple"><div class="wrap"><div class="grid">
     <div>
       {p.category && <span class="eyebrow">{p.category}</span>}
@@ -62,7 +62,7 @@ const hostname = (u: string) => u.replace(/^https?:\/\//, '').replace(/\/$/, '')
     <section class="sec alt"><div class="wrap">
       <div class="sec-head"><div><span class="eyebrow">Go deeper</span><h2 class="h2 mt">Related notes.</h2></div><p>From lighthouseinfo.com.</p></div>
       <div class="posts">{related.items.map((b) => (
-        <a class="post" href={b.url}>
+        <a class="post" href={b.url} target="_blank" rel="noopener noreferrer">
           {b.cover?.url ? <div class="pcover has-img"><img class="tone" src={b.cover.url} alt={b.cover.alt || ''} loading="lazy" /></div>
             : <div class="pcover"><span class="g">{(b.category?.name ?? b.title).slice(0, 3).toUpperCase()}<small>.</small></span></div>}
           <div class="pbody"><div class="k">{b.category?.name ?? 'Note'}<i>{b.reading_time_min} min</i></div><h3>{b.title}</h3>{b.excerpt && <p>{b.excerpt}</p>}<span class="more">Read note →</span></div>

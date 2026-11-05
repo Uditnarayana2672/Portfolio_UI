@@ -7,8 +7,8 @@ const { items, categories } = await api.projects('?limit=50&sort=newest')
 const live = items.filter((p) => p.demo_url)
 const hasOther = items.some((p) => !p.category)
 ---
-<Base title="All projects — Udit Narayana" description="Production apps, research sandboxes and small experiments by Udit Narayana." active="work">
-  <div class="crumbbar"><div class="wrap"><a class="back" href="/#work"><span aria-hidden="true">←</span> Back to portfolio</a><div class="crumbs"><a href="/">Portfolio</a><span>/</span><b>All projects</b></div></div></div>
+<Base title="All projects — Udit Narayana" description="Production apps, research sandboxes and small experiments by Udit Narayana." active="projects">
+  <div class="crumbbar"><div class="wrap"><a class="back" href="/#projects"><span aria-hidden="true">←</span> Back to portfolio</a><div class="crumbs"><a href="/">Portfolio</a><span>/</span><b>All projects</b></div></div></div>
   <section class="phero"><div class="wrap">
     <span class="eyebrow">The full archive</span>
     <h1 class="h1">Everything I’ve built.<br /><span class="soft">Shipped and sketched.</span></h1>

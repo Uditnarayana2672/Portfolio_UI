@@ -7,9 +7,10 @@ const { project: p } = Astro.props
 const image = usableImage(p.image_url)
 const status = p.status_label ?? (p.demo_url ? 'Live' : null)
 const initial = p.title.trim()[0]?.toUpperCase() ?? '•'
+const newTab = { target: '_blank', rel: 'noopener' }
 ---
 <article class="pcard" data-cat={p.category ?? 'Other'}>
-  <a class={`pvis${image ? '' : ' empty'}`} href={`/projects/${p.slug}`} aria-label={p.title} tabindex="-1">
+  <a class={`pvis${image ? '' : ' empty'}`} href={`/projects/${p.slug}`} {...newTab} aria-label={p.title} tabindex="-1">
     {image ? (
       <img class="tone" src={cropped(image, 900, '16:10')} srcset={croppedSrcset(image, [480, 900, 1400], '16:10')}
         sizes="(max-width: 900px) 86vw, 580px" alt="" loading="lazy" />
@@ -20,12 +21,12 @@ const initial = p.title.trim()[0]?.toUpperCase() ?? '•'
     {status && <span class={`st${/live/i.test(status) ? ' live' : ''}`}>{status}</span>}
   </div>
   <div class="ptitle">
-    <h3><a href={`/projects/${p.slug}`}>{p.title}</a></h3>
+    <h3><a href={`/projects/${p.slug}`} {...newTab}>{p.title}</a></h3>
     {p.card_stat && <div class="fact"><b>{p.card_stat.value}</b><span>{p.card_stat.label}</span></div>}
   </div>
   {p.excerpt && <p class="pdesc">{p.excerpt}</p>}
   <div class="pfoot">
     <div class="tags">{p.tech_stack.slice(0, 4).map((t) => <span>{t}</span>)}</div>
-    <a class="link-arrow" href={`/projects/${p.slug}`}>View project <span aria-hidden="true">→</span></a>
+    <a class="link-arrow" href={`/projects/${p.slug}`} {...newTab}>View project <span aria-hidden="true">→</span></a>
   </div>
 </article>

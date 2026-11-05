@@ -8,8 +8,9 @@ const { title, description, image, canonical, noindex = false, active = '' } = A
 const url = canonical ?? new URL(Astro.url.pathname, Astro.site).href
 const links = [
   ['About', '/#about', 'about'], ['Skills', '/#skills', 'skills'], ['Experience', '/#experience', 'experience'],
-  ['Work', '/#work', 'work'], ['Writing', '/#writing', 'writing'], ['Contact', '/#contact', 'contact'],
+  ['Projects', '/#projects', 'projects'], ['Writing', '/#writing', 'writing'], ['Contact', '/#contact', 'contact'],
 ]
+const newTab = { target: '_blank', rel: 'noopener noreferrer' }
 ---
 <!doctype html>
 <html lang="en">
@@ -34,19 +35,19 @@ const links = [
 <body>
   <header class="site-head">
     <div class="wrap">
-      <a class="logo" href="/"><span class="mk">&lt;/&gt;</span><span>udit<span class="dot">.</span>works</span></a>
+      <a class="logo" href="/" data-home aria-label="uditworks, back to top"><span class="mk">&lt;/&gt;</span><span class="wm">udit<b>works</b></span></a>
       <nav class="nav" aria-label="Main">
-        {links.map(([label, href, key]) => <a href={href} class={active === key ? 'on' : ''}>{label}</a>)}
+        {links.map(([label, href, key]) => <a href={href} data-spy={key} class={active === key ? 'on' : ''}>{label}</a>)}
       </nav>
       <div class="head-cta">
-        <a class="x-site" href={BLOG_URL}>lighthouseinfo.com ↗</a>
+        <a class="x-site" href={BLOG_URL} {...newTab}><span class="wm">lighthouse<b>info</b>.com</span> ↗</a>
         <a class="btn sm" href="/#contact">Let’s build something ↗</a>
         <button class="burger" aria-label="Menu" aria-expanded="false" aria-controls="mnav"><i></i></button>
       </div>
     </div>
     <nav class="mnav" id="mnav" aria-label="Mobile">
       {links.map(([label, href]) => <a href={href}>{label} <span aria-hidden="true">→</span></a>)}
-      <a href={BLOG_URL}>Read the blog · lighthouseinfo.com <span aria-hidden="true">↗</span></a>
+      <a href={BLOG_URL} {...newTab}><span>Read the blog · <span class="wm">lighthouse<b>info</b>.com</span></span> <span aria-hidden="true">↗</span></a>
       <a class="btn" href="/#contact">Let’s build something <span aria-hidden="true">↗</span></a>
     </nav>
   </header>
@@ -54,12 +55,12 @@ const links = [
   <footer class="foot">
     <div class="wrap">
       <div class="top">
-        <div><a class="logo" href="/"><span class="mk">&lt;/&gt;</span><span>udit<span class="dot">.</span>works</span></a><p>Agentic-AI engineer building things that reason, remember and ship.</p></div>
-        <div><h2 class="foot-h">Explore</h2><ul><li><a href="/#about">About</a></li><li><a href="/#experience">Experience</a></li><li><a href="/projects">All projects</a></li><li><a href="/#contact">Contact</a></li></ul></div>
-        <div><h2 class="foot-h">Writing</h2><ul><li><a href={BLOG_URL}>lighthouseinfo.com ↗</a></li></ul></div>
+        <div><a class="logo" href="/" data-home aria-label="uditworks, back to top"><span class="mk">&lt;/&gt;</span><span class="wm">udit<b>works</b></span></a><p>Agentic-AI engineer building things that reason, remember and ship.</p></div>
+        <div><h2 class="foot-h">Explore</h2><ul><li><a href="/#about">About</a></li><li><a href="/#experience">Experience</a></li><li><a href="/#projects">Projects</a></li><li><a href="/projects">All projects</a></li><li><a href="/#contact">Contact</a></li></ul></div>
+        <div><h2 class="foot-h">Writing</h2><ul><li><a href={BLOG_URL} {...newTab}><span class="wm">lighthouse<b>info</b>.com</span> ↗</a></li></ul></div>
         <div><h2 class="foot-h">Elsewhere</h2><ul>
-          {PROFILE.github && <li><a href={PROFILE.github} rel="noopener">GitHub ↗</a></li>}
-          {PROFILE.linkedin && <li><a href={PROFILE.linkedin} rel="noopener">LinkedIn ↗</a></li>}
+          {PROFILE.github && <li><a href={PROFILE.github} {...newTab}>GitHub ↗</a></li>}
+          {PROFILE.linkedin && <li><a href={PROFILE.linkedin} {...newTab}>LinkedIn ↗</a></li>}
           {PROFILE.email && <li><a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a></li>}
         </ul></div>
       </div>
@@ -68,7 +69,11 @@ const links = [
   </footer>
   <script>
     import { initSite } from '@udit/shared/client'
+    import { initThroughLine } from '@udit/shared/through-line'
+    import { initExperience } from '@udit/shared/experience'
     initSite()
+    initThroughLine()
+    initExperience()
   </script>
 </body>
 </html>

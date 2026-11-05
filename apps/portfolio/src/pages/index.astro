@@ -1,12 +1,12 @@
 ---
 import { api } from '@udit/shared/api'
-import { portraitImage, cropped, usableImage } from '@udit/shared/images'
+import { companyImage, companyLogo, portraitImage, cropped, usableImage } from '@udit/shared/images'
 import { highlightedHtml } from '@udit/shared/text'
 import { ContactForm } from '@udit/shared/interactions'
 import Base from '../layouts/Base.astro'
 import DevScene from '../components/DevScene.astro'
 import ProjectCard from '../components/ProjectCard.astro'
-import { BLOG_URL, EDUCATION, PROFILE } from '../site-config'
+import { BLOG_URL, PROFILE } from '../site-config'
 
 const [{ content: c }, projects, blogs] = await Promise.all([api.portfolio(), api.projects('?limit=50&sort=featured'), api.blogs('?limit=3')])
 const featured = projects.items.slice(0, 4)
@@ -22,10 +22,14 @@ const chips = c.tech.filter((t) => t.show_in_what_i_do)
 const CATEGORIES = [['ai', 'AI & Agents'], ['backend', 'Backend'], ['frontend', 'Frontend'], ['cloud', 'Cloud & Ops']] as const
 const LEVEL = { working: { label: 'Working', w: 55 }, advanced: { label: 'Advanced', w: 80 }, expert: { label: 'Expert', w: 95 } }
 const panels = CATEGORIES
-  .map(([key, label]) => ({ key, label, items: c.tech.filter((t) => t.show_in_skills && t.categories.includes(key)) }))
+  .map(([key, label]) => ({ key, label, items: c.tech.filter((t) => t.show_in_skills && t.category === key) }))
   .filter((p) => p.items.length)
-const period = (j: { start_year: number; end_year: number | null }) => `${j.start_year} — ${j.end_year ?? 'Present'}`
-const initial = (s: string) => s.length <= 3 ? s : s[0]
+const period = (j: { start_year: number; end_year: number | null }) =>
+  j.start_year === j.end_year ? `${j.start_year}` : `${j.start_year} — ${j.end_year ?? 'Present'}`
+const letter = (s: string) => s.trim()[0]?.toUpperCase() ?? '•'
+const newTab = { target: '_blank', rel: 'noopener noreferrer' }
+const jobPhotos = (j: (typeof c.experience)[number]) => j.images.filter((i) => usableImage(i.url))
+const jobLogo = (j: (typeof c.experience)[number]) => (j.logo && usableImage(j.logo.url) ? j.logo : null)
 const headlineLines = c.hero.headline.split('\n')
 ---
 <Base title={`${PROFILE.name} — Agentic AI Engineer`} description={c.hero.intro} image={portrait ? cropped(portrait, 1200, '1.91:1') : undefined}>
@@ -36,7 +40,7 @@ const headlineLines = c.hero.headline.split('\n')
         <h1 class="h1">{headlineLines.map((l, i) => <>{l}{i < headlineLines.length - 1 && <br />}</>)}<span class="l2">{c.hero.headline_accent}</span></h1>
         <p class="lede">{c.hero.intro}</p>
         <div class="hero-actions">
-          <a class="btn" href="#work">See my work <span aria-hidden="true">↗</span></a>
+          <a class="btn" href="#projects">See my work <span aria-hidden="true">↗</span></a>
           <a class="btn-ghost" href="#contact">Reach out <span aria-hidden="true">↓</span></a>
         </div>
         {c.hero.highlights.length > 0 && <div class="ticks">{c.hero.highlights.map((h) => <span><i aria-hidden="true" class="tick">✓</i>{h}</span>)}</div>}
@@ -69,7 +73,10 @@ const headlineLines = c.hero.headline.split('\n')
   <section class="sec" id="about">
     <div class="wrap">
       <div class="hello">
-        <div class="rv"><span class="eyebrow"><span class="n">01</span>&nbsp;Hello</span></div>
+        <div class="hello-side rv">
+          <span class="eyebrow"><span class="n">01</span>&nbsp;Hello</span>
+          <div class="thru" data-through-line={JSON.stringify(c.about.through_line)} aria-hidden="true"></div>
+        </div>
         <div class="rv d1">
           <blockquote set:html={highlightedHtml(c.about.statement)} />
           <p class="lede today" set:html={highlightedHtml(c.about.today, 'b')} />
@@ -114,51 +121,50 @@ const headlineLines = c.hero.headline.split('\n')
     </section>
   )}
 
-  <section class="sec alt" id="experience">
+  <section class="sec dark" id="experience">
     <div class="wrap">
       <div class="sec-head">
         <div class="rv"><span class="eyebrow"><span class="n">04</span>&nbsp;Experience</span><h2 class="h2 mt">{c.experience_section.title}<br /><span class="soft">{c.experience_section.title_soft}</span></h2></div>
         <p class="rv d1">{c.experience_section.intro}</p>
       </div>
-      <div class="tl">
-        {c.experience.map((j) => (
-          <article class={`job rv${j.end_year === null ? ' now' : ''}`}>
-            <div class="when">{period(j)}</div>
-            <div class="mono-co" aria-hidden="true">{initial(j.company)}</div>
-            <div class="body"><h3 class="job-h">{j.role} <span>@ {j.company}</span></h3><p>{j.summary}</p>
-              {j.highlights.length > 0 && <ul>{j.highlights.map((h) => <li><i aria-hidden="true" class="tick">✓</i>{h}</li>)}</ul>}
-            </div>
-          </article>
-        ))}
+      <div class="xp" data-xp>
+        <div class="xp-rail" aria-hidden="true"><i class="xp-fill"></i></div>
+        {c.experience.map((j) => {
+          const photos = jobPhotos(j)
+          const logo = jobLogo(j)
+          return (
+            <article class={`job${j.end_year === null ? ' now' : ''}`} tabindex="0">
+              <span class="xp-dot" aria-hidden="true"></span>
+              <div class="when">{period(j)}</div>
+              <div class={`mono-co${logo ? ' has-logo' : ''}`} aria-hidden={logo ? undefined : 'true'}>
+                {logo ? <img src={companyLogo(logo.url, 160)} alt={logo.alt || `${j.company} logo`} loading="lazy" /> : letter(j.company)}
+              </div>
+              <div class="body"><h3 class="job-h">{j.role} <span>@ {j.company}</span></h3><p>{j.summary}</p>
+                {j.highlights.length > 0 && <ul>{j.highlights.map((h) => <li><i aria-hidden="true" class="tick">✓</i>{h}</li>)}</ul>}
+              </div>
+              {photos.length > 0 ? (
+                <figure class="xp-card has-photo">
+                  {photos.map((photo, i) => (
+                    <img class={`xp-slide${i === 0 ? ' on' : ''}`} src={companyImage(photo.url, photo.crop, 800)} srcset={`${companyImage(photo.url, photo.crop, 480)} 480w, ${companyImage(photo.url, photo.crop, 800)} 800w`} sizes="(max-width: 820px) 86vw, 390px" alt={photo.alt || `At ${j.company}`} loading="lazy" />
+                  ))}
+                </figure>
+              ) : logo ? (
+                <figure class="xp-card logo-card" aria-hidden="true"><img class="xp-slide on" src={companyLogo(logo.url, 600)} alt="" loading="lazy" /></figure>
+              ) : (
+                <figure class="xp-card letter-card" aria-hidden="true"><span class="xp-letter">{letter(j.company)}</span></figure>
+              )}
+            </article>
+          )
+        })}
       </div>
     </div>
   </section>
 
-  <section class="sec" id="education">
-    <div class="wrap"><div class={`edu${PROFILE.collegePhoto ? '' : ' no-photo'}`}>
-      {PROFILE.collegePhoto && (
-        <figure class="photo rv">
-          <div class="frame"><img src={PROFILE.collegePhoto} alt={PROFILE.collegeName || 'College campus'} loading="lazy" /></div>
-          <figcaption class="cap"><span>{PROFILE.collegeName}</span><span>{EDUCATION[0].years}</span></figcaption>
-        </figure>
-      )}
-      <div class="rv d1">
-        <span class="eyebrow">Education</span>
-        <h2 class="h2 mt">Learning the<br /><span class="soft">theory first.</span></h2>
-        <div class="edu-list">
-          {EDUCATION.map((e) => (
-            <div class="deg"><div class="yr">{e.years}</div><h3>{e.title}</h3><div class="sp">{e.detail}</div><p>{e.summary}</p><ul>{e.points.map((x) => <li>{x}</li>)}</ul></div>
-          ))}
-        </div>
-      </div>
-    </div></div>
-  </section>
-
   {featured.length > 0 && (
-    <section class="sec work" id="work">
+    <section class="sec work" id="projects">
       <div class="wrap">
         <div class="sec-head">
-          <div class="rv"><span class="eyebrow"><span class="n">05</span>&nbsp;Selected work</span><h2 class="h2 mt">Not just shipped.<br /><span class="soft">Built to make a difference.</span></h2></div>
+          <div class="rv"><span class="eyebrow"><span class="n">05</span>&nbsp;Projects</span><h2 class="h2 mt">Not just shipped.<br /><span class="soft">Built to make a difference.</span></h2></div>
           <p class="rv d1">Projects I’m proudest of. Use the arrows to browse, or jump to the full archive at the end.</p>
         </div>
         <div class="rail-wrap" data-rail>
@@ -182,16 +188,31 @@ const headlineLines = c.hero.headline.split('\n')
     </section>
   )}
 
+  {c.education.length > 0 && (
+    <section class="sec" id="education">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="rv"><span class="eyebrow"><span class="n">06</span>&nbsp;Education</span><h2 class="h2 mt">{c.education_section.title}<br /><span class="soft">{c.education_section.title_soft}</span></h2></div>
+        </div>
+        <div class="edu-list cols rv d1">
+          {c.education.map((e) => (
+            <div class="deg"><div class="yr">{period(e)}</div><h3>{e.degree}</h3><div class="sp">{e.institution}</div>{e.summary && <p>{e.summary}</p>}{e.highlights.length > 0 && <ul>{e.highlights.map((x) => <li>{x}</li>)}</ul>}</div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
   {blogs.items.length > 0 && (
     <section class="sec" id="writing">
       <div class="wrap">
         <div class="sec-head">
-          <div class="rv"><span class="eyebrow"><span class="n">06</span>&nbsp;Knowledge blog</span><h2 class="h2 mt">Writing about<br /><span class="soft">what I build.</span></h2></div>
+          <div class="rv"><span class="eyebrow"><span class="n">07</span>&nbsp;Knowledge blog</span><h2 class="h2 mt">Writing about<br /><span class="soft">what I build.</span></h2></div>
           <p class="rv d1">Practical notes on agents, retrieval and shipping.</p>
         </div>
         <div class="posts">
           {blogs.items.map((b) => (
-            <a class="post rv" href={b.url}>
+            <a class="post rv" href={b.url} {...newTab}>
               {b.cover?.url ? <div class="pcover has-img"><img class="tone" src={b.cover.url} alt={b.cover.alt || ''} loading="lazy" /></div>
                 : <div class="pcover"><span class="g">{(b.category?.name ?? b.title).slice(0, 3).toUpperCase()}<small>.</small></span></div>}
               <div class="pbody"><div class="k">{b.category?.name ?? 'Note'}<i>{b.reading_time_min} min</i></div><h3>{b.title}</h3>{b.excerpt && <p>{b.excerpt}</p>}<span class="more">Read note →</span></div>
@@ -200,7 +221,7 @@ const headlineLines = c.hero.headline.split('\n')
         </div>
         <div class="bridge rv">
           <p><b>Want more?</b> Every concept I learn goes on <b>lighthouseinfo.com</b>, with search, topics and a newsletter.</p>
-          <a class="btn" href={BLOG_URL}>More blogs on lighthouseinfo.com <span aria-hidden="true">↗</span></a>
+          <a class="btn" href={BLOG_URL} {...newTab}>More blogs on lighthouseinfo.com <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
@@ -209,14 +230,14 @@ const headlineLines = c.hero.headline.split('\n')
   <section class="sec contact" id="contact">
     <div class="wrap grid">
       <div>
-        <span class="eyebrow rv"><span class="n">07</span>&nbsp;Let’s build something that matters</span>
+        <span class="eyebrow rv"><span class="n">08</span>&nbsp;Let’s build something that matters</span>
         <h2 class="h1 rv">Let’s make<br /><span class="or">something</span><br />good.</h2>
         <p class="lede rv">Have an idea? I take on a few projects at a time: full-stack builds, AI agents, or rescuing a product that’s stuck. I’ll reply within a day or two.</p>
         <ul class="checks"><li><i aria-hidden="true" class="tick">✓</i>An honest technical conversation</li><li><i aria-hidden="true" class="tick">✓</i>No account needed, just a message</li><li><i aria-hidden="true" class="tick">✓</i>No pressure, no commitment</li></ul>
         <div class="reach">
           {PROFILE.email && <a href={`mailto:${PROFILE.email}`}><span><small>Email</small>{PROFILE.email}</span><i aria-hidden="true">↗</i></a>}
-          {PROFILE.github && <a href={PROFILE.github} rel="noopener"><span><small>GitHub</small>{PROFILE.github.replace('https://', '')}</span><i aria-hidden="true">↗</i></a>}
-          {PROFILE.linkedin && <a href={PROFILE.linkedin} rel="noopener"><span><small>LinkedIn</small>{PROFILE.linkedin.replace('https://www.', '')}</span><i aria-hidden="true">↗</i></a>}
+          {PROFILE.github && <a href={PROFILE.github} {...newTab}><span><small>GitHub</small>{PROFILE.github.replace('https://', '')}</span><i aria-hidden="true">↗</i></a>}
+          {PROFILE.linkedin && <a href={PROFILE.linkedin} {...newTab}><span><small>LinkedIn</small>{PROFILE.linkedin.replace('https://www.', '')}</span><i aria-hidden="true">↗</i></a>}
         </div>
       </div>
       <div class="form rv d1">

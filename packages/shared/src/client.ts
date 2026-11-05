@@ -24,6 +24,8 @@ export function initSite(): void {
   document.querySelectorAll('.rv,.chips,.pts,.skills').forEach((el) => reveal.observe(el))
 
   document.querySelectorAll<HTMLElement>('[data-rail]').forEach(initRail)
+  initHomeLinks()
+  initNavSpy()
   initTabs()
   initFilters()
   initPortrait()
@@ -62,6 +64,50 @@ function initRail(root: HTMLElement): void {
     if (e.key === 'ArrowRight') next.click()
     if (e.key === 'ArrowLeft') prev.click()
   })
+  update()
+}
+
+/** The logo scrolls to the top on the home page instead of reloading it. */
+function initHomeLinks(): void {
+  document.querySelectorAll<HTMLAnchorElement>('a[data-home]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      if (location.pathname !== '/' || event.metaKey || event.ctrlKey || event.shiftKey) return
+      event.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      history.replaceState(null, '', '/')
+    })
+  })
+}
+
+/** Lights the nav link of the section on screen. Sections without a link keep the previous one lit. */
+function initNavSpy(): void {
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.nav a[data-spy]')]
+  const sections = [...document.querySelectorAll<HTMLElement>('main section[id]')]
+    .filter((section) => section.id !== 'top')
+  if (!links.length || !sections.length) return
+  const keys = new Set(links.map((link) => link.dataset.spy))
+  let queued = false
+  const update = () => {
+    queued = false
+    const line = innerHeight * 0.35
+    let current = ''
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top > line) break
+      if (keys.has(section.id)) current = section.id
+    }
+    links.forEach((link) => {
+      const on = link.dataset.spy === current
+      link.classList.toggle('on', on)
+      if (on) link.setAttribute('aria-current', 'true')
+      else link.removeAttribute('aria-current')
+    })
+  }
+  addEventListener('scroll', () => {
+    if (queued) return
+    queued = true
+    requestAnimationFrame(update)
+  }, { passive: true })
+  addEventListener('resize', update)
   update()
 }
 
