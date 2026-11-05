@@ -1,0 +1,60 @@
+.section { min-width: 0; }
+.title { font-family: "Caveat", cursive; font-size: 34px; font-weight: 700; margin: 0; color: var(--ink); }
+.intro { font-family: "Patrick Hand", sans-serif; color: var(--ink-soft); font-size: 17px; margin: 2px 0 12px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tab { font-family: "Caveat", cursive; font-size: 21px; border: 2px solid var(--ink); border-bottom: 0; background: var(--paper-dark); color: var(--ink); padding: 5px 14px; cursor: pointer; }
+.tabOn { background: var(--ink); color: var(--paper); }
+.tabErrors { font-family: "JetBrains Mono", monospace; font-size: 11px; margin-left: 6px; background: var(--accent); color: #fff; padding: 0 6px; border-radius: 9px; }
+.panel { border: 2px solid var(--ink); background: var(--paper); padding: 18px; }
+.stack { display: grid; gap: 14px; }
+.group { border: 1.5px dashed var(--rule); padding: 12px 14px 14px; margin: 0; display: grid; gap: 12px; min-width: 0; }
+.group legend { font-family: "Caveat", cursive; font-size: 22px; font-weight: 700; padding: 0 6px; color: var(--ink); }
+.field { display: grid; gap: 4px; min-width: 0; }
+.label { font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--ink-soft); }
+.hint { font-family: "Patrick Hand", sans-serif; font-size: 14px; color: var(--ink-faint); margin: 0; }
+.fieldError { font-family: "Patrick Hand", sans-serif; font-size: 15px; color: var(--accent); }
+.field input, .field textarea, .field select, .stringRow input {
+  font-family: "Patrick Hand", sans-serif; font-size: 17px; color: var(--ink);
+  background: #fffdf7; border: 1.5px solid var(--ink); padding: 6px 9px; width: 100%; box-sizing: border-box;
+}
+.field textarea { resize: vertical; line-height: 1.35; }
+.field input:focus, .field textarea:focus, .field select:focus, .stringRow input:focus { outline: 2px solid var(--pop); outline-offset: 1px; }
+.field input:disabled { background: var(--paper-dark); color: var(--ink-faint); }
+.card { border: 1.5px solid var(--rule); background: #fffdf7; padding: 12px; display: grid; gap: 10px; min-width: 0; }
+.stringRow { display: flex; gap: 8px; align-items: flex-start; }
+.grow { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.rowActions { display: flex; gap: 4px; flex: none; }
+.rowActions button { width: 30px; height: 30px; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); cursor: pointer; font-size: 14px; }
+.rowActions button:disabled { opacity: .3; cursor: default; }
+.rowActions .remove { color: var(--accent); border-color: var(--accent); }
+.add { justify-self: start; font-family: "Caveat", cursive; font-size: 20px; border: 2px dashed var(--ink); background: transparent; color: var(--ink); padding: 3px 12px; cursor: pointer; }
+.add:disabled { opacity: .4; cursor: default; }
+.statRow { display: grid; grid-template-columns: 90px 70px minmax(0, 1fr) auto; gap: 8px; align-items: start; }
+.techHead { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: start; }
+.techMain { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 120px; gap: 8px; }
+.logo { width: 28px; height: 28px; object-fit: contain; margin-top: 16px; }
+.badge { width: 28px; height: 28px; margin-top: 16px; display: grid; place-items: center; background: var(--ink); color: var(--paper); font-family: "JetBrains Mono", monospace; font-size: 11px; }
+.checks { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; font-family: "Patrick Hand", sans-serif; font-size: 16px; color: var(--ink); }
+.checks .label { width: 84px; }
+.checks input { accent-color: var(--accent); }
+.jobHead { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.jobTitle { font-family: "Caveat", cursive; font-size: 24px; color: var(--ink); }
+.twoCol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.yearRow { display: grid; grid-template-columns: 110px 110px 1fr; gap: 8px; align-items: end; }
+.present { font-family: "Patrick Hand", sans-serif; font-size: 16px; color: var(--ink); padding-bottom: 8px; }
+.saveBar { position: sticky; bottom: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 14px; background: var(--paper-dark); border: 2px solid var(--ink); border-top: 0; padding: 10px 14px; }
+.saveStatus { font-family: "Patrick Hand", sans-serif; font-size: 16px; color: var(--ink-soft); min-width: 0; }
+.unsaved { color: var(--ink); font-weight: 700; }
+.noticeError { color: var(--accent); font-family: "Patrick Hand", sans-serif; }
+.noticeOk { color: #3d7a3a; }
+.inlineBtn { font-family: "Patrick Hand", sans-serif; font-size: 15px; background: var(--paper); color: var(--ink); border: 1.5px solid var(--ink); padding: 1px 8px; cursor: pointer; }
+.saveBtn { font-family: "Caveat", cursive; font-size: 24px; font-weight: 700; background: var(--ink); color: var(--paper); border: 2px solid var(--ink); padding: 4px 26px; cursor: pointer; flex: none; }
+.saveBtn:disabled { opacity: .4; cursor: default; }
+@media (max-width: 720px) {
+  .panel { padding: 12px; }
+  .techMain, .twoCol { grid-template-columns: 1fr; }
+  .statRow { grid-template-columns: 1fr 1fr; }
+  .statRow > :nth-child(3) { grid-column: 1 / -1; }
+  .yearRow { grid-template-columns: 1fr 1fr; }
+  .present { grid-column: 1 / -1; padding-bottom: 0; }
+}

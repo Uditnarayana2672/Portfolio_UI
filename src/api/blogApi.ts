@@ -42,7 +42,7 @@ async function authHeader(): Promise<Record<string, string>> {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
-async function request<T>(path: string, init: RequestInit = {}, retried = false): Promise<T> {
+export async function request<T>(path: string, init: RequestInit = {}, retried = false): Promise<T> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}/api/v1${path}`, {

@@ -7,7 +7,7 @@ import NewProjectPage from './pages/NewProjectPage'
 import EditProjectPage from './pages/EditProjectPage'
 import ProjectPreviewPage from './pages/ProjectPreviewPage'
 import ProjectDetailPage from './pages/ProjectDetailPage'
-import PlaceholderPage from './pages/PlaceholderPage'
+import OverviewPage from './pages/OverviewPage'
 import BlogManagerPage from './pages/BlogManagerPage'
 // The editor pulls in TipTap + highlight.js; load it only on blog routes.
 const BlogEditorPage = lazy(() => import('./pages/BlogEditorPage'))
@@ -66,7 +66,7 @@ export default function App() {
         {/* Media "Used in" links point at /admin/blogs/:id */}
         <Route path="/admin/blogs/:id" element={<BlogIdRedirect />} />
         <Route path="/blog" element={<Navigate to="/admin/blogs" replace />} />
-        <Route path="/dashboard" element={<ProtectedRoute><PlaceholderPage title="Dashboard" /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><OverviewPage /></ProtectedRoute>} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
       </Suspense>

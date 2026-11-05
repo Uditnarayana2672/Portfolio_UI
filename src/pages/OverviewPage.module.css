@@ -1,0 +1,17 @@
+.page { padding: 28px 32px 80px; min-height: 100vh; }
+.pagehead {
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 2px dashed var(--ink);
+  padding-bottom: 14px; margin-bottom: 22px;
+}
+.pagehead h1 { font-family: "Caveat", cursive; font-weight: 700; font-size: 44px; margin: 0; letter-spacing: .5px; color: var(--ink); }
+.scribble { color: var(--accent); }
+.menuBtn { display: none; width: 40px; height: 40px; border: 2px solid var(--ink); background: var(--paper); color: var(--ink); font-size: 20px; cursor: pointer; }
+.layout { display: grid; grid-template-columns: 200px 1fr; gap: 22px; align-items: start; }
+.main { min-width: 0; display: grid; gap: 34px; }
+@media (max-width: 768px) {
+  .page { padding: 16px 14px 96px; }
+  .layout { grid-template-columns: 1fr; }
+  .menuBtn { display: block; }
+  .pagehead h1 { font-size: 34px; }
+}

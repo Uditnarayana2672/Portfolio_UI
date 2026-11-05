@@ -33,7 +33,7 @@ export default function LoginPage() {
   // Redirect already-authenticated users away from the login page
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate('/admin/media', { replace: true })
+      if (data.session) navigate('/dashboard', { replace: true })
     })
   }, [navigate])
 
@@ -48,7 +48,7 @@ export default function LoginPage() {
       if (method === 'password') {
         const { error: authErr } = await supabase.auth.signInWithPassword({ email, password })
         if (authErr) throw authErr
-        navigate('/media', { replace: true })
+        navigate('/dashboard', { replace: true })
       } else {
         const { error: authErr } = await supabase.auth.signInWithOtp({ email })
         if (authErr) throw authErr
