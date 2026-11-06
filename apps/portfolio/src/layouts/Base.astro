@@ -35,7 +35,7 @@ const newTab = { target: '_blank', rel: 'noopener noreferrer' }
 <body>
   <header class="site-head">
     <div class="wrap">
-      <a class="logo" href="/" data-home aria-label="uditworks, back to top"><span class="mk">&lt;/&gt;</span><span class="wm">udit<b>works</b></span></a>
+      <a class="logo" href="/" data-home aria-label="Udit Narayana, back to top"><span class="mk" aria-hidden="true">&lt;/&gt;</span><span class="wm" data-type>udit <b>narayana</b></span></a>
       <nav class="nav" aria-label="Main">
         {links.map(([label, href, key]) => <a href={href} data-spy={key} class={active === key ? 'on' : ''}>{label}</a>)}
       </nav>

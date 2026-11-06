@@ -24,6 +24,7 @@ export function initSite(): void {
   document.querySelectorAll('.rv,.chips,.pts,.skills').forEach((el) => reveal.observe(el))
 
   document.querySelectorAll<HTMLElement>('[data-rail]').forEach(initRail)
+  initLogoTyping()
   initHomeLinks()
   initNavSpy()
   initTabs()
@@ -65,6 +66,52 @@ function initRail(root: HTMLElement): void {
     if (e.key === 'ArrowLeft') prev.click()
   })
   update()
+}
+
+const TYPE_START_MS = 250
+const TYPE_STEP_MS = 85
+const CARET_LINGER_MS = 2200
+
+/** Types the top bar name once per page load. Hidden letters keep their space, so nothing shifts. */
+function initLogoTyping(): void {
+  const mark = document.querySelector<HTMLElement>('[data-type]')
+  if (!mark) return
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) {
+    mark.classList.add('type-ready')
+    return
+  }
+  const letters: HTMLElement[] = []
+  const split = (node: Node) => {
+    ;[...node.childNodes].forEach((child) => {
+      if (child.nodeType !== Node.TEXT_NODE) {
+        split(child)
+        return
+      }
+      const pieces = [...(child.textContent ?? '')].map((ch) => {
+        const letter = document.createElement('span')
+        letter.className = 'tc'
+        letter.textContent = ch
+        letters.push(letter)
+        return letter
+      })
+      child.replaceWith(...pieces)
+    })
+  }
+  split(mark)
+  mark.classList.add('type-ready')
+  let index = 0
+  const typeNext = () => {
+    letters[index - 1]?.classList.remove('cur')
+    if (index >= letters.length) return
+    letters[index].classList.add('on', 'cur')
+    index += 1
+    if (index < letters.length) {
+      setTimeout(typeNext, TYPE_STEP_MS)
+    } else {
+      setTimeout(() => letters[index - 1].classList.remove('cur'), CARET_LINGER_MS)
+    }
+  }
+  setTimeout(typeNext, TYPE_START_MS)
 }
 
 /** The logo scrolls to the top on the home page instead of reloading it. */
