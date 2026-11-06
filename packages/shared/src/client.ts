@@ -25,6 +25,7 @@ export function initSite(): void {
 
   document.querySelectorAll<HTMLElement>('[data-rail]').forEach(initRail)
   initLogoTyping()
+  initSceneTyping()
   initHomeLinks()
   initNavSpy()
   initTabs()
@@ -112,6 +113,62 @@ function initLogoTyping(): void {
     }
   }
   setTimeout(typeNext, TYPE_START_MS)
+}
+
+const SCENE_TYPE_MS = 120
+const SCENE_ERASE_MS = 45
+const SCENE_HOLD_MS = 1800
+const SCENE_EMPTY_MS = 500
+const CARET_GAP = 3
+
+/** The figure in the "What I do" scene types the message, reads it, clears it and types it again. */
+function initSceneTyping(): void {
+  const scene = document.querySelector<SVGSVGElement>('.dev-scene')
+  const text = scene?.querySelector<SVGTextElement>('.scene-typed')
+  const caret = scene?.querySelector<SVGRectElement>('.code-cursor')
+  if (!scene || !text || !caret) return
+  const message = text.textContent ?? ''
+  const startX = Number(text.getAttribute('x'))
+
+  const show = (count: number) => {
+    text.textContent = message.slice(0, count)
+    caret.setAttribute('x', String(startX + (count ? text.getComputedTextLength() : 0) + CARET_GAP))
+  }
+  show(message.length) // lines the caret up with the real font width
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) return
+
+  let count = 0
+  let erasing = false
+  let timer = 0
+  const step = () => {
+    let wait = SCENE_TYPE_MS + Math.random() * 70 // uneven, like real typing
+    if (!erasing) {
+      count += 1
+      show(count)
+      if (count >= message.length) {
+        erasing = true
+        wait = SCENE_HOLD_MS
+      }
+    } else {
+      count -= 1
+      show(count)
+      wait = SCENE_ERASE_MS
+      if (count <= 0) {
+        erasing = false
+        wait = SCENE_EMPTY_MS
+      }
+    }
+    // Hands rest while he reads the finished line.
+    scene.classList.toggle('resting', wait === SCENE_HOLD_MS)
+    timer = window.setTimeout(step, wait)
+  }
+  // Only runs while the scene is on screen, and starts from empty when first seen.
+  new IntersectionObserver(([entry]) => {
+    clearTimeout(timer)
+    if (entry.isIntersecting) timer = window.setTimeout(step, SCENE_EMPTY_MS)
+  }).observe(scene)
+  count = 0
+  show(0)
 }
 
 /** The logo scrolls to the top on the home page instead of reloading it. */

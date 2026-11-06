@@ -169,7 +169,8 @@ button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 .dev-scene .steam{animation:steamUp 2.6s ease-in-out infinite;opacity:0}
 .dev-scene .steam.s2{animation-delay:1.3s}
 @keyframes steamUp{0%{transform:translateY(0);opacity:0}30%{opacity:.7}100%{transform:translateY(-16px);opacity:0}}
-.dev-scene .code-cursor{animation:curBlink 1s steps(2) infinite}
+.dev-scene.resting .code-cursor{animation:curBlink 1s steps(2) infinite}
+.dev-scene.resting .arm-type,.dev-scene.resting .arm-type2{animation-play-state:paused}
 @keyframes curBlink{50%{opacity:0}}
 .wid .h3{margin:22px 0 18px;font-size:clamp(36px,4.2vw,58px)}
 .sub-mono{font:500 12px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:22px}
